@@ -23,32 +23,42 @@
 
 package org.openteufel.file.mpq;
 
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
+
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.openteufel.file.mpq.explode.Exploder;
 
 public class MPQFileSector
 {
     private static final byte COMPRESSION_ZLIB  = 0x02;
     private static final byte COMPRESSION_BZIP2 = 0x10;
 
-    // TODO Add support for other compression algorithms
     public enum Compression
     {
-        ZLib, BZip2
+        Uncompressed, ZLib, BZip2, Imploded
     }
 
     // Values contained in the archive
     private final Compression compression;
     private final ByteBuffer  dataRaw;
-    private final Long encryptionSeed;
+    private final Long        encryptionSeed;
+    private final int         sizeUncompressed;
 
-    protected MPQFileSector(boolean compressed, int sizeUncompressed, ByteBuffer src, Long encryptionSeed) throws DataFormatException, IOException
+    protected MPQFileSector(boolean compressed, boolean imploded, int sizeUncompressed, ByteBuffer src, Long encryptionSeed) throws DataFormatException, IOException
     {
         this.encryptionSeed = encryptionSeed;
-        if (compressed)
+        this.sizeUncompressed = sizeUncompressed;
+
+        if (imploded)
+        {
+            compression = Compression.Imploded;
+        }
+        else if (compressed)
         {
             byte compressionByte = src.get();
             if (compressionByte == COMPRESSION_ZLIB)
@@ -62,7 +72,7 @@ public class MPQFileSector
             else
             {
                 // Unkown compression
-                compression = null;
+                compression = Compression.Uncompressed;
                 /*
                  * Count the compression byte to the data. Sectors are not
                  * necessarily compressed, if the according flag is set. If the
@@ -74,66 +84,93 @@ public class MPQFileSector
         }
         else
         {
-            compression = null;
+            compression = Compression.Uncompressed;
         }
         dataRaw = src.slice();
         dataRaw.order(src.order());
     }
 
+    public int getSizeUncompressed()
+    {
+        return sizeUncompressed;
+    }
+
     public ByteBuffer getDecompressed() throws DataFormatException, IOException
     {
-        ByteBuffer dataDecrypted;
+        ByteBuffer ret = ByteBuffer.allocate(sizeUncompressed);
+        getDecompressed(ret);
+        ret.rewind();
+        return ret;
+    }
+
+    public int getDecompressed(ByteBuffer out) throws DataFormatException, IOException
+    {
         // If the file is encrypted, each sector (after compression/implosion, if applicable) is encrypted with the file's key.
         // Each sector is encrypted using the key + the 0-based index of the sector in the file.
         // NOTE compression type byte (if existing) is encrypted as well!
+        ByteBuffer dataDecrypted;
         if (this.encryptionSeed != null)
             dataDecrypted = MPQEncryptionUtils.decrypt(dataRaw, encryptionSeed);
         else
             dataDecrypted = dataRaw;
+        dataDecrypted.rewind();
 
-        // Initialize variables for decompression
-        byte[] buf = new byte[512];
-        ByteBuffer uncompressedBuffer;
-        ByteArrayOutputStream uncompressed = new ByteArrayOutputStream();
-        // Uncompress bytes
-        if (Compression.ZLib == compression)
+        switch (compression)
         {
-            Inflater inflater = new Inflater();
-            inflater.setInput(dataDecrypted.array());
-            while (!inflater.finished())
+            case Uncompressed:
             {
-                int decompressedBytes = inflater.inflate(buf);
-                uncompressed.write(buf, 0, decompressedBytes);
+                out.put(dataDecrypted);
+                return dataDecrypted.capacity();
             }
-            inflater.end();
-            uncompressedBuffer = ByteBuffer.wrap(uncompressed.toByteArray());
-            uncompressedBuffer.order(dataDecrypted.order());
-            return uncompressedBuffer;
+            case Imploded:
+            {
+                byte[] buf = new byte[sizeUncompressed];
+                int numDecompressed = Exploder.pkexplode(dataDecrypted.array(), buf);
+                if (numDecompressed != this.sizeUncompressed)
+                    throw new IllegalStateException();
+                out.put(buf, 0, sizeUncompressed);
+                return sizeUncompressed;
+            }
+            case ZLib:
+            {
+                int numDecompressed = 0;
+                byte[] buf = new byte[1024];
+                Inflater inflater = new Inflater();
+                inflater.setInput(dataDecrypted.array());
+                while (!inflater.finished())
+                {
+                    int decompressedBytes = inflater.inflate(buf);
+                    numDecompressed += decompressedBytes;
+                    out.put(buf, 0, decompressedBytes);
+                }
+                inflater.end();
+                if (numDecompressed != this.sizeUncompressed)
+                    throw new IllegalStateException();
+                return numDecompressed;
+            }
+            case BZip2:
+            {
+                int numDecompressed = 0;
+                byte[] buf = new byte[1024];
+                InputStream inputStream = new ByteArrayInputStream(dataDecrypted.array());
+                BZip2CompressorInputStream uncompressStream = new BZip2CompressorInputStream(inputStream);
+                while (true)
+                {
+                    int decompressedBytes = uncompressStream.read(buf);
+                    if (decompressedBytes < 0)
+                        break;
+                    numDecompressed += decompressedBytes;
+                    out.put(buf, 0, decompressedBytes);
+                }
+                uncompressStream.close();
+                inputStream.close();
+                if (numDecompressed != sizeUncompressed)
+                    throw new IllegalStateException();
+                return numDecompressed;
+            }
+            default:
+                throw new IllegalStateException("Unknown Compression");
         }
-        else if (Compression.BZip2 == compression)
-        {
-            throw new IllegalArgumentException("BZIP not supported");
-            //            InputStream inputStream = null;
-            //            BZip2CompressorInputStream uncompressStream = null;
-            //            try
-            //            {
-            //                inputStream = new ByteArrayInputStream(dataDecrypted.array());
-            //                uncompressStream = new BZip2CompressorInputStream(inputStream);
-            //                while ((readBytes = uncompressStream.read(buf)) > -1)
-            //                {
-            //                    uncompressed.write(buf, 0, readBytes);
-            //                }
-            //                uncompressedBuffer = ByteBuffer.wrap(uncompressed.toByteArray());
-            //            }
-            //            finally
-            //            {
-            //                uncompressStream.close();
-            //                inputStream.close();
-            //            }
-            //            return uncompressedBuffer;
-        }
-
-        return dataDecrypted;
     }
 
     @Override

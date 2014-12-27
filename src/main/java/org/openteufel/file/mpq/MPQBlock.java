@@ -174,6 +174,11 @@ public class MPQBlock
     {
         return ((flags & FLAG_FILE_IMPLODED) != 0);
     }
+    
+    public boolean hasSectorOffsetTable()
+    {
+        return (!isStoredUnsplit()) && (isCompressed() || isImploded());
+    }
 
     @Override
     public String toString()

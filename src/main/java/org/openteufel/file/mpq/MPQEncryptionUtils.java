@@ -148,20 +148,24 @@ public class MPQEncryptionUtils
         return seed1 & MASK_INT;
     }
 
-    //    unsigned long ComputeFileKey(const char *lpszFilePath, const BlockTableEntry &amp;blockEntry, unsigned long nArchiveOffset)
-    //    {
-    //    assert(lpszFilePath);
-    //    // Find the file name part of the path
-    //    const char *lpszFileName = strrchr(lpszFilePath, '\\');
-    //    if (lpszFileName)
-    //    lpszFileName++; // Skip the \
-    //    else
-    //    lpszFileName = lpszFilePath;
-    //    // Hash the name to get the base key
-    //    unsigned long nFileKey = HashString(lpszFileName, MPQ_HASH_FILE_KEY);
-    //    // Offset-adjust the key if necessary
-    //    if (blockEntry.Flags &amp; BLOCK_OFFSET_ADJUSTED_KEY)
-    //    nFileKey = (nFileKey + blockEntry.BlockOffset) ^ blockEntry.FileSize;
-    //    return nFileKey;
-    //    }
+    public static long generateFileKey(String filepath)
+    {
+        String filename;
+        int idx = filepath.lastIndexOf('\\');
+        if(idx >= 0)
+            filename = filepath.substring(idx+1);
+        else
+            filename = filepath;
+            
+        long key = hash(filename, MPQEncryptionUtils.MPQ_HASH_FILE_KEY);
+        //    if (blockEntry.Flags &amp; BLOCK_OFFSET_ADJUSTED_KEY)
+        //    nFileKey = (nFileKey + blockEntry.BlockOffset) ^ blockEntry.FileSize;
+        
+        //        // Offset-adjust the key if necessary
+        //        if (static_cast<Flags>(blockTableEntry.flags) & Flags::UsesEncryptionKey)
+        //        {
+        //            nFileKey = (nFileKey + blockTableEntry.blockOffset) ^ blockTableEntry.fileSize;
+        //        }
+        return key;
+    }
 }

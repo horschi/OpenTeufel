@@ -83,18 +83,36 @@ public class MPQArchive
         hashTable = new MPQHashTable(header.getOffsetHashTable(), header.getEntriesHashTable(), src);
     }
 
-    public byte[] getFileBytes(String filepath) throws IOException
+    public ByteBuffer getFileByteBuffer(String filepath) throws IOException
     {
-        MPQHashEntry hashEntry = getFileHashtableEntry(filepath);
-        MPQFile mpqFile = getFile(filepath, hashEntry);
-        return mpqFile.getBytes();
+        MPQFile mpqFile = getFile(filepath);
+        if (mpqFile == null)
+            return null;
+        return mpqFile.getByteBuffer();
     }
     
-    public InputStream getFileStream(String filepath) throws IOException
+    public byte[] getFileBytes(String filepath) throws IOException
+    {
+        MPQFile mpqFile = getFile(filepath);
+        if (mpqFile == null)
+            return null;
+        return mpqFile.getBytes();
+    }
+
+//    public InputStream getFileStream(String filepath) throws IOException
+//    {
+//        MPQFile mpqFile = getFile(filepath);
+//        if (mpqFile == null)
+//            return null;
+//        return mpqFile.getByteStream();
+//    }
+
+    public MPQFile getFile(String filepath) throws IOException
     {
         MPQHashEntry hashEntry = getFileHashtableEntry(filepath);
-        MPQFile mpqFile = getFile(filepath, hashEntry);
-        return mpqFile.getByteStream();
+        if (hashEntry == null)
+            return null;
+        return getFile(filepath, hashEntry);
     }
 
     public MPQHashEntry getFileHashtableEntry(String filepath)
@@ -129,7 +147,7 @@ public class MPQArchive
         return null;
     }
 
-    public MPQFile getFile(String filepath, MPQHashEntry hashEntry) throws IOException
+    private MPQFile getFile(String filepath, MPQHashEntry hashEntry) throws IOException
     {
         if (hashEntry.isDeleted() || hashEntry.isNullBlock())
             throw new IllegalStateException("Empty or null hash entry: " + hashEntry);
@@ -159,7 +177,7 @@ public class MPQArchive
         {
             Long encryptionSeed;
             if (blockTableEntry.isEncrypted())
-                encryptionSeed = MPQEncryptionUtils.hash(filepath, MPQEncryptionUtils.MPQ_HASH_FILE_KEY);
+                encryptionSeed = MPQEncryptionUtils.generateFileKey(filepath);
             else
                 encryptionSeed = null;
             int sectorSize = header.getSectorSize();
