@@ -54,7 +54,11 @@ public class MPQFileSector
         this.encryptionSeed = encryptionSeed;
         this.sizeUncompressed = sizeUncompressed;
 
-        if (imploded)
+        if(sizeUncompressed == src.remaining())
+        {
+            compression = Compression.Uncompressed;
+        }
+        else if (imploded)
         {
             compression = Compression.Imploded;
         }

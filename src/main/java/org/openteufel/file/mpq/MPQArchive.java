@@ -85,27 +85,55 @@ public class MPQArchive
 
     public ByteBuffer getFileByteBuffer(String filepath) throws IOException
     {
-        MPQFile mpqFile = getFile(filepath);
-        if (mpqFile == null)
-            return null;
-        return mpqFile.getByteBuffer();
-    }
-    
-    public byte[] getFileBytes(String filepath) throws IOException
-    {
-        MPQFile mpqFile = getFile(filepath);
-        if (mpqFile == null)
-            return null;
-        return mpqFile.getBytes();
+        try
+        {
+            MPQFile mpqFile = getFile(filepath);
+            if (mpqFile == null)
+                return null;
+            try
+            {
+                return mpqFile.getByteBuffer();
+            }
+            catch (Exception e)
+            {
+                throw new IOException("Cannot parse MPQFile: " + mpqFile, e);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new IOException("Cannot load " + filepath, e);
+        }
     }
 
-//    public InputStream getFileStream(String filepath) throws IOException
-//    {
-//        MPQFile mpqFile = getFile(filepath);
-//        if (mpqFile == null)
-//            return null;
-//        return mpqFile.getByteStream();
-//    }
+    public byte[] getFileBytes(String filepath) throws IOException
+    {
+        try
+        {
+            MPQFile mpqFile = getFile(filepath);
+            if (mpqFile == null)
+                return null;
+            try
+            {
+                return mpqFile.getBytes();
+            }
+            catch (Exception e)
+            {
+                throw new IOException("Cannot parse MPQFile: " + mpqFile, e);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new IOException("Cannot load " + filepath, e);
+        }
+    }
+
+    //    public InputStream getFileStream(String filepath) throws IOException
+    //    {
+    //        MPQFile mpqFile = getFile(filepath);
+    //        if (mpqFile == null)
+    //            return null;
+    //        return mpqFile.getByteStream();
+    //    }
 
     public MPQFile getFile(String filepath) throws IOException
     {

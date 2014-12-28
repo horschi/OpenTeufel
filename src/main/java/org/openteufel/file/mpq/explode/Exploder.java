@@ -173,12 +173,12 @@ public class Exploder
     
         // Check for a valid compression type
         if (nLitSize != PK_LITERAL_SIZE_FIXED && nLitSize != PK_LITERAL_SIZE_VARIABLE)
-            throw new IllegalArgumentException("PK_ERR_BAD_DATA: Invalid LitSize");
+            throw new IllegalArgumentException("PK_ERR_BAD_DATA: Invalid LitSize: "+nLitSize);
     
         // Only dictionary sizes of 1024, 2048, and 4096 are allowed.
         // The values 4, 5, and 6 correspond with those sizes
         if (4 > nDictSizeByte || nDictSizeByte > 6)
-            throw new IllegalArgumentException("PK_ERR_BAD_DATA: Invalid DictSizeByte");
+            throw new IllegalArgumentException("PK_ERR_BAD_DATA: Invalid DictSizeByte: "+nDictSizeByte);
     
         // Store actual dictionary size
         int nDictSize = 64 << nDictSizeByte;

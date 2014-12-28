@@ -224,6 +224,7 @@ public class MPQFile
         }
         if(decompressedSize != block.getFileSizeUncompressed())
             throw new IllegalStateException("Invalid decompressed size: "+decompressedSize +" != "+ block.getFileSizeUncompressed());
+        ret.rewind();
         return ret;
     }
 
