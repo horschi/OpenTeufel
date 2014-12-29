@@ -1,6 +1,8 @@
 package org.openteufel.file.cel;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,20 +104,31 @@ public class CELFile
         return numFrames;
     }
 
+    //
     
-    public byte[] getFrameRaw(int frame)
+    public int getTotalFrames()
+    {
+        return this.frames.size();
+    }
+    
+    public int getFramePerAnim()
+    {
+        return animLength;
+    }
+    
+    private byte[] getFrameRaw(int frame)
     {
         return this.frames.get(frame);
     }
 
-    public byte[] getFrameRaw(int anim, int frameInAnimation)
+    private byte[] getFrameRaw(int anim, int frameInAnimation)
     {
         if(frameInAnimation > animLength)
             throw new IllegalArgumentException();
         return this.frames.get((anim*animLength) + frameInAnimation);
     }
-    
-    public int[] getFramePixels(int anim, int frameInAnimation, PALFile pal)
+
+    public int[] getFramePixelsType0(int anim, int frameInAnimation, PALFile pal)
     {
         byte[] raw = getFrameRaw(anim, frameInAnimation);
         int num = raw.length;
@@ -125,6 +138,83 @@ public class CELFile
             ret[i] = pal.getColor(raw[i]);
         }
         return ret;
+    }
+    
+    public int[] getFramePixelsType1Sparse(int anim, int frameInAnimation, PALFile pal)
+    {
+        ByteBuffer raw = ByteBuffer.wrap(getFrameRaw(anim, frameInAnimation));
+        IntBuffer ret = IntBuffer.allocate(raw.remaining()*2+(32*32));
+        while(raw.remaining() > 0)
+        {
+            byte b = raw.get();
+            // TODO: resize required:  if(ret.remaining() < Math.abs(b)) { IntBuffer newret = IntBuffer.allocate(ret.capacity()*2); newret.put(ret.get) }
+            if(b < 0)
+            {
+                for(;b<0;b++)
+                    ret.put(PALFile.packColor(0, 0, 0, 0));
+            }
+            else if(b > 0)
+            {
+                for(;b>0;b--)
+                    ret.put(pal.getColor(raw.get()));
+            }
+            // else
+            //    throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
+        }
+        int[] arr = new int[ret.position()];
+        ret.rewind();
+        for(int i=arr.length-1;i>=0;i--)
+        {
+            arr[i] = ret.get(); // TODO: THIS mirrors left/right incorrectly, the pixels should only be reversed on the y axis!
+        }
+        return arr;
+    }
+    
+
+
+    private static final int[] decoderRowSizesType2HalfTileLeft    = new int[]{ 0, 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4};
+    private static final int[] decoderRowSizesType3HalfTileRight   = new int[]{ 0, 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4};
+    private static final int[] decoderRowSizesType4HalfTrapezLeft  = new int[]{ 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+    private static final int[] decoderRowSizesType5HalfTrapezRight = new int[]{ 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+
+    private int[] getFramePixelsDecoded(int anim, int frameInAnimation, PALFile pal, int w, int h, boolean left, int[] decoderRowSizes)
+    {
+        int[] outbuf = new int[w*h];
+        int[] inbuf = getFramePixelsType0(anim, frameInAnimation, pal);
+        int inIdx = 0;
+        for(int y=0;y<h;y++)
+        {
+            int xsize = decoderRowSizes[y];
+            if(xsize > w)
+                throw new IllegalStateException();
+            int xoff = left ? (w-xsize) : 0;
+            for(int x=0;x<xsize;x++)
+            {
+                outbuf[xoff+x+((h-1-y)*w)] = inbuf[inIdx++];
+            }
+        }
+        return outbuf;
+    }
+    
+    public int[] getFramePixelsType2HalfTileLeft(int anim, int frameInAnimation, PALFile pal)
+    {
+        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType2HalfTileLeft);
+    }
+    
+    public int[] getFramePixelsType3HalfTileRight(int anim, int frameInAnimation, PALFile pal)
+    {
+        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType3HalfTileRight);
+    }
+    
+    
+    public int[] getFramePixelsType4HalfTrapezLeft(int anim, int frameInAnimation, PALFile pal)
+    {
+        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType4HalfTrapezLeft);
+    }
+    
+    public int[] getFramePixelsType5HalfTrapezRight(int anim, int frameInAnimation, PALFile pal)
+    {
+        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType5HalfTrapezRight);
     }
     
     @Override
