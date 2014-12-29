@@ -17,7 +17,8 @@ public class PALFile
     
     public static int packColor(int r, int g, int b, int a)
     {
-        return (r << 24) | (g << 16) | (b << 8) | a;
+        return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
+        //return ((r&0xFF) << 24) | ((g&0xFF) << 16) | ((b&0xFF) << 8) | (a&0xFF);
     }
     
     public int[] getColors()
