@@ -24,68 +24,67 @@ public class DUNFile
     private final int     numQuarterTiles;
     private final short[] pillars;
     private final short[] unknown;
-    private final short[] dunMonsterIDs;
-    private final short[] dunObjectIDs;
+    private final short[] monsters;
+    private final short[] objects;
     private final short[] transparencies;
 
-    public DUNFile(int width, int height)
+    public DUNFile(final int width, final int height)
     {
         this.width = width;
         this.height = height;
-        numTiles = width * height;
-        numQuarterTiles = numTiles * 4;
+        this.numTiles = width * height;
+        this.numQuarterTiles = this.numTiles * 4;
 
-        pillars = new short[numTiles];
-        unknown = new short[numQuarterTiles];
-        dunMonsterIDs = new short[numQuarterTiles];
-        dunObjectIDs = new short[numQuarterTiles];
-        transparencies = new short[numQuarterTiles];
+        this.pillars = new short[this.numTiles];
+        this.unknown = new short[this.numQuarterTiles];
+        this.monsters = new short[this.numQuarterTiles];
+        this.objects = new short[this.numQuarterTiles];
+        this.transparencies = new short[this.numQuarterTiles];
     }
 
-    public DUNFile(ByteBuffer in)
+    public DUNFile(final ByteBuffer in)
     {
-        width = in.getShort();
-        height = in.getShort();
+        this.width = in.getShort();
+        this.height = in.getShort();
 
-        numTiles = width * height;
-        numQuarterTiles = numTiles * 4;
+        this.numTiles = this.width * this.height;
+        this.numQuarterTiles = this.numTiles * 4;
 
-        
-        pillars = new short[numTiles];
-        for (int i = 0; i < numTiles; i++)
+        this.pillars = new short[this.numTiles];
+        for (int i = 0; i < this.numTiles; i++)
         {
-            pillars[i] = in.getShort();
+            this.pillars[i] = in.getShort();
         }
 
-        unknown = new short[numQuarterTiles];
-        for (int i = 0; i < numQuarterTiles; i++)
+        this.unknown = new short[this.numQuarterTiles];
+        for (int i = 0; i < this.numQuarterTiles; i++)
         {
-            unknown[i] = in.getShort();
+            this.unknown[i] = in.getShort();
         }
 
-        dunMonsterIDs = new short[numQuarterTiles];
-        for (int i = 0; i < numQuarterTiles; i++)
+        this.monsters = new short[this.numQuarterTiles];
+        for (int i = 0; i < this.numQuarterTiles; i++)
         {
-            dunMonsterIDs[i] = in.getShort();
+            this.monsters[i] = in.getShort();
         }
 
-        dunObjectIDs = new short[numQuarterTiles];
-        for (int i = 0; i < numQuarterTiles; i++)
+        this.objects = new short[this.numQuarterTiles];
+        for (int i = 0; i < this.numQuarterTiles; i++)
         {
-            dunObjectIDs[i] = in.getShort();
+            this.objects[i] = in.getShort();
         }
 
-        transparencies = new short[numQuarterTiles];
-        if(in.remaining() > 0)
+        this.transparencies = new short[this.numQuarterTiles];
+        if (in.remaining() > 0)
         {
-            for (int i = 0; i < numQuarterTiles; i++)
+            for (int i = 0; i < this.numQuarterTiles; i++)
             {
-                transparencies[i] = in.getShort();
+                this.transparencies[i] = in.getShort();
             }
         }
     }
 
-    public static DUNFile townmerge(DUNFile... pieces)
+    public static DUNFile townmerge(final DUNFile... pieces)
     {
         if (pieces[0].getWidth() != pieces[1].getWidth())
             throw new IllegalArgumentException();
@@ -97,10 +96,10 @@ public class DUNFile
         if (pieces[1].getHeight() != pieces[3].getHeight())
             throw new IllegalArgumentException();
 
-        DUNFile ret = new DUNFile(pieces[0].getWidth() + pieces[2].getWidth(), pieces[0].getHeight() + pieces[1].getHeight());
+        final DUNFile ret = new DUNFile(pieces[0].getWidth() + pieces[2].getWidth(), pieces[0].getHeight() + pieces[1].getHeight());
 
-        int halfWidth = pieces[2].getWidth();
-        int halfHeight = pieces[1].getHeight();
+        final int halfWidth = pieces[2].getWidth();
+        final int halfHeight = pieces[1].getHeight();
 
         ret.merge(halfWidth, halfHeight, pieces[0]);
         ret.merge(halfWidth, 0, pieces[1]);
@@ -112,44 +111,91 @@ public class DUNFile
 
     public void merge(final int x, final int y, final DUNFile src)
     {
-        if (x + src.width > width || x < 0)
-            throw new IllegalStateException("Invalid x/width: " + x + "+" + src.width + " > " + width);
-        if (y + src.height > height || y < 0)
-            throw new IllegalStateException("Invalid y/height: " + y + "+" + src.height + " > " + height);
+        if (x + src.width > this.width || x < 0)
+            throw new IllegalStateException("Invalid x/width: " + x + "+" + src.width + " > " + this.width);
+        if (y + src.height > this.height || y < 0)
+            throw new IllegalStateException("Invalid y/height: " + y + "+" + src.height + " > " + this.height);
 
         for (int iy = 0; iy < src.height; iy++)
         {
             for (int ix = 0; ix < src.width; ix++)
             {
-                set(x + ix, y + iy, src.get(ix, iy));
+                this.setPillar(x + ix, y + iy, src.getPillar(ix, iy));
             }
         }
     }
 
     public int getWidth()
     {
-        return width;
+        return this.width;
     }
 
     public int getHeight()
     {
-        return height;
+        return this.height;
     }
 
-    public short get(int x, int y)
+    public short getPillar(final int x, final int y)
     {
-        if (x >= width || x < 0 || y >= height || y < 0)
+        if (x >= this.width || x < 0 || y >= this.height || y < 0)
+            return -1;
+
+        return this.pillars[x + (y * this.width)];
+    }
+
+    public void setPillar(final int x, final int y, final short val)
+    {
+        if (x >= this.width || x < 0 || y >= this.height || y < 0)
             throw new IllegalArgumentException();
 
-        return pillars[x + (y * width)];
+        this.pillars[x + (y * this.width)] = val;
     }
 
-    private void set(int x, int y, short val)
+    public short getMonster(final int x, final int y)
     {
-        if (x >= width || x < 0 || y >= height || y < 0)
+        if (x >= this.width || x < 0 || y >= this.height || y < 0)
             throw new IllegalArgumentException();
 
-        pillars[x + (y * width)] = val;
+        return this.monsters[x + (y * this.width)];
     }
 
+    public void setMonster(final int x, final int y, final short val)
+    {
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
+            throw new IllegalArgumentException();
+
+        this.monsters[x + (y * this.width * 2)] = val;
+    }
+
+    public short getObject(final int x, final int y)
+    {
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
+            throw new IllegalArgumentException();
+
+        return this.objects[x + (y * this.width * 2)];
+    }
+
+    public void setObject(final int x, final int y, final short val)
+    {
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
+            throw new IllegalArgumentException();
+
+        this.objects[x + (y * this.width * 2)] = val;
+    }
+
+    public short getTransparencies(final int x, final int y)
+    {
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
+            throw new IllegalArgumentException();
+
+        return this.transparencies[x + (y * this.width * 2)];
+    }
+
+    public void setTransparencies(final int x, final int y, final short val)
+    {
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
+            throw new IllegalArgumentException();
+
+        this.transparencies[x + (y * this.width * 2)] = val;
+    }
 }
