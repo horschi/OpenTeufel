@@ -52,26 +52,31 @@ import java.util.Arrays;
 public class MINFile
 {
     private final MINPillar[] pillars;
-    
-    public MINFile(ByteBuffer in, int blockCountForLevel)
+
+    public MINFile(final ByteBuffer in, final int blockCountForLevel)
     {
-        int numPillars = in.remaining() / (2*blockCountForLevel);
-        
-        pillars = new MINPillar[numPillars];
+        final int numPillars = in.remaining() / (2*blockCountForLevel);
+
+        this.pillars = new MINPillar[numPillars];
         for(int i=0;i<numPillars;i++)
         {
-            short[] blocks = new short[blockCountForLevel];
+            final short[] blocks = new short[blockCountForLevel];
             for(int ii=0;ii<blockCountForLevel;ii++)
-                blocks[ii] = in.getShort();
-            pillars[i] = new MINPillar(blocks);
+                blocks[blockCountForLevel - 1 - ii] = in.getShort();
+            this.pillars[i] = new MINPillar(blocks);
         }
         if(in.remaining() > 0)
             throw new IllegalStateException();
     }
 
+    public MINPillar getPillar(final int id)
+    {
+        return this.pillars[id];
+    }
+
     @Override
     public String toString()
     {
-        return "MINFile [pillars=" + Arrays.toString(pillars) + "]";
+        return "MINFile [pillars=" + Arrays.toString(this.pillars) + "]";
     }
 }

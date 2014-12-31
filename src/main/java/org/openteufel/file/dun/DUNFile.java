@@ -22,7 +22,7 @@ public class DUNFile
     private final int     height;
     private final int     numTiles;
     private final int     numQuarterTiles;
-    private final short[] pillars;
+    private final short[] squares;
     private final short[] unknown;
     private final short[] monsters;
     private final short[] objects;
@@ -35,7 +35,7 @@ public class DUNFile
         this.numTiles = width * height;
         this.numQuarterTiles = this.numTiles * 4;
 
-        this.pillars = new short[this.numTiles];
+        this.squares = new short[this.numTiles];
         this.unknown = new short[this.numQuarterTiles];
         this.monsters = new short[this.numQuarterTiles];
         this.objects = new short[this.numQuarterTiles];
@@ -50,10 +50,10 @@ public class DUNFile
         this.numTiles = this.width * this.height;
         this.numQuarterTiles = this.numTiles * 4;
 
-        this.pillars = new short[this.numTiles];
+        this.squares = new short[this.numTiles];
         for (int i = 0; i < this.numTiles; i++)
         {
-            this.pillars[i] = in.getShort();
+            this.squares[i] = (short) ((in.getShort() & 0xffff) - 1);
         }
 
         this.unknown = new short[this.numQuarterTiles];
@@ -101,10 +101,10 @@ public class DUNFile
         final int halfWidth = pieces[2].getWidth();
         final int halfHeight = pieces[1].getHeight();
 
-        ret.merge(halfWidth, halfHeight, pieces[0]);
-        ret.merge(halfWidth, 0, pieces[1]);
-        ret.merge(0, halfHeight, pieces[2]);
-        ret.merge(0, 0, pieces[3]);
+        ret.merge(halfWidth, halfHeight, pieces[0]); // bottom
+        ret.merge(halfWidth, 0, pieces[1]); // right
+        ret.merge(0, halfHeight, pieces[2]); // left
+        ret.merge(0, 0, pieces[3]); // top
 
         return ret;
     }
@@ -120,7 +120,7 @@ public class DUNFile
         {
             for (int ix = 0; ix < src.width; ix++)
             {
-                this.setPillar(x + ix, y + iy, src.getPillar(ix, iy));
+                this.setSquare(x + ix, y + iy, src.getSquare(ix, iy));
             }
         }
     }
@@ -135,20 +135,20 @@ public class DUNFile
         return this.height;
     }
 
-    public short getPillar(final int x, final int y)
+    public short getSquare(final int x, final int y)
     {
         if (x >= this.width || x < 0 || y >= this.height || y < 0)
             return -1;
 
-        return this.pillars[x + (y * this.width)];
+        return this.squares[x + (y * this.width)];
     }
 
-    public void setPillar(final int x, final int y, final short val)
+    public void setSquare(final int x, final int y, final short val)
     {
         if (x >= this.width || x < 0 || y >= this.height || y < 0)
             throw new IllegalArgumentException();
 
-        this.pillars[x + (y * this.width)] = val;
+        this.squares[x + (y * this.width)] = val;
     }
 
     public short getMonster(final int x, final int y)

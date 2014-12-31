@@ -37,25 +37,30 @@ public class TILFile
 {
     private final TILSquare[] squares;
 
-    public TILFile(ByteBuffer in)
+    public TILFile(final ByteBuffer in)
     {
-        int num = in.remaining() / 8;
-        squares = new TILSquare[num];
+        final int num = in.remaining() / 8;
+        this.squares = new TILSquare[num];
         for (int i = 0; i < num; i++)
         {
-            short pillarTop = in.getShort();
-            short pillarRight = in.getShort();
-            short pillarLeft = in.getShort();
-            short pillarBottom = in.getShort();
-            squares[i] = new TILSquare(pillarTop, pillarRight, pillarLeft, pillarBottom);
+            final short pillarTop = in.getShort();
+            final short pillarRight = in.getShort();
+            final short pillarLeft = in.getShort();
+            final short pillarBottom = in.getShort();
+            this.squares[i] = new TILSquare(pillarTop, pillarRight, pillarLeft, pillarBottom);
         }
         if (in.remaining() > 0)
             throw new IllegalStateException();
     }
 
+    public TILSquare getSquare(final int id)
+    {
+        return this.squares[id];
+    }
+
     @Override
     public String toString()
     {
-        return "TILFile [squares=" + Arrays.toString(squares) + "]";
+        return "TILFile [squares=" + Arrays.toString(this.squares) + "]";
     }
 }

@@ -1,6 +1,5 @@
 package org.openteufel.file.cel;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -12,15 +11,15 @@ public class CELFile
     private final List<byte[]> frames = new ArrayList<byte[]>();
     private final int          animLength;
 
-    public CELFile(ByteBuffer in, boolean isCl2)
+    public CELFile(final ByteBuffer in, final boolean isCl2)
     {
         this.isCl2 = isCl2;
 
-        int magic = in.getInt();
+        final int magic = in.getInt();
         // If the first uint16_t in the file is 32,
         // then it is a cel archive, containing 8 cels,
-        // each of which is a collection of frames 
-        // representing an animation of an object at 
+        // each of which is a collection of frames
+        // representing an animation of an object at
         // one of the eight possible rotations.
         // This is a side effect of cel archives containing
         // a header liek the normal cel header pointing to
@@ -32,30 +31,30 @@ public class CELFile
             if (isCl2)
             {
                 in.position(0);
-                animLength = readCl2ArchiveFrames(in);
+                this.animLength = this.readCl2ArchiveFrames(in);
             }
             else
             {
                 in.position(32);
-                animLength = readCelArchiveFrames(in);
+                this.animLength = this.readCelArchiveFrames(in);
             }
         }
         else
         {
             in.position(0);
-            animLength = readNormalFrames(in, null);
+            this.animLength = this.readNormalFrames(in, null);
         }
 
     }
 
-    private int readNormalFrames(ByteBuffer in, Integer offset)
+    private int readNormalFrames(final ByteBuffer in, final Integer offset)
     {
         if (offset != null)
             in.position(offset);
 
-        int numFrames = in.getInt();
+        final int numFrames = in.getInt();
 
-        int[] frameOffsets = new int[numFrames + 1];
+        final int[] frameOffsets = new int[numFrames + 1];
         for (int i = 0; i <= numFrames; i++)
             frameOffsets[i] = in.getInt();
 
@@ -64,24 +63,24 @@ public class CELFile
 
         for (int i = 0; i < numFrames; i++)
         {
-            byte[] data = new byte[frameOffsets[i + 1] - frameOffsets[i]];
+            final byte[] data = new byte[frameOffsets[i + 1] - frameOffsets[i]];
             in.get(data);
-            frames.add(data);
+            this.frames.add(data);
         }
 
         return numFrames;
     }
 
-    private int readCl2ArchiveFrames(ByteBuffer in)
+    private int readCl2ArchiveFrames(final ByteBuffer in)
     {
-        int[] headerOffsets = new int[8];
+        final int[] headerOffsets = new int[8];
         for (int i = 0; i < 8; i++)
             headerOffsets[i] = in.getInt();
 
         int numFrames = 0;
         for (int i = 0; i < 8; i++)
         {
-            int newAnimLen = readNormalFrames(in, headerOffsets[i]);
+            final int newAnimLen = this.readNormalFrames(in, headerOffsets[i]);
             if (i == 0)
                 numFrames = newAnimLen;
             else if (numFrames != newAnimLen)
@@ -90,12 +89,12 @@ public class CELFile
         return numFrames;
     }
 
-    private int readCelArchiveFrames(ByteBuffer in)
+    private int readCelArchiveFrames(final ByteBuffer in)
     {
         int numFrames = 0;
         for (int i = 0; i < 8; i++)
         {
-            int newAnimLen = readNormalFrames(in, null);
+            final int newAnimLen = this.readNormalFrames(in, null);
             if (i == 0)
                 numFrames = newAnimLen;
             else if (numFrames != newAnimLen)
@@ -105,50 +104,77 @@ public class CELFile
     }
 
     //
-    
+
     public int getTotalFrames()
     {
         return this.frames.size();
     }
-    
+
     public int getFramePerAnim()
     {
-        return animLength;
+        return this.animLength;
     }
-    
-    private byte[] getFrameRaw(int frame)
+
+    private byte[] getFrameRaw(final int frame)
     {
         return this.frames.get(frame);
     }
 
-    private byte[] getFrameRaw(int anim, int frameInAnimation)
+    private byte[] getFrameRaw(final int anim, final int frameInAnimation)
     {
-        if(frameInAnimation > animLength)
-            throw new IllegalArgumentException();
-        return this.frames.get((anim*animLength) + frameInAnimation);
+        if (frameInAnimation > this.animLength || frameInAnimation < 0)
+            throw new IllegalArgumentException("Illegal frame: " + frameInAnimation);
+        return this.frames.get((anim*this.animLength) + frameInAnimation);
     }
 
-    public int[] getFramePixelsType0(int anim, int frameInAnimation, PALFile pal)
+    private int[] getFramePixelsRaw(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        byte[] raw = getFrameRaw(anim, frameInAnimation);
-        int num = raw.length;
-        int[] ret = new int[num];
-        for(int i=0;i<num;i++)
+        final byte[] raw = this.getFrameRaw(anim, frameInAnimation);
+        final int num = raw.length;
+        final int[] ret = new int[num];
+        for (int i = 0; i < num; i++)
         {
             ret[i] = pal.getColor(raw[i]);
         }
         return ret;
     }
-    
-    public int[] getFramePixelsType1Sparse(int anim, int frameInAnimation, PALFile pal)
+
+    public int[] getFramePixelsType0(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        ByteBuffer raw = ByteBuffer.wrap(getFrameRaw(anim, frameInAnimation));
-        IntBuffer ret = IntBuffer.allocate(raw.remaining()*2+(32*32));
+        final byte[] raw = this.getFrameRaw(anim, frameInAnimation);
+        final int num = raw.length;
+        int wh;
+        switch (num)
+        {
+            case 32 * 32:
+                wh = 32;
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        final int[] ret = new int[num];
+        for (int y = 0; y < wh; y++)
+        {
+            for (int x = 0; x < wh; x++)
+            {
+                ret[x + ((wh - 1 - y) * wh)] = pal.getColor(raw[x + (y * wh)]);
+            }
+        }
+        return ret;
+    }
+
+    public int[] getFramePixelsType1Sparse(final int anim, final int frameInAnimation, final PALFile pal)
+    {
+        final ByteBuffer raw = ByteBuffer.wrap(this.getFrameRaw(anim, frameInAnimation));
+        final IntBuffer ret = IntBuffer.allocate(32 * 32);
         while(raw.remaining() > 0)
         {
             byte b = raw.get();
-            // TODO: resize required:  if(ret.remaining() < Math.abs(b)) { IntBuffer newret = IntBuffer.allocate(ret.capacity()*2); newret.put(ret.get) }
-            if(b < 0)
+            if(b == -128)
+            {
+                throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
+            }
+            else if(b < 0)
             {
                 for(;b<0;b++)
                     ret.put(PALFile.packColor(0, 0, 0, 0));
@@ -158,68 +184,131 @@ public class CELFile
                 for(;b>0;b--)
                     ret.put(pal.getColor(raw.get()));
             }
-            // else
-            //    throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
         }
-        int[] arr = new int[ret.position()];
+        final int[] arr = new int[32 * 32];
         ret.rewind();
-        for(int i=arr.length-1;i>=0;i--)
+
+        for (int y = 31; y >= 0; y--)
         {
-            arr[i] = ret.get(); // TODO: THIS mirrors left/right incorrectly, the pixels should only be reversed on the y axis!
+            for (int x = 0; x < 32; x++)
+            {
+                arr[x + (y * 32)] = ret.get();
+            }
         }
         return arr;
     }
-    
 
 
-    private static final int[] decoderRowSizesType2HalfTileLeft    = new int[]{ 0, 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4};
-    private static final int[] decoderRowSizesType3HalfTileRight   = new int[]{ 0, 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4};
-    private static final int[] decoderRowSizesType4HalfTrapezLeft  = new int[]{ 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
-    private static final int[] decoderRowSizesType5HalfTrapezRight = new int[]{ 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
 
-    private int[] getFramePixelsDecoded(int anim, int frameInAnimation, PALFile pal, int w, int h, boolean left, int[] decoderRowSizes)
+    private static final int[] decoderRowSizesType2HalfTileLeft    = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4, 0 };
+    private static final int[] decoderRowSizesType3HalfTileRight   = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 28, 28, 24, 24, 20, 20, 16, 16, 12, 12, 8, 8, 4, 4, 0 };
+    private static final int[] decoderRowSizesType4HalfTrapezLeft  = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
+    private static final int[] decoderRowSizesType5HalfTrapezRight = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
+
+    private int[] getFramePixelsDecoded(final int anim, final int frameInAnimation, final PALFile pal, final int w, final int h, final boolean left, final int[] decoderRowSizes)
     {
-        int[] outbuf = new int[w*h];
-        int[] inbuf = getFramePixelsType0(anim, frameInAnimation, pal);
+        final int[] outbuf = new int[w*h];
+        final int[] inbuf = this.getFramePixelsRaw(anim, frameInAnimation, pal);
         int inIdx = 0;
         for(int y=0;y<h;y++)
         {
-            int xsize = decoderRowSizes[y];
+            final int xsize = decoderRowSizes[y];
             if(xsize > w)
                 throw new IllegalStateException();
-            int xoff = left ? (w-xsize) : 0;
+            final int xoff = left ? (w-xsize) : 0;
             for(int x=0;x<xsize;x++)
             {
-                outbuf[xoff+x+((h-1-y)*w)] = inbuf[inIdx++];
+                final int v = inbuf[inIdx++];
+                if ((y & 1) == 0 && (v & 0xffffff) == 0)
+                {
+                    if (left)
+                    {
+                        if (x <= 2)
+                            continue;
+                    }
+                    else
+                    {
+                        if (x >= xsize - 2)
+                            continue;
+                    }
+                }
+                outbuf[xoff + x + ((h - 1 - y) * w)] = v;
             }
         }
         return outbuf;
     }
-    
-    public int[] getFramePixelsType2HalfTileLeft(int anim, int frameInAnimation, PALFile pal)
+
+    public int[] getFramePixelsType2HalfTileLeft(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType2HalfTileLeft);
+        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType2HalfTileLeft);
     }
-    
-    public int[] getFramePixelsType3HalfTileRight(int anim, int frameInAnimation, PALFile pal)
+
+    public int[] getFramePixelsType3HalfTileRight(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType3HalfTileRight);
+        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType3HalfTileRight);
     }
-    
-    
-    public int[] getFramePixelsType4HalfTrapezLeft(int anim, int frameInAnimation, PALFile pal)
+
+
+    public int[] getFramePixelsType4HalfTrapezLeft(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType4HalfTrapezLeft);
+        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType4HalfTrapezLeft);
     }
-    
-    public int[] getFramePixelsType5HalfTrapezRight(int anim, int frameInAnimation, PALFile pal)
+
+    public int[] getFramePixelsType5HalfTrapezRight(final int anim, final int frameInAnimation, final PALFile pal)
     {
-        return getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType5HalfTrapezRight);
+        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType5HalfTrapezRight);
     }
-    
+
+    //
+    public int[] getFramePixelsTypeManual(final int anim, final int frameInAnimation, final PALFile pal, final int type)
+    {
+        switch (type)
+        {
+            case 0:
+                return this.getFramePixelsType0(anim, frameInAnimation, pal);
+            case 1:
+                return this.getFramePixelsType1Sparse(anim, frameInAnimation, pal);
+            case 2:
+                return this.getFramePixelsType2HalfTileLeft(anim, frameInAnimation, pal);
+            case 3:
+                return this.getFramePixelsType3HalfTileRight(anim, frameInAnimation, pal);
+            case 4:
+                return this.getFramePixelsType4HalfTrapezLeft(anim, frameInAnimation, pal);
+            case 5:
+                return this.getFramePixelsType5HalfTrapezRight(anim, frameInAnimation, pal);
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    //    public int[] getFramePixelsTypeGuessed(final int anim, final int frameInAnimation, final PALFile pal)
+    //    {
+    //        return this.getFramePixelsTypeManual(anim, frameInAnimation, pal, this.getGuessedType(anim, frameInAnimation));
+    //    }
+
+    public int getGuessedType(final int anim, final int frameInAnimation)
+    {
+        if (frameInAnimation > this.animLength || frameInAnimation < 0)
+            throw new IllegalArgumentException("Illegal frame: " + frameInAnimation);
+        final int frame = (anim*this.animLength) + frameInAnimation;
+
+        final int numRawBytes = this.getFrameRaw(frame).length;
+        switch (numRawBytes)
+        {
+            case 1024:
+                return 0;
+            case 544:
+                return 2; // 3
+            case 800:
+                return 4; // 5
+        }
+        return 1;
+    }
+
     @Override
     public String toString()
     {
-        return "CELFile [isCl2=" + isCl2 + ", frames=" + frames.size() + ", animLength=" + animLength + "]";
+        return "CELFile [isCl2=" + this.isCl2 + ", frames=" + this.frames.size() + ", animLength=" + this.animLength + "]";
     }
 }
