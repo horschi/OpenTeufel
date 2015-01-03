@@ -3,6 +3,9 @@ package org.openteufel.ui;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -38,13 +41,14 @@ public class DefaultRenderer implements Renderer<BufferedImage>
     @Override
     public BufferedImage loadImage(final int[] pixels, final int w, final int h)
     {
-        final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        img.getRaster().setDataElements(0, 0, w, h, pixels);
-        return img;
+        //        final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        //        img.getRaster().setDataElements(0, 0, w, h, pixels);
+        //        return img;
 
-        //        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        //        final BufferedImage image = gc.createCompatibleImage(img.getWidth(), img.getHeight(), Transparency.BITMASK);
-        //        return image;
+        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        final BufferedImage image = gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+        image.getRaster().setDataElements(0, 0, w, h, pixels);
+        return image;
     }
 
     @Override

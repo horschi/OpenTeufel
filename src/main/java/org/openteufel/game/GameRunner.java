@@ -23,7 +23,6 @@ public class GameRunner
     public void runGame() throws Exception
     {
         final Window window = new Window();
-        window.setSize(1024, 768);
         this.renderer.initGame(window);
 
         final LevelState level = new LevelStateTown(this.dataLoader);
@@ -32,9 +31,13 @@ public class GameRunner
         final int gametime = 0;
         while (true)
         {
-
+            final long start = System.nanoTime();
             levelrenderer.renderFrame();
-            Thread.sleep(30L);
+            final long tdif = System.nanoTime() - start;
+
+            final long sleep = 30L - (tdif / 1000000L);
+            if (sleep > 0)
+                Thread.sleep(sleep);
         }
     }
 

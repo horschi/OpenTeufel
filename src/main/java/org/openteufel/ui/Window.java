@@ -14,6 +14,7 @@ public class Window extends JFrame implements MouseListener, MouseWheelListener
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addMouseListener(this);
         this.addMouseWheelListener(this);
+        this.setSize(1024, 768);
     }
 
     public void run()
