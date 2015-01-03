@@ -4,11 +4,10 @@ package org.openteufel.game;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFrame;
-
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.ui.DefaultRenderer;
 import org.openteufel.ui.Renderer;
+import org.openteufel.ui.Window;
 
 public class GameRunner
 {
@@ -23,7 +22,7 @@ public class GameRunner
 
     public void runGame() throws Exception
     {
-        final JFrame window = new JFrame();
+        final Window window = new Window();
         window.setSize(1024, 768);
         this.renderer.initGame(window);
 
