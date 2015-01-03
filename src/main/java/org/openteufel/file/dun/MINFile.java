@@ -69,6 +69,11 @@ public class MINFile
             throw new IllegalStateException();
     }
 
+    public MINPillar[] getPillars()
+    {
+        return this.pillars;
+    }
+
     public MINPillar getPillar(final int id)
     {
         return this.pillars[id];

@@ -94,7 +94,7 @@ public class DUNFile
         if (pieces[0].getHeight() != pieces[2].getHeight())
             throw new IllegalArgumentException();
         if (pieces[1].getHeight() != pieces[3].getHeight())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("" + pieces[1].getHeight() + "!=" + pieces[3].getHeight());
 
         final DUNFile ret = new DUNFile(pieces[0].getWidth() + pieces[2].getWidth(), pieces[0].getHeight() + pieces[1].getHeight());
 

@@ -117,19 +117,14 @@ public class CELFile
 
     private byte[] getFrameRaw(final int frame)
     {
+        if (frame > this.getTotalFrames() || frame < 0)
+            throw new IllegalArgumentException("Illegal frame: " + frame);
         return this.frames.get(frame);
     }
 
-    private byte[] getFrameRaw(final int anim, final int frameInAnimation)
+    private int[] getFramePixelsRaw(final int frame, final PALFile pal)
     {
-        if (frameInAnimation > this.animLength || frameInAnimation < 0)
-            throw new IllegalArgumentException("Illegal frame: " + frameInAnimation);
-        return this.frames.get((anim*this.animLength) + frameInAnimation);
-    }
-
-    private int[] getFramePixelsRaw(final int anim, final int frameInAnimation, final PALFile pal)
-    {
-        final byte[] raw = this.getFrameRaw(anim, frameInAnimation);
+        final byte[] raw = this.getFrameRaw(frame);
         final int num = raw.length;
         final int[] ret = new int[num];
         for (int i = 0; i < num; i++)
@@ -139,9 +134,9 @@ public class CELFile
         return ret;
     }
 
-    public int[] getFramePixelsType0(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType0(final int frame, final PALFile pal)
     {
-        final byte[] raw = this.getFrameRaw(anim, frameInAnimation);
+        final byte[] raw = this.getFrameRaw(frame);
         final int num = raw.length;
         int wh;
         switch (num)
@@ -163,9 +158,9 @@ public class CELFile
         return ret;
     }
 
-    public int[] getFramePixelsType1Sparse(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType1Sparse(final int frame, final PALFile pal)
     {
-        final ByteBuffer raw = ByteBuffer.wrap(this.getFrameRaw(anim, frameInAnimation));
+        final ByteBuffer raw = ByteBuffer.wrap(this.getFrameRaw(frame));
         final IntBuffer ret = IntBuffer.allocate(32 * 32);
         while(raw.remaining() > 0)
         {
@@ -205,10 +200,10 @@ public class CELFile
     private static final int[] decoderRowSizesType4HalfTrapezLeft  = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
     private static final int[] decoderRowSizesType5HalfTrapezRight = new int[] { 4, 4, 8, 8, 12, 12, 16, 16, 20, 20, 24, 24, 28, 28, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
 
-    private int[] getFramePixelsDecoded(final int anim, final int frameInAnimation, final PALFile pal, final int w, final int h, final boolean left, final int[] decoderRowSizes)
+    private int[] getFramePixelsDecoded(final int frame, final PALFile pal, final int w, final int h, final boolean left, final int[] decoderRowSizes)
     {
         final int[] outbuf = new int[w*h];
-        final int[] inbuf = this.getFramePixelsRaw(anim, frameInAnimation, pal);
+        final int[] inbuf = this.getFramePixelsRaw(frame, pal);
         int inIdx = 0;
         for(int y=0;y<h;y++)
         {
@@ -238,72 +233,49 @@ public class CELFile
         return outbuf;
     }
 
-    public int[] getFramePixelsType2HalfTileLeft(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType2HalfTileLeft(final int frame, final PALFile pal)
     {
-        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType2HalfTileLeft);
+        return this.getFramePixelsDecoded(frame, pal, 32, 32, true, decoderRowSizesType2HalfTileLeft);
     }
 
-    public int[] getFramePixelsType3HalfTileRight(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType3HalfTileRight(final int frame, final PALFile pal)
     {
-        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType3HalfTileRight);
+        return this.getFramePixelsDecoded(frame, pal, 32, 32, false, decoderRowSizesType3HalfTileRight);
     }
 
 
-    public int[] getFramePixelsType4HalfTrapezLeft(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType4HalfTrapezLeft(final int frame, final PALFile pal)
     {
-        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, true, decoderRowSizesType4HalfTrapezLeft);
+        return this.getFramePixelsDecoded(frame, pal, 32, 32, true, decoderRowSizesType4HalfTrapezLeft);
     }
 
-    public int[] getFramePixelsType5HalfTrapezRight(final int anim, final int frameInAnimation, final PALFile pal)
+    public int[] getFramePixelsType5HalfTrapezRight(final int frame, final PALFile pal)
     {
-        return this.getFramePixelsDecoded(anim, frameInAnimation, pal, 32, 32, false, decoderRowSizesType5HalfTrapezRight);
+        return this.getFramePixelsDecoded(frame, pal, 32, 32, false, decoderRowSizesType5HalfTrapezRight);
     }
 
     //
-    public int[] getFramePixelsTypeManual(final int anim, final int frameInAnimation, final PALFile pal, final int type)
+
+    public int[] getFramePixelsTypeManual(final int frame, final PALFile pal, final int type)
     {
         switch (type)
         {
             case 0:
-                return this.getFramePixelsType0(anim, frameInAnimation, pal);
+                return this.getFramePixelsType0(frame, pal);
             case 1:
-                return this.getFramePixelsType1Sparse(anim, frameInAnimation, pal);
+                return this.getFramePixelsType1Sparse(frame, pal);
             case 2:
-                return this.getFramePixelsType2HalfTileLeft(anim, frameInAnimation, pal);
+                return this.getFramePixelsType2HalfTileLeft(frame, pal);
             case 3:
-                return this.getFramePixelsType3HalfTileRight(anim, frameInAnimation, pal);
+                return this.getFramePixelsType3HalfTileRight(frame, pal);
             case 4:
-                return this.getFramePixelsType4HalfTrapezLeft(anim, frameInAnimation, pal);
+                return this.getFramePixelsType4HalfTrapezLeft(frame, pal);
             case 5:
-                return this.getFramePixelsType5HalfTrapezRight(anim, frameInAnimation, pal);
+                return this.getFramePixelsType5HalfTrapezRight(frame, pal);
 
             default:
                 throw new IllegalArgumentException();
         }
-    }
-
-    //    public int[] getFramePixelsTypeGuessed(final int anim, final int frameInAnimation, final PALFile pal)
-    //    {
-    //        return this.getFramePixelsTypeManual(anim, frameInAnimation, pal, this.getGuessedType(anim, frameInAnimation));
-    //    }
-
-    public int getGuessedType(final int anim, final int frameInAnimation)
-    {
-        if (frameInAnimation > this.animLength || frameInAnimation < 0)
-            throw new IllegalArgumentException("Illegal frame: " + frameInAnimation);
-        final int frame = (anim*this.animLength) + frameInAnimation;
-
-        final int numRawBytes = this.getFrameRaw(frame).length;
-        switch (numRawBytes)
-        {
-            case 1024:
-                return 0;
-            case 544:
-                return 2; // 3
-            case 800:
-                return 4; // 5
-        }
-        return 1;
     }
 
     @Override

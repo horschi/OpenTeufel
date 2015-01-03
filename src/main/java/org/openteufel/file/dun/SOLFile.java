@@ -28,13 +28,13 @@ public class SOLFile
 
     private final byte[]     solids;
 
-    public SOLFile(ByteBuffer in)
+    public SOLFile(final ByteBuffer in)
     {
-        int num = in.remaining();
-        solids = new byte[num];
+        final int num = in.remaining();
+        this.solids = new byte[num];
         for (int i = 0; i < num; i++)
         {
-            solids[i] = in.get();
+            this.solids[i] = in.get();
         }
         if (in.remaining() > 0)
             throw new IllegalStateException();
@@ -42,27 +42,27 @@ public class SOLFile
 
     public byte[] getSolids()
     {
-        return solids;
+        return this.solids;
     }
 
-    public boolean getSolidBlock(int i)
+    public boolean getSolidBlock(final int pillarId)
     {
-        return (solids[i] & CHECK_COLLISION) != 0;
+        return (this.solids[pillarId] & CHECK_COLLISION) != 0;
     }
 
-    public boolean getSolidBlockRange(int i)
+    public boolean getSolidBlockRange(final int pillarId)
     {
-        return (solids[i] & CHECK_COLLISION_RANGE) != 0;
+        return (this.solids[pillarId] & CHECK_COLLISION_RANGE) != 0;
     }
 
-    public boolean getSolidAllowTransparency(int i)
+    public boolean getSolidAllowTransparency(final int pillarId)
     {
-        return (solids[i] & CHECK_TRANSPARENCY) != 0;
+        return (this.solids[pillarId] & CHECK_TRANSPARENCY) != 0;
     }
 
     @Override
     public String toString()
     {
-        return "SOLFile [solids=" + Arrays.toString(solids) + "]";
-    }    
+        return "SOLFile [solids=" + Arrays.toString(this.solids) + "]";
+    }
 }
