@@ -1,6 +1,7 @@
 package org.openteufel.file.dun;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 // DUN files contain information about how to arrange the squares, which are
 // constructed based on the TIL format, in order to form a dungeon. Below is a
@@ -56,32 +57,43 @@ public class DUNFile
             this.squares[i] = (short) ((in.getShort() & 0xffff) - 1);
         }
 
-        this.unknown = new short[this.numQuarterTiles];
-        for (int i = 0; i < this.numQuarterTiles; i++)
+        if (!in.hasRemaining())
         {
-            this.unknown[i] = in.getShort();
+            this.unknown = null;
+            this.monsters = null;
+            this.objects = null;
+            this.transparencies = null;
         }
-
-        this.monsters = new short[this.numQuarterTiles];
-        for (int i = 0; i < this.numQuarterTiles; i++)
+        else
         {
-            this.monsters[i] = in.getShort();
-        }
-
-        this.objects = new short[this.numQuarterTiles];
-        for (int i = 0; i < this.numQuarterTiles; i++)
-        {
-            this.objects[i] = in.getShort();
-        }
-
-        this.transparencies = new short[this.numQuarterTiles];
-        if (in.remaining() > 0)
-        {
+            this.unknown = new short[this.numQuarterTiles];
             for (int i = 0; i < this.numQuarterTiles; i++)
             {
-                this.transparencies[i] = in.getShort();
+                this.unknown[i] = in.getShort();
+            }
+
+            this.monsters = new short[this.numQuarterTiles];
+            for (int i = 0; i < this.numQuarterTiles; i++)
+            {
+                this.monsters[i] = in.getShort();
+            }
+
+            this.objects = new short[this.numQuarterTiles];
+            for (int i = 0; i < this.numQuarterTiles; i++)
+            {
+                this.objects[i] = in.getShort();
+            }
+
+            this.transparencies = new short[this.numQuarterTiles];
+            if (in.remaining() > 0)
+            {
+                for (int i = 0; i < this.numQuarterTiles; i++)
+                {
+                    this.transparencies[i] = in.getShort();
+                }
             }
         }
+
     }
 
     public static DUNFile townmerge(final DUNFile... pieces)
@@ -197,5 +209,11 @@ public class DUNFile
             throw new IllegalArgumentException();
 
         this.transparencies[x + (y * this.width * 2)] = val;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "DUNFile [width=" + this.width + ", height=" + this.height + ", numTiles=" + this.numTiles + ", numQuarterTiles=" + this.numQuarterTiles + ", squares=" + Arrays.toString(this.squares) + ", unknown=" + Arrays.toString(this.unknown) + ", monsters=" + Arrays.toString(this.monsters) + ", objects=" + Arrays.toString(this.objects) + ", transparencies=" + Arrays.toString(this.transparencies) + "]";
     }
 }
