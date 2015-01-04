@@ -61,14 +61,13 @@ public class DefaultRenderer implements Renderer<BufferedImage>
     public void startFrame()
     {
         this.currentGraphicsContext = (Graphics2D) this.buffer.getDrawGraphics();
+        this.currentGraphicsContext.setColor(Color.black);
+        this.currentGraphicsContext.fillRect(0, 0, this.getScreenWidth(), this.getScreenHeight());
     }
 
     @Override
     public void drawImage(final BufferedImage image, final int screenX, final int screenY)
     {
-        //        this.currentGraphicsContext.setColor(Color.GRAY);
-        //        this.currentGraphicsContext.fillRect(screenX, screenY, image.getWidth(), image.getHeight());
-
         //        this.currentGraphicsContext.drawImage(image, screenX, screenY, null);
         this.currentGraphicsContext.drawImage(image, null, screenX, screenY);
     }
