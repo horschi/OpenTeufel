@@ -13,6 +13,11 @@ public class MINPillar
         this.blocks = blocks;
     }
 
+    public int getNumBlocks()
+    {
+        return this.blocks.length;
+    }
+
     public short[] getFrameNumsPlus1()
     {
         return this.blocks;

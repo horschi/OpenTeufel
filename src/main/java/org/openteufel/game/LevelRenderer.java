@@ -14,7 +14,7 @@ public class LevelRenderer
     private final LevelState     levelstate;
     private final Renderer       renderer;
     private int                  screenWidth, screenHeight;
-    private final int            cameraX = 10 * 64, cameraY = 11 * 64;
+    private int                  cameraX = 8 * 64, cameraY = 8 * 64;
 
     public LevelRenderer(final GamedataLoader dataLoader, final LevelState levelstate, final Renderer renderer) throws IOException
     {
@@ -28,6 +28,9 @@ public class LevelRenderer
 
     public void renderFrame()
     {
+        this.cameraX += (int) (Math.sin((float) (System.currentTimeMillis() % (6200)) / 1000.0f) * 8.0);
+        this.cameraY += (int) (Math.cos((float) (System.currentTimeMillis() % (6200)) / 1000.0f) * 8.0);
+
         this.renderer.startFrame();
         this.screenWidth = this.renderer.getScreenWidth();
         this.screenHeight = this.renderer.getScreenHeight();
@@ -40,9 +43,9 @@ public class LevelRenderer
         //        final int endWorldTileX = this.cameraX + screenTileHalfWidth + screenTileHalfHeight;
         //        final int endWorldTileY = this.cameraY - screenTileHalfWidth + screenTileHalfHeight;
 
-        for (int worldTileY = (this.cameraY - screenTileHalfWidth) / 64; worldTileY < (this.cameraY + screenTileHalfWidth) / 64; worldTileY++)
+        for (int worldTileY = (this.cameraY - screenTileHalfWidth - screenTileHalfHeight) / 64; worldTileY < (this.cameraY + screenTileHalfWidth + screenTileHalfHeight) / 64; worldTileY++)
         {
-            for (int worldTileX = (this.cameraX - screenTileHalfWidth) / 64; worldTileX < (this.cameraX + screenTileHalfWidth) / 64; worldTileX++)
+            for (int worldTileX = (this.cameraX - screenTileHalfWidth - screenTileHalfHeight) / 64; worldTileX < (this.cameraX + screenTileHalfWidth + screenTileHalfHeight) / 64; worldTileX++)
             {
                 this.drawSingleTile(worldTileX, worldTileY);
             }
@@ -75,12 +78,13 @@ public class LevelRenderer
         final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY) + offsetX;
         final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY) + offsetY;
 
-        for (int pillarZ = 0; pillarZ < 16; pillarZ++)
+        final int num = pillar.getNumBlocks();
+        for (int pillarZ = 0; pillarZ < num; pillarZ++)
         {
             final int frameIdPlus1 = pillar.getFrameNumPlus1(pillarZ);
             if (frameIdPlus1 > 0)
             {
-                final int xoff = 16 - ((pillarZ & 1) * 32);
+                final int xoff = num - ((pillarZ & 1) * 32);
                 final int yoff = ((pillarZ) >> 1) * 32;
 
                 final int ix = ixBase + xoff;
