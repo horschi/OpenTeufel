@@ -28,7 +28,7 @@ public class DummyEntity extends Entity
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawMarker(screenX, screenY, this.text);
     }

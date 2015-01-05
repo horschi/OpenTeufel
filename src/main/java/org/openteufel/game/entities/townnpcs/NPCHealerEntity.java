@@ -26,9 +26,9 @@ public class NPCHealerEntity extends NPCEntity
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, double brightness)
     {
-        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\healer\\healer.cel", this.frameId), screenX, screenY, 16);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\healer\\healer.cel", this.frameId), screenX, screenY, 16, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 

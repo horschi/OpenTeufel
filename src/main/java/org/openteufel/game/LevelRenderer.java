@@ -33,10 +33,10 @@ public class LevelRenderer
 
         this.cameraX += 1;
         this.cameraY += 1;
-        if (entityManager.getEntityClosest(23, 23, 6400) != null)
+        if (entityManager.getEntityClosest(99999, 9999, 116400) != null)
         {
-            this.cameraX = entityManager.getEntityClosest(23, 23, 6400).getPosX();
-            this.cameraY = entityManager.getEntityClosest(23, 23, 6400).getPosY();
+            this.cameraX = entityManager.getEntityClosest(99999, 99999, 116400).getPosX();
+            this.cameraY = entityManager.getEntityClosest(99999, 99999, 116400).getPosY();
         }
 
         this.renderer.startFrame();
@@ -66,7 +66,7 @@ public class LevelRenderer
 
             final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY) ;
             final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY) ;
-            ent.draw(this.imageLoader, this.renderer, ixBase, iyBase);
+            ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, 1.0);
         }
 
         this.renderer.finishFrame();
@@ -109,7 +109,7 @@ public class LevelRenderer
                 final int ix = ixBase + xoff;
                 final int iy = iyBase - yoff;
 
-                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy);
+                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, 1.0);
             }
         }
     }

@@ -29,5 +29,5 @@ public abstract class Entity
 
     public abstract void process(int gametime);
 
-    public abstract void draw(final ImageLoader imageLoader, Renderer renderer, int screenX, int screenY);
+    public abstract void draw(final ImageLoader imageLoader, Renderer renderer, int screenX, int screenY, double brightness);
 }

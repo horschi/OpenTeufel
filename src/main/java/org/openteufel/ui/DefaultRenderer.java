@@ -66,14 +66,13 @@ public class DefaultRenderer implements Renderer<BufferedImage>
     }
 
     @Override
-    public void drawImage(final BufferedImage image, final int screenX, final int screenY)
+    public void drawImage(final BufferedImage image, final int screenX, final int screenY, final double brightness)
     {
-        //        this.currentGraphicsContext.drawImage(image, screenX, screenY, null);
         this.currentGraphicsContext.drawImage(image, null, screenX, screenY);
     }
 
     @Override
-    public void drawImageCentered(final BufferedImage image, final int screenX, final int screenY, final int bottomOffset)
+    public void drawImageCentered(final BufferedImage image, final int screenX, final int screenY, final int bottomOffset, final double brightness)
     {
         this.currentGraphicsContext.drawImage(image, null, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight());
     }
