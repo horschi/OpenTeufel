@@ -1,5 +1,6 @@
 package org.openteufel.game;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,5 +118,22 @@ public abstract class LevelState
     public void runFrame(final int gametime)
     {
         this.entityManager.process(gametime);
+    }
+
+    int camX, camY;
+    public int getCameraX()
+    {
+        return this.camX;
+    }
+
+    public int getCameraY()
+    {
+        return this.camY;
+    }
+
+    public void updateCamPos(final int offX, final int offY)
+    {
+        this.camX += offX;
+        this.camY += offY;
     }
 }

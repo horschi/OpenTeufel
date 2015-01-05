@@ -5,18 +5,24 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Transparency;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class DefaultRenderer implements Renderer<BufferedImage>
+public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, MouseWheelListener
 {
     private Canvas         canvas = null;
     private BufferStrategy buffer                 = null;
     private Graphics2D     currentGraphicsContext = null;
+    private Point          lastClick              = null;
 
     @Override
     public void initGame(final JFrame window)
@@ -30,6 +36,9 @@ public class DefaultRenderer implements Renderer<BufferedImage>
         this.canvas.setBackground(Color.black);
         panel.add(this.canvas);
         this.canvas.setSize(panel.getWidth(), panel.getHeight());
+        this.canvas.addMouseListener(this);
+        this.canvas.addMouseWheelListener(this);
+
         window.show();
         this.canvas.setIgnoreRepaint(true);
         this.canvas.createBufferStrategy(2);
@@ -117,4 +126,43 @@ public class DefaultRenderer implements Renderer<BufferedImage>
         return this.canvas.getHeight();
     }
 
+    @Override
+    public void mouseWheelMoved(final MouseWheelEvent arg0)
+    {
+    }
+
+    @Override
+    public void mouseClicked(final MouseEvent arg0)
+    {
+    }
+
+    @Override
+    public void mouseEntered(final MouseEvent arg0)
+    {
+    }
+
+    @Override
+    public void mouseExited(final MouseEvent arg0)
+    {
+    }
+
+    @Override
+    public void mousePressed(final MouseEvent arg0)
+    {
+        final Point cursorpos = arg0.getPoint();
+        this.lastClick = new Point(cursorpos.x - (this.canvas.getWidth() / 2), cursorpos.y - (this.canvas.getHeight() / 2));
+    }
+
+    @Override
+    public void mouseReleased(final MouseEvent arg0)
+    {
+    }
+
+    @Override
+    public Point getLastRelativeClickPos()
+    {
+        final Point ret = this.lastClick;
+        this.lastClick = null;
+        return ret;
+    }
 }

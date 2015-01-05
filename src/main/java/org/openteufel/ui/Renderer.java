@@ -1,5 +1,7 @@
 package org.openteufel.ui;
 
+import java.awt.Point;
+
 import javax.swing.JFrame;
 
 public interface Renderer<ImageType>
@@ -24,4 +26,6 @@ public interface Renderer<ImageType>
     public void drawLine(final int screenX1, final int screenY1, final int screenX2, final int screenY2);
 
     public void finishFrame();
+
+    public Point getLastRelativeClickPos();
 }

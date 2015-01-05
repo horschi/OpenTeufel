@@ -1,5 +1,6 @@
 package org.openteufel.game;
 
+import java.awt.Point;
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
@@ -14,7 +15,7 @@ public class LevelRenderer
     private final LevelState     levelstate;
     private final Renderer       renderer;
     private int                  screenWidth, screenHeight;
-    private int                  cameraX = 8 * 64, cameraY = 8 * 64;
+    private int                  cameraX, cameraY;
 
     public LevelRenderer(final GamedataLoader dataLoader, final LevelState levelstate, final Renderer renderer) throws IOException
     {
@@ -31,13 +32,8 @@ public class LevelRenderer
     {
         final EntityManager entityManager = this.levelstate.getEntityManager();
 
-        this.cameraX += 1;
-        this.cameraY += 1;
-        if (entityManager.getEntityClosest(99999, 9999, 116400) != null)
-        {
-            this.cameraX = entityManager.getEntityClosest(99999, 99999, 116400).getPosX();
-            this.cameraY = entityManager.getEntityClosest(99999, 99999, 116400).getPosY();
-        }
+        this.cameraX = this.levelstate.getCameraX();
+        this.cameraY = this.levelstate.getCameraY();
 
         this.renderer.startFrame();
         this.screenWidth = this.renderer.getScreenWidth();
@@ -114,22 +110,35 @@ public class LevelRenderer
         }
     }
 
-    private int cartesianToIsometricX(final int cartX, final int cartY)
+    public void applyUserInput()
+    {
+        final Point screenPos = this.renderer.getLastRelativeClickPos();
+        if (screenPos != null)
+        {
+            final int isoX = screenPos.x;
+            final int isoY = screenPos.y;
+            this.levelstate.updateCamPos(isometricToCartesianX(isoX, isoY), isometricToCartesianY(isoX, isoY));
+        }
+    }
+
+    //
+
+    private static int cartesianToIsometricX(final int cartX, final int cartY)
     {
         return cartX - cartY;
     }
 
-    private int cartesianToIsometricY(final int cartX, final int cartY)
+    private static int cartesianToIsometricY(final int cartX, final int cartY)
     {
         return (cartX + cartY) / 2;
     }
 
-    private int isometricToCartesianX(final int isoX, final int isoY)
+    private static int isometricToCartesianX(final int isoX, final int isoY)
     {
         return (2 * isoY + isoX) / 2;
     }
 
-    private int isometricToCartesianY(final int isoX, final int isoY)
+    private static int isometricToCartesianY(final int isoX, final int isoY)
     {
         return (2 * isoY - isoX) / 2;
     }
