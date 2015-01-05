@@ -8,7 +8,10 @@ import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
 import org.openteufel.game.entities.GoldEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
+import org.openteufel.game.entities.townnpcs.NPCDrunkEntity;
+import org.openteufel.game.entities.townnpcs.NPCGillianEntity;
 import org.openteufel.game.entities.townnpcs.NPCHealerEntity;
+import org.openteufel.game.entities.townnpcs.NPCOgdenEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 import org.openteufel.game.entities.townnpcs.NPCWitchEntity;
 
@@ -73,10 +76,12 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCBlacksmithEntity(62 * 32, 63 * 32));
         entityManager.addEntity(new NPCStorytellerEntity(62 * 32, 71 * 32));
         entityManager.addEntity(new NPCHealerEntity(55 * 32, 79 * 32));
-
         entityManager.addEntity(new NPCWitchEntity(44 * 32, 68 * 32));
+        entityManager.addEntity(new NPCGillianEntity(55 * 32, 44 * 32));
+        entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
+        entityManager.addEntity(new NPCDrunkEntity(71 * 32, 84 * 32));
 
-        entityManager.addEntity(new GoldEntity(58 * 32, 71 * 32, 1000));
+        //        entityManager.addEntity(new GoldEntity(58 * 32, 71 * 32, 1000));
         //        this.entityManager.addEntity(new GoldEntity(1 * 32, 0 * 32, 1000));
         //        this.entityManager.addEntity(new GoldEntity(0 * 32, 1 * 32, 1000));
         //        this.entityManager.addEntity(new GoldEntity(1 * 32, 1 * 32, 1000));
