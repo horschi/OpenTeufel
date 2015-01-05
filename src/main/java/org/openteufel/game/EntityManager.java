@@ -60,8 +60,8 @@ public class EntityManager
         {
             if (ent != null)
             {
-                final int diffX = Math.abs(ent.getPosX() - x);
-                final int diffY = Math.abs(ent.getPosY() - y);
+                final long diffX = Math.abs(ent.getPosX() - x);
+                final long diffY = Math.abs(ent.getPosY() - y);
                 if (diffX > retdist || diffY > retdist)
                     continue;
                 final double dist = Math.sqrt(diffX * diffX + diffY * diffY);
