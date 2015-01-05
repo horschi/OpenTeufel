@@ -20,7 +20,7 @@ public class GoldEntity extends Entity
     @Override
     public void preload(final ImageLoader imageLoader) throws IOException
     {
-        imageLoader.preloadObjectCel("items\\goldflip.cel", 96, 160);
+        imageLoader.preloadObjectCel("items\\goldflip.cel");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class GoldEntity extends Entity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
     {
-        renderer.drawImage(imageLoader.loadObjectImage("items\\goldflip.cel", this.frameId), screenX - 48, screenY + 14 - 160);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("items\\goldflip.cel", this.frameId), screenX, screenY, 14);
     }
 
 }

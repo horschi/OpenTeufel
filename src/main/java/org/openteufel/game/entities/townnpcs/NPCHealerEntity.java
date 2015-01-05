@@ -16,7 +16,7 @@ public class NPCHealerEntity extends NPCEntity
     @Override
     public void preload(final ImageLoader imageLoader) throws IOException
     {
-        imageLoader.preloadObjectCel("Towners\\healer\\healer.cel", 96, 96);
+        imageLoader.preloadObjectCel("Towners\\healer\\healer.cel");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class NPCHealerEntity extends NPCEntity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
     {
-        renderer.drawImage(imageLoader.loadObjectImage("Towners\\healer\\healer.cel", this.frameId), screenX - 48, screenY + 16 - 96);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\healer\\healer.cel", this.frameId), screenX, screenY, 16);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 

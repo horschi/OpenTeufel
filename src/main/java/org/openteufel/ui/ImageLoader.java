@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.cel.CELFile;
+import org.openteufel.file.cel.CELFrame;
 import org.openteufel.file.cel.PALFile;
 
 public class ImageLoader<ImageType>
@@ -40,7 +41,7 @@ public class ImageLoader<ImageType>
         this.imageCache.clear();
     }
 
-    public int preloadObjectCel(final String celName, final int w, final int h) throws IOException
+    public int preloadObjectCel(final String celName) throws IOException
     {
         if (this.palette == null)
             throw new IllegalStateException("Missing palette");
@@ -57,12 +58,11 @@ public class ImageLoader<ImageType>
             {
                 try
                 {
-                    final int[] pixels = cel.getFramePixelsType1Sparse(frameId, this.palette, w, h, true);
-                    if (pixels.length != w * h)
-                        throw new IOException("Cannot find right size for CEL: " + celName + " / " + frameId + " / " + pixels.length);
-                    final ImageType obj = this.renderer.loadImage(pixels, w, h);
+                    final CELFrame celFrame = cel.getFramePixelsObject(frameId, this.palette);
+                    System.out.println("Loading " + celName + " " + frameId + " " + celFrame);
+                    final ImageType obj = this.renderer.loadImage(celFrame.getPixels(), celFrame.getWidth(), celFrame.getHeight());
                     if (obj == null)
-                        throw new IOException("Renderer failed caching image: " + celName + " / " + frameId + " / " + pixels.length);
+                        throw new IOException("Renderer failed caching image: " + celName + " / " + frameId + " / " + celFrame);
                     this.imageCache.put(hashMapId, obj);
                 }
                 catch (final Exception e)

@@ -16,7 +16,7 @@ public class NPCBlacksmithEntity extends NPCEntity
     @Override
     public void preload(final ImageLoader imageLoader) throws IOException
     {
-        imageLoader.preloadObjectCel("Towners\\smith\\smithn.cel", 96, 96);
+        imageLoader.preloadObjectCel("Towners\\smith\\smithn.cel");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class NPCBlacksmithEntity extends NPCEntity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
     {
-        renderer.drawImage(imageLoader.loadObjectImage("Towners\\smith\\smithn.cel", this.frameId), screenX - 48, screenY + 16 - 96);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\smith\\smithn.cel", this.frameId), screenX, screenY, 16);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 

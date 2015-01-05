@@ -16,7 +16,7 @@ public class NPCStorytellerEntity extends NPCEntity
     @Override
     public void preload(final ImageLoader imageLoader) throws IOException
     {
-        imageLoader.preloadObjectCel("Towners\\strytell\\strytell.cel", 96, 96);
+        imageLoader.preloadObjectCel("Towners\\strytell\\strytell.cel");
     }
 
     @Override
@@ -28,7 +28,7 @@ public class NPCStorytellerEntity extends NPCEntity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY)
     {
-        renderer.drawImage(imageLoader.loadObjectImage("Towners\\strytell\\strytell.cel", this.frameId), screenX - 48, screenY + 16 - 96);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\strytell\\strytell.cel", this.frameId), screenX, screenY, 16);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 

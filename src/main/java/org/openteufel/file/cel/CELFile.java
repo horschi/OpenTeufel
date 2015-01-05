@@ -158,50 +158,30 @@ public class CELFile
         return ret;
     }
 
-    public int[] getFramePixelsType1Sparse(final int frame, final PALFile pal, final int w, final int h, final boolean allowHeader)
+    public int[] getFramePixelsType1Sparse(final int frame, final PALFile pal, final int w, final int h)
     {
         final ByteBuffer raw = ByteBuffer.wrap(this.getFrameRaw(frame));
         final IntBuffer ret = IntBuffer.allocate(w * h);
-        boolean isFirst = allowHeader;
         final int realWidth = w;
-        while(raw.remaining() > 0)
+        while (raw.remaining() > 0)
         {
             byte b = raw.get();
-            if (isFirst && b == 10)
+            if (b == -128)
             {
-                final byte h1 = raw.get();
-                final byte h2 = raw.get();
-                final byte h3 = raw.get();
-                final byte h4 = raw.get();
-                final byte h5 = raw.get();
-                final byte h6 = raw.get();
-                final byte h7 = raw.get();
-                final byte h8 = raw.get();
-                final byte h9 = raw.get();
-                final int offset32 = (h2 & 0xff) | ((h3 & 0xff) << 8);
-                final int offset64 = (h4 & 0xff) | ((h5 & 0xff) << 8);
-                final int offset96 = (h6 & 0xff) | ((h7 & 0xff) << 8);
-                final int offset128 = (h8 & 0xff) | ((h9 & 0xff) << 8);
-
-                System.out.println("frame=" + frame + " : h1=" + h1 + " / offset32=" + offset32 + " / offset64=" + offset64 + " / offset96=" + offset96 + " / offset128=" + offset128);
+                throw new IllegalStateException("Found byte: " + b + " / remaining bytes: " + raw.remaining());
             }
-            else if (b == -128)
+            else if (b < 0)
             {
-                throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
-            }
-            else if(b < 0)
-            {
-                for(;b<0;b++)
+                for (; b < 0; b++)
                     ret.put(PALFile.packColor(0, 0, 0, 0));
             }
-            else if(b > 0)
+            else if (b > 0)
             {
-                for(;b>0;b--)
+                for (; b > 0; b--)
                 {
                     ret.put(pal.getColor(raw.get()));
                 }
             }
-            isFirst = false;
         }
         final int[] arr = new int[w * h];
         ret.rewind();
@@ -216,6 +196,73 @@ public class CELFile
             }
         }
         return arr;
+    }
+
+    public CELFrame getFramePixelsObject(final int frame, final PALFile pal)
+    {
+        final ByteBuffer raw = ByteBuffer.wrap(this.getFrameRaw(frame));
+        final IntBuffer ret = IntBuffer.allocate(256 * 256); // max supported size
+
+        final byte h0 = raw.get();
+        final byte h1 = raw.get();
+        final byte h2 = raw.get();
+        final byte h3 = raw.get();
+        final byte h4 = raw.get();
+        final byte h5 = raw.get();
+        final byte h6 = raw.get();
+        final byte h7 = raw.get();
+        final byte h8 = raw.get();
+        final byte h9 = raw.get();
+        final int offset32 = (h2 & 0xff) | ((h3 & 0xff) << 8);
+        final int offset64 = (h4 & 0xff) | ((h5 & 0xff) << 8);
+        final int offset96 = (h6 & 0xff) | ((h7 & 0xff) << 8);
+        final int offset128 = (h8 & 0xff) | ((h9 & 0xff) << 8);
+        //        System.out.println("frame=" + frame + " : h1=" + h1 + " / offset32=" + offset32 + " / offset64=" + offset64 + " / offset96=" + offset96 + " / offset128=" + offset128);
+
+        if (h0 != 10)
+            throw new IllegalStateException("Could not find frame header");
+
+        int width = 0;
+        while(raw.remaining() > 0)
+        {
+            byte b = raw.get();
+            if (b == -128)
+            {
+                throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
+            }
+            else if(b < 0)
+            {
+                for(;b<0;b++)
+                {
+                    ret.put(PALFile.packColor(0, 0, 0, 0));
+                }
+                if (raw.position() == offset32)
+                    width = ret.position() / 32;
+            }
+            else if(b > 0)
+            {
+                for(;b>0;b--)
+                {
+                    ret.put(pal.getColor(raw.get()));
+                    if (raw.position() == offset32)
+                        width = ret.position() / 32;
+                }
+            }
+        }
+        final int height = ret.position() / width;
+        final int[] arr = new int[width * height];
+        ret.rewind();
+
+        for (int y = height - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (ret.remaining() <= 0)
+                    break;
+                arr[x + (y * width)] = ret.get();
+            }
+        }
+        return new CELFrame(arr, width, height);
     }
 
 
@@ -288,7 +335,7 @@ public class CELFile
             case 0:
                 return this.getFramePixelsType0(frame, pal);
             case 1:
-                return this.getFramePixelsType1Sparse(frame, pal, 32, 32, false);
+                return this.getFramePixelsType1Sparse(frame, pal, 32, 32);
             case 2:
                 return this.getFramePixelsType2HalfTileLeft(frame, pal);
             case 3:

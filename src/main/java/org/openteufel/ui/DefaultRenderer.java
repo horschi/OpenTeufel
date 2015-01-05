@@ -73,6 +73,12 @@ public class DefaultRenderer implements Renderer<BufferedImage>
     }
 
     @Override
+    public void drawImageCentered(final BufferedImage image, final int screenX, final int screenY, final int bottomOffset)
+    {
+        this.currentGraphicsContext.drawImage(image, null, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight());
+    }
+
+    @Override
     public void drawMarker(final int screenX, final int screenY, final String text)
     {
         this.currentGraphicsContext.setColor(Color.red);

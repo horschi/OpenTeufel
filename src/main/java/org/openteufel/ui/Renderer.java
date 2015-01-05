@@ -17,6 +17,8 @@ public interface Renderer<ImageType>
 
     public void drawImage(final ImageType image, final int screenX, final int screenY);
 
+    public void drawImageCentered(final ImageType image, final int screenX, final int screenY, int bottomOffset);
+
     public void drawMarker(final int screenX, final int screenY, String text);
 
     public void drawLine(final int screenX1, final int screenY1, final int screenX2, final int screenY2);
