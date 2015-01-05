@@ -1,9 +1,11 @@
-package org.openteufel.game;
+package org.openteufel.game.levels;
 
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
+import org.openteufel.game.EntityManager;
+import org.openteufel.game.LevelState;
 
 public class LevelState1Cathedral extends LevelState
 {
@@ -58,5 +60,11 @@ public class LevelState1Cathedral extends LevelState
                 ret.setSquare(x, y, (short) 99); // (short) ((x + (y * ret.getWidth())) / 5)
 
         return ret;
+    }
+
+    @Override
+    protected void placeEntities(final EntityManager entityManager)
+    {
+
     }
 }

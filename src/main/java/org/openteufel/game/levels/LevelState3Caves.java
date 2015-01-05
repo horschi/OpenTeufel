@@ -1,9 +1,11 @@
-package org.openteufel.game;
+package org.openteufel.game.levels;
 
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
+import org.openteufel.game.EntityManager;
+import org.openteufel.game.LevelState;
 
 public class LevelState3Caves extends LevelState
 {
@@ -48,5 +50,11 @@ public class LevelState3Caves extends LevelState
         // foulwatr
         // lair
         return new DUNFile(dataLoader.getFileByteBuffer("levels\\l3data\\foulwatr.dun"));
+    }
+
+    @Override
+    protected void placeEntities(final EntityManager entityManager)
+    {
+
     }
 }

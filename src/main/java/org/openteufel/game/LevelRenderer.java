@@ -23,13 +23,21 @@ public class LevelRenderer
         this.renderer = renderer;
 
         this.imageLoader = new ImageLoader(dataLoader, renderer, levelstate.getPALPath());
-        this.imageLoader.preloadCel(levelstate.getCELPath(), levelstate.getAllFrameIdsPlus1Pillars());
+        this.imageLoader.preloadTileCel(levelstate.getCELPath(), levelstate.getAllFrameIdsPlus1Pillars());
+        levelstate.getEntityManager().preload(this.imageLoader);
     }
 
     public void renderFrame()
     {
-        this.cameraX += (int) (Math.sin((float) (System.currentTimeMillis() % (6200)) / 1000.0f) * 8.0);
-        this.cameraY += (int) (Math.cos((float) (System.currentTimeMillis() % (6200)) / 1000.0f) * 8.0);
+        final EntityManager entityManager = this.levelstate.getEntityManager();
+
+        this.cameraX += 1;
+        this.cameraY += 1;
+        if (entityManager.getEntityClosest(23, 23, 6400) != null)
+        {
+            this.cameraX = entityManager.getEntityClosest(23, 23, 6400).getPosX();
+            this.cameraY = entityManager.getEntityClosest(23, 23, 6400).getPosY();
+        }
 
         this.renderer.startFrame();
         this.screenWidth = this.renderer.getScreenWidth();
@@ -50,6 +58,17 @@ public class LevelRenderer
                 this.drawSingleTile(worldTileX, worldTileY);
             }
         }
+
+        for (final Entity ent : entityManager.getEntities(this.cameraX - screenTileHalfWidth - screenTileHalfHeight, this.cameraY - screenTileHalfWidth - screenTileHalfHeight, this.cameraX + screenTileHalfWidth + screenTileHalfHeight, this.cameraY + screenTileHalfWidth + screenTileHalfHeight))
+        {
+            final int tileDifX = this.cameraX - ent.getPosX();
+            final int tileDifY = this.cameraY - ent.getPosY();
+
+            final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY) ;
+            final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY) ;
+            ent.draw(this.imageLoader, this.renderer, ixBase, iyBase);
+        }
+
         this.renderer.finishFrame();
     }
 
@@ -63,10 +82,10 @@ public class LevelRenderer
             final MINPillar pillarLeft = this.levelstate.getPillar(tilsquare.getPillarLeft());
             final MINPillar pillarRight = this.levelstate.getPillar(tilsquare.getPillarRight());
 
-            this.drawPillar(pillarTop, worldTileX, worldTileY, 0, -16);
-            this.drawPillar(pillarLeft, worldTileX, worldTileY, -32, 0);
-            this.drawPillar(pillarRight, worldTileX, worldTileY, 32, 0);
-            this.drawPillar(pillarBottom, worldTileX, worldTileY, 0, 16);
+            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16); // 0 -16
+            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0); // -32 0
+            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0); // 32 0
+            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16); // 0 16
         }
     }
 
@@ -90,7 +109,7 @@ public class LevelRenderer
                 final int ix = ixBase + xoff;
                 final int iy = iyBase - yoff;
 
-                this.renderer.drawImage(this.imageLoader.loadImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy);
+                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy);
             }
         }
     }

@@ -1,9 +1,11 @@
-package org.openteufel.game;
+package org.openteufel.game.levels;
 
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
+import org.openteufel.game.EntityManager;
+import org.openteufel.game.LevelState;
 
 public class LevelState5Crypt extends LevelState
 {
@@ -48,5 +50,11 @@ public class LevelState5Crypt extends LevelState
         //
 
         return new DUNFile(dataLoader.getFileByteBuffer("levels\\l5data\\Uberoom1.dun"));
+    }
+
+    @Override
+    protected void placeEntities(final EntityManager entityManager)
+    {
+
     }
 }

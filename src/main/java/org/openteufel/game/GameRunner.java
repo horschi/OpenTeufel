@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
+import org.openteufel.game.levels.LevelStateTown;
 import org.openteufel.ui.DefaultRenderer;
 import org.openteufel.ui.Renderer;
 import org.openteufel.ui.Window;
@@ -28,9 +29,12 @@ public class GameRunner
         final LevelState level = new LevelStateTown(this.dataLoader);
         final LevelRenderer levelrenderer = new LevelRenderer(this.dataLoader, level, this.renderer);
 
-        final int gametime = 0;
+        int gametime = 0;
         while (true)
         {
+            gametime++;
+            level.runFrame(gametime);
+
             final long start = System.nanoTime();
             levelrenderer.renderFrame();
             final long tdif = System.nanoTime() - start;

@@ -1,9 +1,11 @@
-package org.openteufel.game;
+package org.openteufel.game.levels;
 
 import java.io.IOException;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
+import org.openteufel.game.EntityManager;
+import org.openteufel.game.LevelState;
 
 public class LevelState2Catacombs extends LevelState
 {
@@ -49,5 +51,11 @@ public class LevelState2Catacombs extends LevelState
         // bonecha1 bonecha2
         // bonestr1 bonestr2
         return new DUNFile(dataLoader.getFileByteBuffer("levels\\l2data\\bonestr1.dun"));
+    }
+
+    @Override
+    protected void placeEntities(final EntityManager entityManager)
+    {
+
     }
 }

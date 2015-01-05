@@ -11,6 +11,11 @@ import org.openteufel.file.dun.MINFile;
 import org.openteufel.file.dun.MINPillar;
 import org.openteufel.file.dun.TILFile;
 import org.openteufel.file.dun.TILSquare;
+import org.openteufel.game.entities.DummyEntity;
+import org.openteufel.game.entities.GoldEntity;
+import org.openteufel.game.entities.NPCEntity;
+import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
+import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 
 public abstract class LevelState
 {
@@ -22,6 +27,7 @@ public abstract class LevelState
 
     private final DUNFile        dun;
 
+    private final EntityManager  entityManager;
 
     public LevelState(final GamedataLoader dataLoader) throws IOException
     {
@@ -30,7 +36,33 @@ public abstract class LevelState
         this.pal = new PALFile(dataLoader.getFileByteBuffer(this.getPALPath()));
         this.min = new MINFile(dataLoader.getFileByteBuffer(this.getMINPath()), this.getMINBlockSize());
         this.til = new TILFile(dataLoader.getFileByteBuffer(this.getTILPath()));
+
         this.dun = this.loadDUN(dataLoader);
+        this.entityManager = new EntityManager();
+        this.placeEntities(this.entityManager);
+
+        for (int y = 0; y < this.dun.getHeight(); y++)
+        {
+            for (int x = 0; x < this.dun.getWidth(); x++)
+            {
+                final short monster = this.dun.getMonster(x, y);
+                if (monster != 0)
+                {
+                    this.entityManager.addEntity(new DummyEntity(x * 64, y * 64, "m" + monster));
+                }
+                final short object = this.dun.getObject(x, y);
+                if (object != 0)
+                {
+                    this.entityManager.addEntity(new DummyEntity(x * 64, y * 64, "o" + object));
+                }
+            }
+        }
+
+    }
+
+    public EntityManager getEntityManager()
+    {
+        return this.entityManager;
     }
 
     protected abstract String getPALPath();
@@ -46,6 +78,8 @@ public abstract class LevelState
     protected abstract String getSOLPath();
 
     protected abstract DUNFile loadDUN(GamedataLoader dataLoader) throws IOException;
+
+    protected abstract void placeEntities(EntityManager entityManager);
 
     public TILSquare getSquare(final int worldX, final int worldY)
     {
@@ -78,5 +112,10 @@ public abstract class LevelState
     public PALFile getPalette()
     {
         return this.pal;
+    }
+
+    public void runFrame(final int gametime)
+    {
+        this.entityManager.process(gametime);
     }
 }
