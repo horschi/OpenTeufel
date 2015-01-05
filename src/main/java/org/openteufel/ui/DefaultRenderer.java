@@ -73,6 +73,27 @@ public class DefaultRenderer implements Renderer<BufferedImage>
     }
 
     @Override
+    public void drawMarker(final int screenX, final int screenY, final String text)
+    {
+        this.currentGraphicsContext.setColor(Color.red);
+        this.currentGraphicsContext.drawRect(screenX - 32, screenY - 16, 64, 32);
+        this.currentGraphicsContext.drawLine(screenX - 4, screenY - 4, screenX + 4, screenY + 4);
+        this.currentGraphicsContext.drawLine(screenX + 4, screenY - 4, screenX - 4, screenY + 4);
+        if (text != null)
+        {
+            this.currentGraphicsContext.setColor(Color.yellow);
+            this.currentGraphicsContext.drawString(text, screenX - 31, screenY + 15);
+        }
+    }
+
+    @Override
+    public void drawLine(final int screenX1, final int screenY1, final int screenX2, final int screenY2)
+    {
+        this.currentGraphicsContext.setColor(Color.red);
+        this.currentGraphicsContext.drawLine(screenX1, screenY1, screenX2, screenY2);
+    }
+
+    @Override
     public void finishFrame()
     {
         this.currentGraphicsContext.dispose();

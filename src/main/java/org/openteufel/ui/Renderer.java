@@ -12,10 +12,14 @@ public interface Renderer<ImageType>
 
     public int getScreenWidth();
     public int getScreenHeight();
-    
+
     public void startFrame();
 
     public void drawImage(final ImageType image, final int screenX, final int screenY);
+
+    public void drawMarker(final int screenX, final int screenY, String text);
+
+    public void drawLine(final int screenX1, final int screenY1, final int screenX2, final int screenY2);
 
     public void finishFrame();
 }
