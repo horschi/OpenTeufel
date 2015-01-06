@@ -34,6 +34,8 @@ public abstract class LevelState
     {
         this.dataLoader = dataLoader;
 
+        this.init(dataLoader);
+
         this.pal = new PALFile(dataLoader.getFileByteBuffer(this.getPALPath()));
         this.min = new MINFile(dataLoader.getFileByteBuffer(this.getMINPath()), this.getMINBlockSize());
         this.til = new TILFile(dataLoader.getFileByteBuffer(this.getTILPath()));
@@ -74,6 +76,8 @@ public abstract class LevelState
     {
         return this.entityManager;
     }
+
+    protected abstract void init(GamedataLoader dataLoader) throws IOException;
 
     protected abstract String getPALPath();
 

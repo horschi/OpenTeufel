@@ -14,36 +14,49 @@ public class LevelState1Cathedral extends LevelState
         super(dataLoader);
     }
 
+    @Override
+    protected void init(final GamedataLoader dataLoader) throws IOException
+    {
+
+    }
+
+    @Override
     protected String getPALPath()
     {
         return "levels\\l1data\\l1.pal";
     }
 
+    @Override
     public String getCELPath()
     {
         return "levels\\l1data\\l1.cel";
     }
 
+    @Override
     protected String getMINPath()
     {
         return "levels\\l1data\\l1.min";
     }
 
+    @Override
     protected int getMINBlockSize()
     {
         return 10;
     }
 
+    @Override
     protected String getTILPath()
     {
         return "levels\\l1data\\l1.til";
     }
 
+    @Override
     protected String getSOLPath()
     {
         return "levels\\l1data\\l1.sol";
     }
 
+    @Override
     protected DUNFile loadDUN(final GamedataLoader dataLoader) throws IOException
     {
         // vile1 vile2 skngdo skngdc

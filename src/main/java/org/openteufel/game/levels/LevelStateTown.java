@@ -17,9 +17,19 @@ import org.openteufel.game.entities.townnpcs.NPCWitchEntity;
 
 public class LevelStateTown extends LevelState
 {
+    private boolean hasHellfire;
+    private boolean hasTheHell;
+
     public LevelStateTown(final GamedataLoader dataLoader) throws IOException
     {
         super(dataLoader);
+    }
+
+    @Override
+    protected void init(final GamedataLoader dataLoader) throws IOException
+    {
+        this.hasHellfire = dataLoader.getFileByteBuffer("nlevels\\towndata\\town.cel") != null;
+        this.hasTheHell = dataLoader.getFileByteBuffer("levels\\towndata\\sector2s.dun") != null;
     }
 
     @Override
@@ -31,13 +41,19 @@ public class LevelStateTown extends LevelState
     @Override
     public String getCELPath()
     {
-        return "nlevels\\towndata\\town.cel";
+        if (this.hasHellfire || this.hasTheHell)
+            return "nlevels\\towndata\\town.cel";
+        else
+            return "levels\\towndata\\town.cel";
     }
 
     @Override
     protected String getMINPath()
     {
-        return "nlevels\\towndata\\town.min";
+        if (this.hasHellfire || this.hasTheHell)
+            return "nlevels\\towndata\\town.min";
+        else
+            return "levels\\towndata\\town.min";
     }
 
     @Override
@@ -49,13 +65,19 @@ public class LevelStateTown extends LevelState
     @Override
     protected String getTILPath()
     {
-        return "nlevels\\towndata\\town.til";
+        if (this.hasHellfire || this.hasTheHell)
+            return "nlevels\\towndata\\town.til";
+        else
+            return "levels\\towndata\\town.til";
     }
 
     @Override
     protected String getSOLPath()
     {
-        return "nlevels\\towndata\\town.sol";
+        if (this.hasHellfire || this.hasTheHell)
+            return "nlevels\\towndata\\town.sol";
+        else
+            return "levels\\towndata\\town.sol";
     }
 
     @Override
@@ -76,10 +98,19 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCBlacksmithEntity(62 * 32, 63 * 32));
         entityManager.addEntity(new NPCStorytellerEntity(62 * 32, 71 * 32));
         entityManager.addEntity(new NPCHealerEntity(55 * 32, 79 * 32));
-        entityManager.addEntity(new NPCWitchEntity(44 * 32, 68 * 32));
-        entityManager.addEntity(new NPCGillianEntity(55 * 32, 44 * 32));
-        entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
         entityManager.addEntity(new NPCDrunkEntity(71 * 32, 84 * 32));
+        entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
+
+        if (this.hasTheHell)
+        {
+            entityManager.addEntity(new NPCWitchEntity(44 * 32, 68 * 32));
+            entityManager.addEntity(new NPCGillianEntity(55 * 32, 44 * 32));
+        }
+        else
+        {
+            entityManager.addEntity(new NPCWitchEntity(80 * 32, 20 * 32));
+            entityManager.addEntity(new NPCGillianEntity(43 * 32, 66 * 32));
+        }
 
         //        entityManager.addEntity(new GoldEntity(58 * 32, 71 * 32, 1000));
         //        this.entityManager.addEntity(new GoldEntity(1 * 32, 0 * 32, 1000));

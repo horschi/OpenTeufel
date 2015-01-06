@@ -14,36 +14,49 @@ public class LevelState4Hell extends LevelState
         super(dataLoader);
     }
 
+    @Override
+    protected void init(final GamedataLoader dataLoader) throws IOException
+    {
+
+    }
+
+    @Override
     protected String getPALPath()
     {
         return "levels\\l4data\\l4_1.pal";
     }
 
+    @Override
     public String getCELPath()
     {
         return "levels\\l4data\\l4.cel";
     }
 
+    @Override
     protected String getMINPath()
     {
         return "levels\\l4data\\l4.min";
     }
 
+    @Override
     protected int getMINBlockSize()
     {
         return 16;
     }
 
+    @Override
     protected String getTILPath()
     {
         return "levels\\l4data\\l4.til";
     }
 
+    @Override
     protected String getSOLPath()
     {
         return "levels\\l4data\\l4.sol";
     }
 
+    @Override
     protected DUNFile loadDUN(final GamedataLoader dataLoader) throws IOException
     {
         // warlord warlord2

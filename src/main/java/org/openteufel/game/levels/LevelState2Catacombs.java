@@ -14,36 +14,49 @@ public class LevelState2Catacombs extends LevelState
         super(dataLoader);
     }
 
+    @Override
+    protected void init(final GamedataLoader dataLoader) throws IOException
+    {
+
+    }
+
+    @Override
     protected String getPALPath()
     {
         return "levels\\l2data\\l2.pal";
     }
 
+    @Override
     public String getCELPath()
     {
         return "levels\\l2data\\l2.cel";
     }
 
+    @Override
     protected String getMINPath()
     {
         return "levels\\l2data\\l2.min";
     }
 
+    @Override
     protected int getMINBlockSize()
     {
         return 10;
     }
 
+    @Override
     protected String getTILPath()
     {
         return "levels\\l2data\\l2.til";
     }
 
+    @Override
     protected String getSOLPath()
     {
         return "levels\\l2data\\l2.sol";
     }
 
+    @Override
     protected DUNFile loadDUN(final GamedataLoader dataLoader) throws IOException
     {
         // blind1 blind2

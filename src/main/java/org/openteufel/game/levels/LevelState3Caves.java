@@ -14,6 +14,13 @@ public class LevelState3Caves extends LevelState
         super(dataLoader);
     }
 
+    @Override
+    protected void init(final GamedataLoader dataLoader) throws IOException
+    {
+
+    }
+
+    @Override
     protected String getPALPath()
     {
         return "levels\\l3data\\l3pwater.pal";
