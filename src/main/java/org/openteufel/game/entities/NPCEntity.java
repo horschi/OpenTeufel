@@ -16,7 +16,7 @@ public abstract class NPCEntity extends Entity
     @Override
     public final void process(final int gametime)
     {
-        if ((gametime & 3) == 0)
+        if ((gametime & this.getFrameDelay()) == 0)
         {
             if (this.frameWait > 0)
                 this.frameWait--;
@@ -26,28 +26,19 @@ public abstract class NPCEntity extends Entity
                 if (this.frameId >= this.getNumFrames())
                 {
                     this.frameId = 0;
+                }
+                if (this.frameId == this.getWaitFrame())
+                {
                     this.frameWait = this.getNumFrames();
                 }
             }
-
-            //            if (this.frameForward)
-            //            {
-            //                if (this.frameId >= this.getNumFrames() - 1)
-            //                    this.frameForward = false;
-            //                else
-            //                    this.frameId++;
-            //            }
-            //            else
-            //            {
-            //                if (this.frameId <= 0)
-            //                    this.frameForward = true;
-            //                else
-            //                    this.frameId--;
-            //            }
         }
     }
 
     protected abstract int getNumFrames();
 
-    //    protected abstract int getWaitFrame();
+    protected abstract int getWaitFrame();
+
+    protected abstract int getFrameDelay();
+
 }

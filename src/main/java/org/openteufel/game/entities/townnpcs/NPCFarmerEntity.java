@@ -30,6 +30,18 @@ public class NPCFarmerEntity extends NPCEntity
     }
 
     @Override
+    protected int getWaitFrame()
+    {
+        return -1;
+    }
+
+    @Override
+    protected int getFrameDelay()
+    {
+        return 3;
+    }
+
+    @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         switch (this.type)

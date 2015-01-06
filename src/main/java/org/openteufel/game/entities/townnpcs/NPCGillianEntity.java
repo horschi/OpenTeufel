@@ -26,6 +26,18 @@ public class NPCGillianEntity extends NPCEntity
     }
 
     @Override
+    protected int getWaitFrame()
+    {
+        return 0;
+    }
+
+    @Override
+    protected int getFrameDelay()
+    {
+        return 3;
+    }
+
+    @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\townwmn1\\wmnn.cel", this.frameId), screenX, screenY, 16, brightness);

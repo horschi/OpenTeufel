@@ -29,6 +29,18 @@ public class NPCCowEntity extends NPCEntity
     }
 
     @Override
+    protected int getWaitFrame()
+    {
+        return ((int) (Math.random() * 10.0));
+    }
+
+    @Override
+    protected int getFrameDelay()
+    {
+        return 7;
+    }
+
+    @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\animals\\cow.cel", this.frameId + (this.dir * this.getNumFrames())), screenX, screenY, 16, brightness);
