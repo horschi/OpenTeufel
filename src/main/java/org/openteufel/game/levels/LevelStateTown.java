@@ -12,6 +12,7 @@ import org.openteufel.game.entities.townnpcs.NPCDrunkEntity;
 import org.openteufel.game.entities.townnpcs.NPCGillianEntity;
 import org.openteufel.game.entities.townnpcs.NPCHealerEntity;
 import org.openteufel.game.entities.townnpcs.NPCOgdenEntity;
+import org.openteufel.game.entities.townnpcs.NPCPegKidEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 import org.openteufel.game.entities.townnpcs.NPCWitchEntity;
 
@@ -100,6 +101,7 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCHealerEntity(55 * 32, 79 * 32));
         entityManager.addEntity(new NPCDrunkEntity(71 * 32, 84 * 32));
         entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
+        entityManager.addEntity(new NPCPegKidEntity(11 * 32, 53 * 32));
 
         if (this.hasTheHell)
         {

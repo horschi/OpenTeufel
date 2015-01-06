@@ -22,11 +22,11 @@ public class NPCStorytellerEntity extends NPCEntity
     @Override
     protected int getNumFrames()
     {
-        return 24;
+        return 25;
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\strytell\\strytell.cel", this.frameId), screenX, screenY, 16, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);

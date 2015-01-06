@@ -22,11 +22,11 @@ public class NPCBlacksmithEntity extends NPCEntity
     @Override
     protected int getNumFrames()
     {
-        return 15;
+        return 16;
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\smith\\smithn.cel", this.frameId), screenX, screenY, 16, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);

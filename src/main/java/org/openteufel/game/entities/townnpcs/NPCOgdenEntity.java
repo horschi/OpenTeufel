@@ -22,7 +22,7 @@ public class NPCOgdenEntity extends NPCEntity
     @Override
     protected int getNumFrames()
     {
-        return 15;
+        return 16;
     }
 
     @Override

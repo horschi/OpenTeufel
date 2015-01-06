@@ -22,11 +22,11 @@ public class NPCWitchEntity extends NPCEntity
     @Override
     protected int getNumFrames()
     {
-        return 18;
+        return 19;
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\townwmn1\\witch.cel", this.frameId), screenX, screenY, 16, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);

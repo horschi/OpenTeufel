@@ -18,10 +18,17 @@ public abstract class NPCEntity extends Entity
     {
         if ((gametime & 3) == 0)
         {
-            if (this.frameId >= this.getNumFrames())
-                this.frameId = 0;
+            if (this.frameWait > 0)
+                this.frameWait--;
             else
+            {
                 this.frameId++;
+                if (this.frameId >= this.getNumFrames())
+                {
+                    this.frameId = 0;
+                    this.frameWait = this.getNumFrames();
+                }
+            }
 
             //            if (this.frameForward)
             //            {

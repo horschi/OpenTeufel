@@ -22,7 +22,7 @@ public class NPCDrunkEntity extends NPCEntity
     @Override
     protected int getNumFrames()
     {
-        return 17;
+        return 18;
     }
 
     @Override
