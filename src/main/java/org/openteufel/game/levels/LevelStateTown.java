@@ -6,11 +6,12 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
-import org.openteufel.game.entities.GoldEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
 import org.openteufel.game.entities.townnpcs.NPCCowEntity;
 import org.openteufel.game.entities.townnpcs.NPCDrunkEntity;
+import org.openteufel.game.entities.townnpcs.NPCFarmerEntity;
 import org.openteufel.game.entities.townnpcs.NPCGillianEntity;
+import org.openteufel.game.entities.townnpcs.NPCGirlEntity;
 import org.openteufel.game.entities.townnpcs.NPCHealerEntity;
 import org.openteufel.game.entities.townnpcs.NPCOgdenEntity;
 import org.openteufel.game.entities.townnpcs.NPCPegKidEntity;
@@ -112,7 +113,11 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCCowEntity(58 * 32, 16 * 32, 1));
         entityManager.addEntity(new NPCCowEntity(59 * 32, 20 * 32, 4));
 
-
+        if (this.hasTheHell || this.hasHellfire)
+        {
+            entityManager.addEntity(new NPCFarmerEntity(61 * 32, 22 * 32));
+            entityManager.addEntity(new NPCGirlEntity(77 * 32, 43 * 32));
+        }
         if (this.hasTheHell)
         {
             entityManager.addEntity(new NPCWitchEntity(44 * 32, 68 * 32));
