@@ -38,7 +38,7 @@ public class MPQFile
     private final List<MPQFileSector> sectors;
     private final int                 sectorSize;
 
-    public MPQFile(MPQBlock block, ByteBuffer fileBuffer, int sectorSize, Long encryptionSeed) throws IOException, DataFormatException
+    public MPQFile(final MPQBlock block, final ByteBuffer fileBuffer, final int sectorSize, final Long encryptionSeed) throws IOException, DataFormatException
     {
         this.block = block;
         this.fileSizeUncompressed = block.getFileSizeUncompressed();
@@ -51,9 +51,9 @@ public class MPQFile
         }
         else if (block.hasSectorOffsetTable())
         { // load sector offset table
-            int sectorCount = (fileSizeUncompressed + sectorSize - 1) / sectorSize; // Calculate the number of sector in the file
-            int offsetsSize = (sectorCount + 1)*4;
-            ByteBuffer encryptedSectorOffsets = fileBuffer.slice();
+            final int sectorCount = (this.fileSizeUncompressed + sectorSize - 1) / sectorSize; // Calculate the number of sector in the file
+            final int offsetsSize = (sectorCount + 1)*4;
+            final ByteBuffer encryptedSectorOffsets = fileBuffer.slice();
             encryptedSectorOffsets.order(fileBuffer.order());
             encryptedSectorOffsets.limit(offsetsSize);
             final ByteBuffer decryptedSectorOffsets;
@@ -74,7 +74,7 @@ public class MPQFile
         }
         else
         { // calculate evenly
-            int sectorCount = (fileSizeUncompressed + sectorSize - 1) / sectorSize; // Calculate the number of sector in the file
+            final int sectorCount = (this.fileSizeUncompressed + sectorSize - 1) / sectorSize; // Calculate the number of sector in the file
             sectorOffsets = new int[sectorCount + 1];
             int lastOffset = 0;
             for (int i = 0; i < sectorOffsets.length - 1; i++)
@@ -85,27 +85,28 @@ public class MPQFile
             sectorOffsets[sectorOffsets.length - 1] = block.getSize();
         }
 
-        if(sectorOffsets[sectorOffsets.length - 1] != this.block.getSize())
-            throw new IllegalStateException("Compressed size does not match last offset: "+sectorOffsets[sectorOffsets.length - 1] +" != "+ this.block.getSize());
-        
+        // This assertion does not with town.min from hellfire
+        //        if(sectorOffsets[sectorOffsets.length - 1] != this.block.getSize())
+        //            throw new IllegalStateException("Compressed size does not match last offset: "+sectorOffsets[sectorOffsets.length - 1] +" != "+ this.block.getSize());
 
-        boolean containsChecksums = block.isChecksumsInlcuded();
-        int sectorCount = containsChecksums ? sectorOffsets.length - 2 : sectorOffsets.length - 1;
-        sectors = new ArrayList<MPQFileSector>(sectorCount);
+
+        final boolean containsChecksums = block.isChecksumsInlcuded();
+        final int sectorCount = containsChecksums ? sectorOffsets.length - 2 : sectorOffsets.length - 1;
+        this.sectors = new ArrayList<MPQFileSector>(sectorCount);
         for (int i = 0; i < sectorCount; i++)
         {
             if(sectorOffsets[i] < 0 || sectorOffsets[i + 1] < 0)
                 throw new IllegalStateException("Invalid sector offset: "+Arrays.toString(sectorOffsets));
-                
-            int currentSectorSize = sectorOffsets[i + 1] - sectorOffsets[i];
+
+            final int currentSectorSize = sectorOffsets[i + 1] - sectorOffsets[i];
             if(currentSectorSize < 0)
                 throw new IllegalStateException("Current sector size is negative: "+currentSectorSize +" / "+Arrays.toString(sectorOffsets));
             fileBuffer.position(sectorOffsets[i]);
             fileBuffer.limit(sectorOffsets[i + 1]);
 
-            int currentSectorUncompressedSize = (i >= sectorCount-1) ?  (fileSizeUncompressed -(sectorSize*(sectorCount-1))) : sectorSize;
-            MPQFileSector sector = new MPQFileSector(block.isCompressed() , block.isImploded(), currentSectorUncompressedSize, fileBuffer, encryptionSeed != null ? (encryptionSeed + (long) i) : null);
-            sectors.add(sector);
+            final int currentSectorUncompressedSize = (i >= sectorCount-1) ?  (this.fileSizeUncompressed -(sectorSize*(sectorCount-1))) : sectorSize;
+            final MPQFileSector sector = new MPQFileSector(block.isCompressed() , block.isImploded(), currentSectorUncompressedSize, fileBuffer, encryptionSeed != null ? (encryptionSeed + (long) i) : null);
+            this.sectors.add(sector);
         }
     }
 
@@ -202,28 +203,28 @@ public class MPQFile
 
     public byte[] getBytes() throws IOException
     {
-        return getByteBuffer().array();
+        return this.getByteBuffer().array();
     }
 
     public ByteBuffer getByteBuffer() throws IOException
     {
         int decompressedSize = 0;
-        ByteBuffer ret = ByteBuffer.allocate(block.getFileSizeUncompressed());
+        final ByteBuffer ret = ByteBuffer.allocate(this.block.getFileSizeUncompressed());
         ret.order(ByteOrder.LITTLE_ENDIAN);
-        for (int i = 0; i < sectors.size(); i++)
+        for (int i = 0; i < this.sectors.size(); i++)
         {
-            MPQFileSector sector = sectors.get(i);
+            final MPQFileSector sector = this.sectors.get(i);
             try
             {
                 decompressedSize += sector.getDecompressed(ret);
             }
-            catch (DataFormatException e)
+            catch (final DataFormatException e)
             {
                 throw new IllegalStateException(e);
             }
         }
-        if(decompressedSize != block.getFileSizeUncompressed())
-            throw new IllegalStateException("Invalid decompressed size: "+decompressedSize +" != "+ block.getFileSizeUncompressed());
+        if(decompressedSize != this.block.getFileSizeUncompressed())
+            throw new IllegalStateException("Invalid decompressed size: "+decompressedSize +" != "+ this.block.getFileSizeUncompressed());
         ret.rewind();
         return ret;
     }
@@ -231,6 +232,6 @@ public class MPQFile
     @Override
     public String toString()
     {
-        return "MPQFile [block=" + block + ", sectors=" + sectors + ", sectorSize=" + sectorSize + "]";
+        return "MPQFile [block=" + this.block + ", sectors=" + this.sectors + ", sectorSize=" + this.sectorSize + "]";
     }
 }
