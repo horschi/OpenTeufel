@@ -221,16 +221,14 @@ public class CELFile
 
         if (h0 != 10)
             throw new IllegalStateException("Could not find frame header");
+        if (offset32 == 0)
+            return null;
 
         int width = 0;
         while(raw.remaining() > 0)
         {
             byte b = raw.get();
-            if (b == -128)
-            {
-                throw new IllegalStateException("Found byte: "+b+" / remaining bytes: "+raw.remaining());
-            }
-            else if(b < 0)
+            if (b < 0)
             {
                 for(;b<0;b++)
                 {
