@@ -42,23 +42,32 @@ public abstract class LevelState
         this.entityManager = new EntityManager();
         this.placeEntities(this.entityManager);
 
-        for (int y = 0; y < this.dun.getHeight(); y++)
+        for (int y = 0; y < this.dun.getHeight() * 2; y++)
         {
-            for (int x = 0; x < this.dun.getWidth(); x++)
+            for (int x = 0; x < this.dun.getWidth() * 2; x++)
             {
                 final short monster = this.dun.getMonster(x, y);
                 if (monster != 0)
                 {
-                    this.entityManager.addEntity(new DummyEntity(x * 64, y * 64, "m" + monster));
+                    System.out.println("m " + x + " " + y);
+                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "m" + monster));
                 }
                 final short object = this.dun.getObject(x, y);
                 if (object != 0)
                 {
-                    this.entityManager.addEntity(new DummyEntity(x * 64, y * 64, "o" + object));
+                    System.out.println("o " + x + " " + y);
+                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "o" + object));
+                }
+                final short trans = this.dun.getTransparencies(x, y);
+                if (trans != 0)
+                {
+                    System.out.println("t " + x + " " + y);
+                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "t" + trans));
                 }
             }
         }
-
+        this.camX = this.dun.getWidth() * 64 / 2;
+        this.camY = this.dun.getHeight() * 64 / 2;
     }
 
     public EntityManager getEntityManager()
@@ -98,7 +107,7 @@ public abstract class LevelState
 
     public List<Integer> getAllFrameIdsPlus1Pillars()
     {
-        final List<Integer> frameIdsPlus1 = new ArrayList<Integer>(this.min.getPillars().length * 10);
+        final List<Integer> frameIdsPlus1 = new ArrayList<Integer>(this.min.getPillars().length * 4);
         for (final MINPillar pillar : this.min.getPillars())
         {
             for (final short frameNumPlus1 : pillar.getFrameNumsPlus1())

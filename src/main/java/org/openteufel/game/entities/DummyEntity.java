@@ -14,7 +14,8 @@ public class DummyEntity extends Entity
     {
         super(posX, posY);
         this.text = text;
-        this.text = "" + this.posX / 64 + "/" + this.posY / 64;
+        if (text == null)
+            this.text = "" + this.posX / 64 + "/" + this.posY / 64;
     }
 
     @Override

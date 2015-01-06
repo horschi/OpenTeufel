@@ -59,7 +59,6 @@ public class ImageLoader<ImageType>
                 try
                 {
                     final CELFrame celFrame = cel.getFramePixelsObject(frameId, this.palette);
-                    System.out.println("Loading " + celName + " " + frameId + " " + celFrame);
                     final ImageType obj = this.renderer.loadImage(celFrame.getPixels(), celFrame.getWidth(), celFrame.getHeight());
                     if (obj == null)
                         throw new IOException("Renderer failed caching image: " + celName + " / " + frameId + " / " + celFrame);
