@@ -45,13 +45,27 @@ public class GamedataLoader
 
     public ByteBuffer getFileByteBuffer(final String filepath) throws IOException
     {
-        for (int i = this.mpqFiles.length - 1; i >= 0; i--)
+        try
         {
-            final MPQArchive f = this.mpqFiles[i];
-            final ByteBuffer ret = f.getFileByteBuffer(filepath);
-            if (ret != null)
-                return ret;
+            for (int i = this.mpqFiles.length - 1; i >= 0; i--)
+            {
+                final MPQArchive f = this.mpqFiles[i];
+                try
+                {
+                    final ByteBuffer ret = f.getFileByteBuffer(filepath);
+                    if (ret != null)
+                        return ret;
+                }
+                catch (final Exception e)
+                {
+                    throw new IOException("Error reading archive: " + f, e);
+                }
+            }
+            return null;
         }
-        return null;
+        catch (final Exception e)
+        {
+            throw new IOException("Cannot load file from archive: " + filepath, e);
+        }
     }
 }
