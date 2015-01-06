@@ -59,14 +59,18 @@ public class ImageLoader<ImageType>
                 try
                 {
                     final CELFrame celFrame = cel.getFramePixelsObject(frameId, this.palette);
-                    final ImageType obj = this.renderer.loadImage(celFrame.getPixels(), celFrame.getWidth(), celFrame.getHeight());
-                    if (obj == null)
-                        throw new IOException("Renderer failed caching image: " + celName + " / " + frameId + " / " + celFrame);
-                    this.imageCache.put(hashMapId, obj);
+                    if (celFrame != null)
+                    {
+                        final ImageType obj = this.renderer.loadImage(celFrame.getPixels(), celFrame.getWidth(), celFrame.getHeight());
+                        if (obj == null)
+                            throw new IOException("Renderer failed caching image: " + celName + " / " + frameId + " / " + celFrame);
+                        this.imageCache.put(hashMapId, obj);
+                    }
                 }
                 catch (final Exception e)
                 {
                     System.out.println("" + cel + " " + frameId + " is corrupt");
+                    //e.printStackTrace();
                 }
             }
         }

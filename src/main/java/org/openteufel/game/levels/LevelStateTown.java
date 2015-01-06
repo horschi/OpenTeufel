@@ -14,8 +14,10 @@ import org.openteufel.game.entities.townnpcs.NPCGillianEntity;
 import org.openteufel.game.entities.townnpcs.NPCHealerEntity;
 import org.openteufel.game.entities.townnpcs.NPCOgdenEntity;
 import org.openteufel.game.entities.townnpcs.NPCPegKidEntity;
+import org.openteufel.game.entities.townnpcs.NPCPriestEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 import org.openteufel.game.entities.townnpcs.NPCWitchEntity;
+import org.openteufel.game.entities.townnpcs.NPCWoundedEntity;
 
 public class LevelStateTown extends LevelState
 {
@@ -103,6 +105,8 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCDrunkEntity(71 * 32, 84 * 32));
         entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
         entityManager.addEntity(new NPCPegKidEntity(11 * 32, 53 * 32));
+        entityManager.addEntity(new NPCPriestEntity(31 * 32, 50 * 32));
+        entityManager.addEntity(new NPCWoundedEntity(23 * 32, 32 * 32));
 
         entityManager.addEntity(new NPCCowEntity(56 * 32, 14 * 32, 3));
         entityManager.addEntity(new NPCCowEntity(58 * 32, 16 * 32, 1));
