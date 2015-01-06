@@ -93,7 +93,6 @@ public class DUNFile
                 }
             }
         }
-
     }
 
     public static DUNFile townmerge(final DUNFile... pieces)
@@ -133,6 +132,9 @@ public class DUNFile
             for (int ix = 0; ix < src.width; ix++)
             {
                 this.setSquare(x + ix, y + iy, src.getSquare(ix, iy));
+                this.setMonster(x + ix, y + iy, src.getMonster(ix, iy));
+                this.setObject(x + ix, y + iy, src.getObject(ix, iy));
+                this.setTransparencies(x + ix, y + iy, src.getTransparencies(ix, iy));
             }
         }
     }
@@ -165,10 +167,10 @@ public class DUNFile
 
     public short getMonster(final int x, final int y)
     {
-        if (x >= this.width || x < 0 || y >= this.height || y < 0)
+        if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
             throw new IllegalArgumentException();
 
-        return this.monsters[x + (y * this.width)];
+        return this.monsters[x + (y * this.width * 2)];
     }
 
     public void setMonster(final int x, final int y, final short val)
