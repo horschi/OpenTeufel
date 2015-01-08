@@ -1,4 +1,4 @@
-package org.openteufel.game.entities;
+package org.openteufel.game.entities.items;
 
 import java.io.IOException;
 

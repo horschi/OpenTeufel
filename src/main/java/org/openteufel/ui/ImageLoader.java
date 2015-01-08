@@ -70,7 +70,7 @@ public class ImageLoader<ImageType>
                 catch (final Exception e)
                 {
                     System.out.println("" + cel + " " + frameId + " is corrupt");
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }
@@ -109,6 +109,8 @@ public class ImageLoader<ImageType>
 
     public Object loadObjectImage(final String celName, final int frameId)
     {
+        if (celName == null)
+            return null;
         final String hashMapId = this.genHashMapId(celName, frameId);
         final Object ret = this.imageCache.get(hashMapId);
         if (ret == null)
@@ -127,6 +129,8 @@ public class ImageLoader<ImageType>
 
     private String genHashMapId(final String celName, final int frame)
     {
+        if (celName == null)
+            throw new NullPointerException();
         return celName.toLowerCase().toLowerCase() + "_" + frame;
     }
 }

@@ -6,6 +6,7 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
 import org.openteufel.game.entities.townnpcs.NPCCowEntity;
 import org.openteufel.game.entities.townnpcs.NPCDrunkEntity;
@@ -112,6 +113,8 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCCowEntity(56 * 32, 14 * 32, 3));
         entityManager.addEntity(new NPCCowEntity(58 * 32, 16 * 32, 1));
         entityManager.addEntity(new NPCCowEntity(59 * 32, 20 * 32, 4));
+
+        //        entityManager.addEntity(new PlayerEntity(73 * 32, 71 * 32, PlayerEntity.CLASS_ROGUE, true));
 
         if (this.hasTheHell || this.hasHellfire)
         {
