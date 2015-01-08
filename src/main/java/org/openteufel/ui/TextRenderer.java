@@ -12,4 +12,5 @@ public class TextRenderer
         this.imageLoader = imageLoader;
     }
 
+    // !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 }
