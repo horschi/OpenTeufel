@@ -2,6 +2,10 @@ package org.openteufel.game;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.MINPillar;
@@ -39,33 +43,78 @@ public class LevelRenderer
         this.screenWidth = this.renderer.getScreenWidth();
         this.screenHeight = this.renderer.getScreenHeight();
 
-        final int screenTileHalfWidth = this.screenWidth / 2;
-        final int screenTileHalfHeight = this.screenHeight / 2;
+        final int screenHalfWidthIso = this.screenWidth / 2 + 64;
+        final int screenHalfHeightIso = this.screenHeight / 2 + 64;
 
-        //        final int startWorldTileX = this.cameraX - screenTileHalfWidth - screenTileHalfHeight;
-        //        final int startWorldTileY = this.cameraY + screenTileHalfWidth - screenTileHalfHeight;
-        //        final int endWorldTileX = this.cameraX + screenTileHalfWidth + screenTileHalfHeight;
-        //        final int endWorldTileY = this.cameraY - screenTileHalfWidth + screenTileHalfHeight;
+        final int screenHalfWidthCart = isometricToCartesianX(screenHalfWidthIso, screenHalfHeightIso);
+        final int screenHalfHeightCart = isometricToCartesianY(screenHalfWidthIso, screenHalfHeightIso);
 
-        for (int worldTileY = (this.cameraY - screenTileHalfWidth - screenTileHalfHeight) / 64; worldTileY < (this.cameraY + screenTileHalfWidth + screenTileHalfHeight) / 64; worldTileY++)
+        int startWorldX = (this.cameraX - screenHalfWidthCart) & 0xffffffc0;
+        int startWorldY = (this.cameraY - screenHalfHeightCart) & 0xffffffc0;
+
+        final List<Entity> entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart);
+        Collections.sort(entities, new Comparator<Entity>()
         {
-            for (int worldTileX = (this.cameraX - screenTileHalfWidth - screenTileHalfHeight) / 64; worldTileX < (this.cameraX + screenTileHalfWidth + screenTileHalfHeight) / 64; worldTileX++)
+            @Override
+            public int compare(final Entity a, final Entity b)
             {
-                this.drawSingleTile(worldTileX, worldTileY);
+                final int ay = cartesianToIsometricY(a.getPosX(), a.getPosY());
+                final int by = cartesianToIsometricY(b.getPosX(), b.getPosY());
+
+                return by - ay;
             }
-        }
+        });
 
-        for (final Entity ent : entityManager.getEntities(this.cameraX - screenTileHalfWidth - screenTileHalfHeight, this.cameraY - screenTileHalfWidth - screenTileHalfHeight, this.cameraX + screenTileHalfWidth + screenTileHalfHeight, this.cameraY + screenTileHalfWidth + screenTileHalfHeight))
+        final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 64;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 256;
+        for (int y = 0; y <= screenTilesHeightIso; y++)
         {
-            final int tileDifX = this.cameraX - ent.getPosX();
-            final int tileDifY = this.cameraY - ent.getPosY();
+            int rowStartWorldX = startWorldX - isometricToCartesianX(64, 0);
+            int rowStartWorldY = startWorldY - isometricToCartesianY(64, 0);
+            for (int x = 0; x <= screenTilesWidthIso; x++)
+            {
+                if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
+                    this.drawSingleTile((rowStartWorldX & 0xffffffc0) / 64, (rowStartWorldY & 0xffffffc0) / 64);
 
-            final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY) ;
-            final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY) ;
-            ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, 1.0);
+                rowStartWorldX += isometricToCartesianX(128, 0);
+                rowStartWorldY += isometricToCartesianY(128, 0);
+            }
+
+            rowStartWorldX = startWorldX;
+            rowStartWorldY = startWorldY;
+            for (int x = 0; x <= screenTilesWidthIso; x++)
+            {
+                if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
+                    this.drawSingleTile((rowStartWorldX & 0xffffffc0) / 64, (rowStartWorldY & 0xffffffc0) / 64);
+
+                rowStartWorldX += isometricToCartesianX(128, 0);
+                rowStartWorldY += isometricToCartesianY(128, 0);
+            }
+
+            while (entities.size() > 0)
+            {
+                final Entity ent = entities.get(entities.size() - 1);
+                final int entY = cartesianToIsometricY(ent.getPosX(), ent.getPosY());
+                if (entY >= cartesianToIsometricY(startWorldX, startWorldY))
+                    break;
+                this.drawEntity(ent);
+                entities.remove(entities.size() - 1);
+            }
+            startWorldX += isometricToCartesianX(0, 64);
+            startWorldY += isometricToCartesianY(0, 64);
         }
 
         this.renderer.finishFrame();
+    }
+
+    private void drawEntity(final Entity ent)
+    {
+        final int tileDifX = this.cameraX - ent.getPosX();
+        final int tileDifY = this.cameraY - ent.getPosY();
+
+        final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY);
+        final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY);
+        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, 1.0);
     }
 
     private void drawSingleTile(final int worldTileX, final int worldTileY)
