@@ -13,8 +13,8 @@ import org.openteufel.file.dun.MINPillar;
 import org.openteufel.file.dun.TILFile;
 import org.openteufel.file.dun.TILSquare;
 import org.openteufel.game.entities.DummyEntity;
-import org.openteufel.game.entities.GoldEntity;
 import org.openteufel.game.entities.NPCEntity;
+import org.openteufel.game.entities.items.GoldEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 
@@ -52,19 +52,19 @@ public abstract class LevelState
                 if (monster != 0)
                 {
                     System.out.println("m " + x + " " + y);
-                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "m" + monster));
+                    this.entityManager.addEntity(DUNMonsterFactory.createEntityFromMonsterId(monster, x, y));
                 }
                 final short object = this.dun.getObject(x, y);
                 if (object != 0)
                 {
                     System.out.println("o " + x + " " + y);
-                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "o" + object));
+                    this.entityManager.addEntity(DUNObjectFactory.createEntityFromObjectId(object, x, y));
                 }
                 final short trans = this.dun.getTransparencies(x, y);
                 if (trans != 0)
                 {
-                    System.out.println("t " + x + " " + y);
-                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "t" + trans));
+                    //                    System.out.println("t " + x + " " + y);
+                    //                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "t" + trans));
                 }
             }
         }
