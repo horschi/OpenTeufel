@@ -43,8 +43,8 @@ public class LevelRenderer
         this.screenWidth = this.renderer.getScreenWidth();
         this.screenHeight = this.renderer.getScreenHeight();
 
-        final int screenHalfWidthIso = this.screenWidth / 2 + 64;
-        final int screenHalfHeightIso = this.screenHeight / 2 + 64;
+        final int screenHalfWidthIso = this.screenWidth / 2 + 32;
+        final int screenHalfHeightIso = this.screenHeight / 2 + 32;
 
         final int screenHalfWidthCart = isometricToCartesianX(screenHalfWidthIso, screenHalfHeightIso);
         final int screenHalfHeightCart = isometricToCartesianY(screenHalfWidthIso, screenHalfHeightIso);
@@ -66,7 +66,7 @@ public class LevelRenderer
         });
 
         final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 64;
-        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 256;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 64;
         for (int y = 0; y <= screenTilesHeightIso; y++)
         {
             int rowStartWorldX = startWorldX - isometricToCartesianX(64, 0);
