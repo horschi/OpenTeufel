@@ -74,7 +74,7 @@ public class LevelRenderer
             for (int x = 0; x <= screenTilesWidthIso; x++)
             {
                 if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
-                    this.drawSingleTile((rowStartWorldX & 0xffffffc0) / 64, (rowStartWorldY & 0xffffffc0) / 64);
+                    this.drawSingleTile((rowStartWorldX) / 64, (rowStartWorldY) / 64);
 
                 rowStartWorldX += isometricToCartesianX(128, 0);
                 rowStartWorldY += isometricToCartesianY(128, 0);
@@ -85,7 +85,7 @@ public class LevelRenderer
             for (int x = 0; x <= screenTilesWidthIso; x++)
             {
                 if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
-                    this.drawSingleTile((rowStartWorldX & 0xffffffc0) / 64, (rowStartWorldY & 0xffffffc0) / 64);
+                    this.drawSingleTile((rowStartWorldX) / 64, (rowStartWorldY) / 64);
 
                 rowStartWorldX += isometricToCartesianX(128, 0);
                 rowStartWorldY += isometricToCartesianY(128, 0);
