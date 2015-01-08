@@ -16,7 +16,7 @@ public abstract class NPCEntity extends Entity
     @Override
     public final void process(final int gametime)
     {
-        if ((gametime & this.getFrameDelay()) == 0)
+        if ((gametime % this.getFrameDelay()) == 0)
         {
             if (this.frameWait > 0)
                 this.frameWait--;

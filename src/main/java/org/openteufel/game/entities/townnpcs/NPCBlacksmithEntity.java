@@ -34,7 +34,7 @@ public class NPCBlacksmithEntity extends NPCEntity
     @Override
     protected int getFrameDelay()
     {
-        return 3;
+        return 5;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class NPCCowEntity extends NPCEntity
     @Override
     protected int getFrameDelay()
     {
-        return 7;
+        return 8;
     }
 
     @Override

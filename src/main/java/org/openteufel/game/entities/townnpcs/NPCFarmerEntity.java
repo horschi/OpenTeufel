@@ -38,7 +38,7 @@ public class NPCFarmerEntity extends NPCEntity
     @Override
     protected int getFrameDelay()
     {
-        return 3;
+        return 6;
     }
 
     @Override
