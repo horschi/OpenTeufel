@@ -227,26 +227,66 @@ public class CELFile
         int width = 0;
         while(raw.remaining() > 0)
         {
-            byte b = raw.get();
-            if (b < 0)
+            int b = raw.get();
+            if (this.isCl2)
             {
-                for(;b<0;b++)
+                if (b > 0)
                 {
-                    ret.put(PALFile.packColor(0, 0, 0, 0));
-                }
-                if (raw.position() == offset32)
-                    width = ret.position() / 32;
-            }
-            else if(b > 0)
-            {
-                for(;b>0;b--)
-                {
-                    ret.put(pal.getColor(raw.get()));
+                    for (; b > 0; b--)
+                    {
+                        ret.put(PALFile.packColor(0, 0, 0, 0));
+                    }
                     if (raw.position() == offset32)
                         width = ret.position() / 32;
                 }
+                else if (b < 0)
+                {
+                    b = -b;
+                    if (b <= 65)
+                    {
+                        for (; b > 0; b--)
+                        {
+                            ret.put(pal.getColor(raw.get()));
+                            if (raw.position() == offset32)
+                                width = ret.position() / 32;
+                        }
+                    }
+                    else
+                    {
+                        b -= 65;
+                        final int c = pal.getColor(raw.get());
+                        for (; b > 0; b--)
+                        {
+                            ret.put(c);
+                            if (raw.position() == offset32)
+                                width = ret.position() / 32;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (b < 0)
+                {
+                    for (; b < 0; b++)
+                    {
+                        ret.put(PALFile.packColor(0, 0, 0, 0));
+                    }
+                    if (raw.position() == offset32)
+                        width = ret.position() / 32;
+                }
+                else if (b > 0)
+                {
+                    for (; b > 0; b--)
+                    {
+                        ret.put(pal.getColor(raw.get()));
+                        if (raw.position() == offset32)
+                            width = ret.position() / 32;
+                    }
+                }
             }
         }
+
         final int height = ret.position() / width;
         final int[] arr = new int[width * height];
         ret.rewind();
