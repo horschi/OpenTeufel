@@ -24,6 +24,11 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     private Graphics2D     currentGraphicsContext = null;
     private Point          lastClick              = null;
 
+    public DefaultRenderer()
+    {
+        System.setProperty("sun.java2d.opengl", "true");
+    }
+
     @Override
     public void initGame(final JFrame window)
     {
