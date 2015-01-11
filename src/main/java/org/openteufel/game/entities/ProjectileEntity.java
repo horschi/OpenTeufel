@@ -1,6 +1,9 @@
 package org.openteufel.game.entities;
 
+import java.io.IOException;
+
 import org.openteufel.game.utils.EntityUtils;
+import org.openteufel.ui.ImageLoader;
 
 public abstract class ProjectileEntity extends AnimatedEntity
 {
@@ -43,14 +46,11 @@ public abstract class ProjectileEntity extends AnimatedEntity
     }
 
     @Override
-    protected final String[] getCelPaths()
+    public final void preload(final ImageLoader imageLoader) throws IOException
     {
-        //        return new String[] { this.getCelPath(this.direction) };
         final int numdirs = this.getNumDirections();
-        final String[] ret = new String[numdirs];
         for (int i = 0; i < numdirs; i++)
-            ret[i] = this.getCelPath(i);
-        return ret;
+            imageLoader.preloadObjectCel(this.getCelPath(i));
     }
 
     protected abstract String getCelPath(int dir);

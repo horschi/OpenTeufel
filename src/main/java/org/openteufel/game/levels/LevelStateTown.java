@@ -114,7 +114,7 @@ public class LevelStateTown extends LevelState
         entityManager.addEntity(new NPCCowEntity(58 * 32, 16 * 32, 1));
         entityManager.addEntity(new NPCCowEntity(59 * 32, 20 * 32, 4));
 
-        //        entityManager.addEntity(new PlayerEntity(73 * 32, 71 * 32, PlayerEntity.CLASS_ROGUE, true));
+        entityManager.addEntity(new PlayerEntity(75 * 32, 75 * 32, PlayerEntity.CLASS_ROGUE, true));
 
         if (this.hasTheHell || this.hasHellfire)
         {

@@ -16,17 +16,6 @@ public abstract class AnimatedEntity extends Entity
         super(posX, posY);
     }
 
-    protected abstract String[] getCelPaths();
-
-    @Override
-    public final void preload(final ImageLoader imageLoader) throws IOException
-    {
-        final String[] paths = this.getCelPaths();
-        if (paths != null)
-            for (final String celName : paths)
-                imageLoader.preloadObjectCel(celName);
-    }
-
     protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId)
     {
         if(currentCelPath != null)

@@ -44,25 +44,76 @@ public class PlayerEntity extends WalkingEntity
             default:
                 throw new IllegalArgumentException();
         }
-        this.celBasePath = "plrgfx\\" + playerclassname + "\\" + this.playerclassinitial;
+        this.celBasePath = "plrgfx\\" + playerclassname + "\\" + this.playerclassinitial + "ha" + "\\" + this.playerclassinitial + "ha";
+        this.updateAnimation(ANIM_STANDING);
     }
+
 
     @Override
     protected int getBottomOffset()
     {
-        return 0;
+        return 16;
     }
 
     @Override
-    protected String getCelPath(final int dir)
+    protected String getCelPath(final int animType)
     {
-        return this.celBasePath + "hb\\" + this.playerclassinitial + "hbwl.cl2";
+        final StringBuilder ret = new StringBuilder(this.celBasePath);
+        switch (animType)
+        {
+            case ANIM_STANDING:
+                if (this.isTown)
+                    ret.append("st");
+                else
+                    ret.append("as");
+                break;
+
+            case ANIM_WALKING:
+                if (this.isTown)
+                    ret.append("wl");
+                else
+                    ret.append("aw");
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        ret.append(".cl2");
+        return ret.toString();
     }
 
     @Override
-    protected int getNumFrames()
+    protected int getNumFrames(final int animType)
     {
-        return 10;
+        switch (animType)
+        {
+            case ANIM_STANDING:
+                if (this.isTown)
+                    return 160 / 8; // st
+                else
+                    return 64 / 8; // as
+
+            case ANIM_WALKING:
+                if (this.isTown)
+                    return 64 / 8; // wl
+                else
+                    return 64 / 8; // aw
+
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    protected int[] getAnimTypes()
+    {
+        if (this.isTown)
+        {
+            return new int[] { ANIM_STANDING, ANIM_WALKING, };
+        }
+        else
+        {
+            return new int[] { ANIM_STANDING, ANIM_WALKING, };
+        }
     }
 
     // e.g.: plrgfx\\rogue\\rhb\\rhbwl.cl2
