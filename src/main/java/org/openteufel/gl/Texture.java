@@ -45,55 +45,40 @@ public class Texture {
      * @return
      */
     public static Texture createFromPixels(int[] pixels, int width, int height) {
-        final GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-        final BufferedImage image = gc.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-        image.getRaster().setDataElements(0, 0, width, height, pixels);
 
         GL11.glGenTextures(Texture.intbuf);
         final int id = Texture.intbuf.get(0);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
 
-        final int format = image.getColorModel().hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB;
-
-        ByteBuffer texData;
-        WritableRaster raster;
-        BufferedImage texImage;
-
         int texWidth = 2;
         int texHeight = 2;
-
-        while (texWidth < image.getWidth()) {
+        while (texWidth < width) {
             texWidth *= 2;
         }
-        while (texHeight < image.getHeight()) {
+        while (texHeight < height) {
             texHeight *= 2;
         }
 
-        if (image.getColorModel().hasAlpha()) {
-            raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
-            texImage = new BufferedImage(Texture.glAlphaColorModel, raster, false, new Hashtable<String, Object>());
-        } else {
-            raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 3, null);
-            texImage = new BufferedImage(Texture.glColorModel, raster, false, new Hashtable<String, Object>());
+        glTexParameteri(GL11.GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        glTexParameteri(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+        ByteBuffer buf = ByteBuffer.allocateDirect(texWidth*texHeight*4);
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        for(int y = 0;y<height;y++)
+        {
+            buf.position(y*texWidth*4);
+            for(int x = 0;x<width;x++)
+            {
+                int p = pixels[(y*width)+x];
+                buf.put((byte) ((p >> 16) & 0xff));
+                buf.put((byte) ((p >> 8) & 0xff));
+                buf.put((byte) ((p >> 0) & 0xff));
+                buf.put((byte) ((p >> 24) & 0xff));
+            }
         }
-
-        final Graphics g = texImage.getGraphics();
-        g.setColor(new Color(0f, 0f, 0f, 0f));
-        g.fillRect(0, 0, texWidth, texHeight);
-        g.drawImage(image, 0, 0, null);
-
-        final byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
-
-        texData = ByteBuffer.allocateDirect(data.length);
-        texData.order(ByteOrder.nativeOrder());
-        texData.put(data, 0, data.length);
-        texData.flip();
-
-        glTexParameteri(GL11.GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        glTexParameteri(GL11.GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-
-        glTexImage2D(GL11.GL_TEXTURE_2D, 0, format, image.getWidth(), image.getHeight(), 0, format, GL_UNSIGNED_BYTE, texData);
+        buf.rewind();
+        glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, texWidth, texHeight, 0, GL11.GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         final Texture result = new Texture(GL11.GL_TEXTURE_2D, id);
         result.setTexHeight(texHeight);
