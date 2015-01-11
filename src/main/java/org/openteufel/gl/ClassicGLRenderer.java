@@ -207,7 +207,7 @@ public class ClassicGLRenderer implements Renderer<Sprite>, PropertyChangeListen
             switch (Mouse.getEventButton()) {
                 default:
                     final Point cursorpos = new Point(Mouse.getEventX(), Mouse.getEventY());
-                    this.lastClick = new Point(cursorpos.x - (this.canvas.getWidth() / 2), cursorpos.y - (this.canvas.getHeight() / 2));
+                    this.lastClick = new Point(cursorpos.x - (this.canvas.getWidth() / 2), (this.canvas.getHeight() / 2) - cursorpos.y);
                     break;
 
             }
@@ -224,7 +224,7 @@ public class ClassicGLRenderer implements Renderer<Sprite>, PropertyChangeListen
     @Override
     public void drawImage(Sprite image, int screenX, int screenY, double brightness) {
         dcpf++;
-        image.draw(screenX, screenY);
+        image.draw(screenX, screenY, brightness);
     }
 
     /**
@@ -237,7 +237,7 @@ public class ClassicGLRenderer implements Renderer<Sprite>, PropertyChangeListen
      */
     @Override
     public void drawImageCentered(Sprite image, int screenX, int screenY, int bottomOffset, double brightness) {
-        drawImage(image, screenX - (image.getWidth() >> 1), screenY + bottomOffset - (image.getHeight() >> 1), brightness);
+        drawImage(image, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight(), brightness);
     }
 
     /**

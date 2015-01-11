@@ -44,7 +44,7 @@ public class Sprite {
      * @param x
      * @param y
      */
-    public void draw(int x, int y) {
+    public void draw(int x, int y,double brightness) {
         texture.bind();
         GL11.glPushMatrix();
 
@@ -52,7 +52,7 @@ public class Sprite {
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glColor4d(brightness, brightness, brightness, 1.0);
 
         GL11.glBegin(GL11.GL_QUADS);
 
