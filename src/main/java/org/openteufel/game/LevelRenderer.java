@@ -114,7 +114,7 @@ public class LevelRenderer
 
         final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY);
         final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY);
-        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, 1.0);
+        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, calculateBrightness(ent.getPosX(), ent.getPosY()));
     }
 
     private void drawSingleTile(final int worldTileX, final int worldTileY)
@@ -127,14 +127,27 @@ public class LevelRenderer
             final MINPillar pillarLeft = this.levelstate.getPillar(tilsquare.getPillarLeft());
             final MINPillar pillarRight = this.levelstate.getPillar(tilsquare.getPillarRight());
 
-            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16); // 0 -16
-            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0); // -32 0
-            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0); // 32 0
-            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16); // 0 16
+            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
+            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
+            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
+            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
         }
     }
 
-    private void drawPillar(final MINPillar pillar, final int worldTileX, final int worldTileY, final int offsetX, final int offsetY)
+    private double calculateBrightness(int x, int y)
+    {
+        int diffX = cameraX-x;
+        int diffY = cameraY-y;
+        
+        double brightness = 1.3 - (Math.sqrt( (diffX*diffX) + (diffY*diffY) ) / 700);
+        if(brightness > 1.0)
+            brightness = 1.0;
+        if(brightness < 0.0)
+            brightness = 0.0;
+        return brightness;
+    }
+    
+    private void drawPillar(final MINPillar pillar, final int worldTileX, final int worldTileY, final int offsetX, final int offsetY, double brightness)
     {
         final int tileDifX = this.cameraX - worldTileX * 64;
         final int tileDifY = this.cameraY - worldTileY * 64;
@@ -154,7 +167,7 @@ public class LevelRenderer
                 final int ix = ixBase + xoff;
                 final int iy = iyBase - yoff;
 
-                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, 1.0);
+                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, brightness);
             }
         }
     }
