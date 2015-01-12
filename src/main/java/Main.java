@@ -1,5 +1,5 @@
 import org.openteufel.game.GameRunner;
-import org.openteufel.gl.ClassicGLRenderer;
+import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
 import org.openteufel.ui.Window;
 import org.openteufel.ui.renderer.java2d.DefaultRenderer;
