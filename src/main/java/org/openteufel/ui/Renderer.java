@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public interface Renderer<ImageType>
 {
-    public void initGame(final JFrame window);
+    public void initGame();
 
     public ImageType loadImage(final int[] pixels, final int w, int h);
 

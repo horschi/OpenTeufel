@@ -34,7 +34,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
      * @param window
      */
     @Override
-    public void initGame(final JFrame window) {
+    public void initGame() {
         final PixelFormat pixelFormat = new PixelFormat(8, 8, 8, AA_SAMPLES);
         try {
             Display.setDisplayMode(new DisplayMode(800, 600));

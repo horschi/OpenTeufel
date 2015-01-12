@@ -32,8 +32,9 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     }
 
     @Override
-    public void initGame(final JFrame window)
+    public void initGame()
     {
+        final Window window = new Window();
         final JPanel panel = (JPanel) window.getContentPane();
         //        panel.setPreferredSize(new Dimension(1024, 768));
         //        panel.setLayout(null);

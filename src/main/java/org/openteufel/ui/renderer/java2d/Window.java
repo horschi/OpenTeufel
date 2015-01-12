@@ -1,4 +1,4 @@
-package org.openteufel.ui;
+package org.openteufel.ui.renderer.java2d;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
