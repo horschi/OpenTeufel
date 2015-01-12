@@ -1,4 +1,4 @@
-package org.openteufel.ui;
+package org.openteufel.ui.renderer.java2d;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -16,6 +16,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import org.openteufel.ui.Renderer;
 
 public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, MouseWheelListener
 {
