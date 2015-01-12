@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 public interface Renderer<ImageType>
 {
     public void initGame();
+    public void close();
 
     public ImageType loadImage(final int[] pixels, final int w, int h);
 
@@ -28,4 +29,6 @@ public interface Renderer<ImageType>
     public void finishFrame();
 
     public Point getLastRelativeClickPos();
+    
+    public int processKeyboard();
 }

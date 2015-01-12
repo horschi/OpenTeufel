@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -64,8 +65,19 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         resize();
+        
+        try {
+            Keyboard.create();
+        } catch (LWJGLException ex) {
+            Logger.getLogger(ClassicGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    
+    @Override
+    public void close() {
+    }
+    
     /**
      *
      * @param pixels
@@ -272,6 +284,15 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         final Point ret = this.lastClick;
         this.lastClick = null;
         return ret;
+    }
+    
+
+    @Override
+    public int processKeyboard() {
+        if (Keyboard.next()) {
+            return Keyboard.getEventKey();
+        }
+        return -1;
     }
 
     private void resize() {

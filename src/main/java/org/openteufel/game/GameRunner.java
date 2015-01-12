@@ -24,11 +24,6 @@ public class GameRunner
     {
         this.dataLoader = new GamedataLoader(new File("."));
         this.renderer = renderer;
-        try {
-            Keyboard.create();
-        } catch (LWJGLException ex) {
-            Logger.getLogger(ClassicGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public void runGame() throws Exception
@@ -37,26 +32,23 @@ public class GameRunner
         final LevelRenderer levelrenderer = new LevelRenderer(this.dataLoader, level, this.renderer);
 
         int gametime = 0;
-        while (runGame)        {
+        while (runGame)
+        {
             gametime++;
             levelrenderer.applyUserInput();
-            processKeyboard();
+            switch (renderer.processKeyboard()) {
+                case 1:
+                case 27:
+                    runGame = false;
+                    break;
+                default:
+                    break;
+            }
             level.runFrame(gametime);
 
             levelrenderer.renderFrame();
         }
     }
 
-    private void processKeyboard() {
-        while (Keyboard.next()) {
-            switch (Keyboard.getEventKey()) {
-                case Keyboard.KEY_ESCAPE:
-                    runGame = false;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
 }

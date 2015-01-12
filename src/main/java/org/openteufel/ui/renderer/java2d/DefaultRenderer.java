@@ -7,6 +7,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Transparency;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
@@ -19,12 +21,14 @@ import javax.swing.JPanel;
 
 import org.openteufel.ui.Renderer;
 
-public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, MouseWheelListener
+public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, MouseWheelListener, KeyListener
 {
+    private Window window=null;
     private Canvas         canvas = null;
     private BufferStrategy buffer                 = null;
     private Graphics2D     currentGraphicsContext = null;
     private Point          lastClick              = null;
+    private int lastKey = -1;
 
     public DefaultRenderer()
     {
@@ -34,7 +38,7 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     @Override
     public void initGame()
     {
-        final Window window = new Window();
+        window = new Window();
         final JPanel panel = (JPanel) window.getContentPane();
         //        panel.setPreferredSize(new Dimension(1024, 768));
         //        panel.setLayout(null);
@@ -46,6 +50,7 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
         this.canvas.setSize(panel.getWidth(), panel.getHeight());
         this.canvas.addMouseListener(this);
         this.canvas.addMouseWheelListener(this);
+        this.canvas.addKeyListener(this);
 
         window.show();
         this.canvas.setIgnoreRepaint(true);
@@ -53,6 +58,13 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
         this.buffer = this.canvas.getBufferStrategy();
         if (this.buffer == null)
             throw new NullPointerException();
+    }
+    
+    @Override
+    public void close()
+    {
+        window.hide();
+        window = null;
     }
 
     @Override
@@ -170,5 +182,30 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
         final Point ret = this.lastClick;
         this.lastClick = null;
         return ret;
+    }
+
+    @Override
+    public int processKeyboard()
+    {
+        int k = lastKey;
+        lastKey = -1;
+        return k;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        lastKey = e.getKeyCode();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
     }
 }
