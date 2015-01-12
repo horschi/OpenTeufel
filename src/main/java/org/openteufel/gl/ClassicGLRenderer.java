@@ -222,7 +222,7 @@ public class ClassicGLRenderer implements Renderer<Sprite>, PropertyChangeListen
      * @param brightness
      */
     @Override
-    public void drawImage(Sprite image, int screenX, int screenY, double brightness) {
+    public void drawImage(Sprite image, int screenX, int screenY, int z, double brightness) {
         dcpf++;
         image.draw(screenX, screenY, brightness);
     }
@@ -236,8 +236,8 @@ public class ClassicGLRenderer implements Renderer<Sprite>, PropertyChangeListen
      * @param brightness
      */
     @Override
-    public void drawImageCentered(Sprite image, int screenX, int screenY, int bottomOffset, double brightness) {
-        drawImage(image, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight(), brightness);
+    public void drawImageCentered(Sprite image, int screenX, int screenY, int bottomOffset, int z, double brightness) {
+        drawImage(image, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight(), z, brightness);
     }
 
     /**
