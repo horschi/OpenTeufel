@@ -22,8 +22,7 @@ public class Position2d
 
     public static Position2d byPos(final int x, final int y)
     {
-        final Position2d ret = new Position2d(x / 32, y / 32, x % 32, y % 32);
-        ret.normalizeOffsets();
+        final Position2d ret = new Position2d((x + 16) / 32, (y + 16) / 32, ((x + 16) % 32) - 16, ((y + 16) % 32) - 16);
         return ret;
     }
 
@@ -62,6 +61,11 @@ public class Position2d
     public int getOffsetY()
     {
         return this.offsetY;
+    }
+
+    public boolean hasOffset()
+    {
+        return this.offsetX != 0 || this.offsetY != 0;
     }
 
     public void setOffsetY(final int offsetY)
@@ -114,6 +118,36 @@ public class Position2d
         }
     }
 
+    public boolean decreaseOffset(final int speed)
+    {
+        if (this.offsetX > 0)
+        {
+            this.offsetX -= speed;
+            if (this.offsetX < 0)
+                this.offsetX = 0;
+        }
+        else if (this.offsetX < 0)
+        {
+            this.offsetX += speed;
+            if (this.offsetX > 0)
+                this.offsetX = 0;
+        }
+
+        if (this.offsetY > 0)
+        {
+            this.offsetY -= speed;
+            if (this.offsetY < 0)
+                this.offsetY = 0;
+        }
+        else if (this.offsetY < 0)
+        {
+            this.offsetY += speed;
+            if (this.offsetY > 0)
+                this.offsetY = 0;
+        }
+        return this.offsetX == 0 && this.offsetY == 0;
+    }
+
     public void add(final int x, final int y)
     {
         this.offsetX += x;
@@ -137,7 +171,7 @@ public class Position2d
     {
         return byPos(this.getPosX() - x, this.getPosY() - y);
     }
-
+    //
     public int calcDiffX(final Position2d target)
     {
         return target.getPosX() - this.getPosX();

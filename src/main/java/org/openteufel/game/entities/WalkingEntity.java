@@ -15,8 +15,6 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     private Position2d         targetPos;
     private Entity             targetEnt;
-    private int                tmpX;
-    private int                tmpY;
     private int                direction;
     private final int          speed;
     private int                currentAnimation;
@@ -28,8 +26,6 @@ public abstract class WalkingEntity extends AnimatedEntity
         this.targetEnt = null;
         this.direction = 0;
         this.speed = speed;
-        this.tmpX = -1;
-        this.tmpY = -1;
         this.currentAnimation = ANIM_STANDING;
     }
 
@@ -72,57 +68,47 @@ public abstract class WalkingEntity extends AnimatedEntity
     protected void preProcess(final int gametime, final int currentFrameId)
     {
         if (this.targetPos == null && this.targetEnt != null)
-            this.targetPos = this.targetEnt.getPos();
+            this.targetPos = this.targetEnt.getPos(); // TODO:
 
-        if (this.targetPos == null || this.pos.equals(this.targetPos))
+        if(this.pos.decreaseOffset(this.speed))
+        { // zero offset
+            if (this.targetPos != null)
+            {
+                final int difX = this.targetPos.getTileX() - this.pos.getTileX();
+                final int difY = this.targetPos.getTileY() - this.pos.getTileY();
+
+                if (difX > 0)
+                {
+                    this.pos.setTileX(this.pos.getTileX() + 1);
+                    this.pos.setOffsetX(-32);
+                }
+                else if (difX < 0)
+                {
+                    this.pos.setTileX(this.pos.getTileX() - 1);
+                    this.pos.setOffsetX(32);
+                }
+
+                if (difY > 0)
+                {
+                    this.pos.setTileY(this.pos.getTileY() + 1);
+                    this.pos.setOffsetY(-32);
+                }
+                else if (difY < 0)
+                {
+                    this.pos.setTileY(this.pos.getTileY() - 1);
+                    this.pos.setOffsetY(32);
+                }
+            }
+        }
+
+        if(this.pos.hasOffset())
         {
-            this.targetPos = null;
-            this.updateAnimation(ANIM_STANDING);
+            this.direction = EntityUtils.calcDirection8(-this.pos.getOffsetX(), -this.pos.getOffsetY(), this.direction);
+            this.updateAnimation(ANIM_WALKING);
         }
         else
         {
-            int posX = this.pos.getPosX();
-            int posY = this.pos.getPosY();
-            if (this.tmpX < 0 || this.tmpY < 0 || (this.tmpX == posX && this.tmpY == posY))
-            {
-                final int difX = this.targetPos.getPosX() - posX;
-                final int difY = this.targetPos.getPosY() - posY;
-
-                final double difLen = Math.sqrt(difX * difX + difY * difY);
-
-                this.tmpX = ((int) (posX + ((difX * 32) / difLen))) & 0xffffffE0;
-                this.tmpY = ((int) (posY + ((difY * 32) / difLen))) & 0xffffffE0;
-
-                this.direction = EntityUtils.calcDirection8(this.tmpX - posX, this.tmpY - posY, this.direction);
-                this.updateAnimation(ANIM_WALKING);
-            }
-
-            if (this.tmpX > posX)
-            {
-                posX += this.speed;
-                if (posX > this.tmpX)
-                    posX = this.tmpX;
-            }
-            else if (this.tmpX < posX)
-            {
-                posX -= this.speed;
-                if (posX < this.tmpX)
-                    posX = this.tmpX;
-            }
-
-            if (this.tmpY > posY)
-            {
-                posY += this.speed;
-                if (posY > this.tmpY)
-                    posY = this.tmpY;
-            }
-            else if (this.tmpY < posY)
-            {
-                posY -= this.speed;
-                if (posY < this.tmpY)
-                    posY = this.tmpY;
-            }
-            this.pos.setPos(posX, posY);
+            this.updateAnimation(ANIM_STANDING);
         }
     }
 
@@ -147,20 +133,6 @@ public abstract class WalkingEntity extends AnimatedEntity
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         super.draw(imageLoader, renderer, screenX, screenY, brightness);
-
-        if (this.targetPos != null)
-        {
-            final int cartX = this.targetPos.getPosX() - this.pos.getPosX();
-            final int cartY = this.targetPos.getPosY() - this.pos.getPosY();
-            renderer.drawMarker(screenX + cartesianToIsometricX(cartX, cartY), screenY + cartesianToIsometricY(cartX, cartY), "T");
-        }
-
-        if (true)
-        {
-            final int cartX = this.tmpX - this.pos.getPosX();
-            final int cartY = this.tmpY - this.pos.getPosY();
-            renderer.drawMarker(screenX + cartesianToIsometricX(cartX, cartY), screenY + cartesianToIsometricY(cartX, cartY), "M");
-        }
     }
 
     private static int cartesianToIsometricX(final int cartX, final int cartY)
