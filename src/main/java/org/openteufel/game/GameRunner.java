@@ -31,14 +31,7 @@ public class GameRunner
             levelrenderer.applyUserInput();
             level.runFrame(gametime);
 
-            final long start = System.nanoTime();
             levelrenderer.renderFrame();
-            final long tdif = System.nanoTime() - start;
-
-            // System.out.println("" + tdif / 1000000L);
-            final long sleep = 30L - (tdif / 1000000L);
-            if (sleep > 0)
-                Thread.sleep(sleep);
         }
     }
 
