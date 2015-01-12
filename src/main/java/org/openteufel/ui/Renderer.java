@@ -17,9 +17,9 @@ public interface Renderer<ImageType>
 
     public void startFrame();
 
-    public void drawImage(final ImageType image, final int screenX, final int screenY, final double brightness);
+    public void drawImage(final ImageType image, final int screenX, final int screenY, final int screenZ, final double brightness);
 
-    public void drawImageCentered(final ImageType image, final int screenX, final int screenY, int bottomOffset, final double brightness);
+    public void drawImageCentered(final ImageType image, final int screenX, final int screenY, final int screenZ, final int bottomOffset, final double brightness);
 
     public void drawMarker(final int screenX, final int screenY, String text);
 

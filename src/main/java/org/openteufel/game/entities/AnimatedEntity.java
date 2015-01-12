@@ -42,6 +42,6 @@ public abstract class AnimatedEntity extends Entity
     {
         if (this.currentCelPath == null)
             throw new NullPointerException();
-        renderer.drawImageCentered(imageLoader.loadObjectImage(this.currentCelPath, this.currentFrameId), screenX, screenY, this.getBottomOffset(), brightness);
+        renderer.drawImageCentered(imageLoader.loadObjectImage(this.currentCelPath, this.currentFrameId), screenX, screenY, 0, this.getBottomOffset(), brightness);
     }
 }

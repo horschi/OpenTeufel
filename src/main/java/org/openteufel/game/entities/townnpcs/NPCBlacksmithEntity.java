@@ -40,7 +40,7 @@ public class NPCBlacksmithEntity extends NPCEntity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
-        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\smith\\smithn.cel", this.frameId), screenX, screenY, 16, brightness);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\smith\\smithn.cel", this.frameId), screenX, screenY, 0, 16, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 

@@ -80,14 +80,12 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     }
 
     @Override
-    public void drawImage(final BufferedImage image, final int screenX, final int screenY, final double brightness)
-    {
+    public void drawImage(final BufferedImage image, final int screenX, final int screenY, final int screenZ, final double brightness)    {
         this.currentGraphicsContext.drawImage(image, null, screenX, screenY);
     }
 
     @Override
-    public void drawImageCentered(final BufferedImage image, final int screenX, final int screenY, final int bottomOffset, final double brightness)
-    {
+    public void drawImageCentered(final BufferedImage image, final int screenX, final int screenY, final int screenZ, final int bottomOffset, final double brightness)    {
         this.currentGraphicsContext.drawImage(image, null, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight());
     }
 

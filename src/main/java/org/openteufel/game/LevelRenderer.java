@@ -167,7 +167,7 @@ public class LevelRenderer
                 final int ix = ixBase + xoff;
                 final int iy = iyBase - yoff;
 
-                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, brightness);
+                this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, 0, brightness);
             }
         }
     }

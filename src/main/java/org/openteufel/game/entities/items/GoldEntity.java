@@ -33,7 +33,7 @@ public class GoldEntity extends Entity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, double brightness)
     {
-        renderer.drawImageCentered(imageLoader.loadObjectImage("items\\goldflip.cel", this.frameId), screenX, screenY, 14, brightness);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("items\\goldflip.cel", this.frameId), screenX, screenY, 0, 14, brightness);
     }
 
 }

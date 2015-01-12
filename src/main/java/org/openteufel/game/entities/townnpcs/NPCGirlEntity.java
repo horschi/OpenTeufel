@@ -41,7 +41,7 @@ public class NPCGirlEntity extends NPCEntity
     @Override
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
-        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\girl\\Girlw1.cel", this.frameId), screenX, screenY, 16, brightness);
+        renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\girl\\Girlw1.cel", this.frameId), screenX, screenY, 16, 0, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);
     }
 
