@@ -10,7 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.game.levels.LevelStateTown;
-import org.openteufel.gl.ClassicGLRenderer;
+import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
 
 public class GameRunner
