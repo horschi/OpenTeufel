@@ -66,7 +66,7 @@ public class LevelRenderer
         });
 
         final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 64;
-        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 64;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 4;
         for (int y = 0; y <= screenTilesHeightIso; y++)
         {
             int rowStartWorldX = startWorldX - isometricToCartesianX(64, 0);
