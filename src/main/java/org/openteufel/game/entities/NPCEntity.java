@@ -1,16 +1,17 @@
 package org.openteufel.game.entities;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.utils.Position2d;
 
 public abstract class NPCEntity extends Entity
 {
-    protected int frameId = 0;
+    protected int     frameId      = 0;
     protected boolean frameForward = true;
-    protected int frameWait = 0;
+    protected int     frameWait    = 0;
 
-    public NPCEntity(final int posX, final int posY)
+    public NPCEntity(final Position2d pos)
     {
-        super(posX, posY);
+        super(pos);
     }
 
     @Override

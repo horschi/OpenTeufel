@@ -2,27 +2,22 @@ package org.openteufel.game;
 
 import java.io.IOException;
 
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
 public abstract class Entity
 {
-    protected int posX, posY;
+    protected Position2d pos;
 
-    public Entity(final int posX, final int posY)
+    public Entity(final Position2d pos)
     {
-        this.posX = posX;
-        this.posY = posY;
+        this.pos = pos;
     }
 
-    public int getPosX()
+    public Position2d getPos()
     {
-        return this.posX;
-    }
-
-    public int getPosY()
-    {
-        return this.posY;
+        return this.pos;
     }
 
     public abstract void preload(ImageLoader imageLoader) throws IOException;

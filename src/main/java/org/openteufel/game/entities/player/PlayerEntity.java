@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.openteufel.game.Entity;
 import org.openteufel.game.entities.AnimatedEntity;
 import org.openteufel.game.entities.WalkingEntity;
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
@@ -19,9 +20,9 @@ public class PlayerEntity extends WalkingEntity
     private final String    playerclassinitial;
     private final String    celBasePath;
 
-    public PlayerEntity(final int posX, final int posY, final int playerclass, final boolean isTown)
+    public PlayerEntity(final Position2d pos, final int playerclass, final boolean isTown)
     {
-        super(posX, posY, 10);
+        super(pos, 5);
         this.playerclass = playerclass;
         this.isTown = isTown;
 

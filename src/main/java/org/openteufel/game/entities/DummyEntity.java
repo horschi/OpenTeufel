@@ -3,6 +3,7 @@ package org.openteufel.game.entities;
 import java.io.IOException;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
@@ -10,12 +11,12 @@ public class DummyEntity extends Entity
 {
     private String text;
 
-    public DummyEntity(final int posX, final int posY, final String text)
+    public DummyEntity(final Position2d pos, final String text)
     {
-        super(posX, posY);
+        super(pos);
         this.text = text;
         if (text == null)
-            this.text = "" + this.posX / 64 + "/" + this.posY / 64;
+            this.text = "" + this.pos.getTileX() + "/" + this.pos.getTileY();
     }
 
     @Override

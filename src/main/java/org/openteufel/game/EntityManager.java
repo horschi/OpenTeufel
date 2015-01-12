@@ -60,8 +60,8 @@ public class EntityManager
         {
             if (ent != null)
             {
-                final long diffX = Math.abs(ent.getPosX() - x);
-                final long diffY = Math.abs(ent.getPosY() - y);
+                final long diffX = Math.abs(ent.getPos().getPosX() - x);
+                final long diffY = Math.abs(ent.getPos().getPosY() - y);
                 if (diffX > retdist || diffY > retdist)
                     continue; // avoid sqrt if possible
                 final double dist = Math.sqrt(diffX * diffX + diffY * diffY);
@@ -82,8 +82,8 @@ public class EntityManager
         {
             if (ent != null)
             {
-                final long diffX = Math.abs(ent.getPosX() - x);
-                final long diffY = Math.abs(ent.getPosY() - y);
+                final long diffX = Math.abs(ent.getPos().getPosX() - x);
+                final long diffY = Math.abs(ent.getPos().getPosY() - y);
                 if (diffX > radius || diffY > radius)
                     continue; // avoid sqrt if possible
                 final double dist = Math.sqrt(diffX * diffX + diffY * diffY);
@@ -101,10 +101,10 @@ public class EntityManager
         {
             if (ent != null)
             {
-                final int entX = ent.getPosX();
+                final int entX = ent.getPos().getPosX();
                 if (entX <= x2 && entX >= x1)
                 {
-                    final int entY = ent.getPosY();
+                    final int entY = ent.getPos().getPosY();
                     if (entY <= y2 && entY >= y1)
                     {
                         ret.add(ent);

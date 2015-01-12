@@ -20,6 +20,7 @@ import org.openteufel.game.entities.townnpcs.NPCPriestEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 import org.openteufel.game.entities.townnpcs.NPCWitchEntity;
 import org.openteufel.game.entities.townnpcs.NPCWoundedEntity;
+import org.openteufel.game.utils.Position2d;
 
 public class LevelStateTown extends LevelState
 {
@@ -101,40 +102,45 @@ public class LevelStateTown extends LevelState
     @Override
     protected void placeEntities(final EntityManager entityManager)
     {
-        entityManager.addEntity(new NPCBlacksmithEntity(62 * 32, 63 * 32));
-        entityManager.addEntity(new NPCStorytellerEntity(62 * 32, 71 * 32));
-        entityManager.addEntity(new NPCHealerEntity(55 * 32, 79 * 32));
-        entityManager.addEntity(new NPCDrunkEntity(71 * 32, 84 * 32));
-        entityManager.addEntity(new NPCOgdenEntity(55 * 32, 62 * 32));
-        entityManager.addEntity(new NPCPegKidEntity(11 * 32, 53 * 32));
-        entityManager.addEntity(new NPCPriestEntity(31 * 32, 50 * 32));
-        entityManager.addEntity(new NPCWoundedEntity(23 * 32, 32 * 32));
 
-        entityManager.addEntity(new NPCCowEntity(56 * 32, 14 * 32, 3));
-        entityManager.addEntity(new NPCCowEntity(58 * 32, 16 * 32, 1));
-        entityManager.addEntity(new NPCCowEntity(59 * 32, 20 * 32, 4));
+        entityManager.addEntity(new NPCBlacksmithEntity(Position2d.byTile(62, 63)));
+        entityManager.addEntity(new NPCStorytellerEntity(Position2d.byTile(62, 71)));
+        entityManager.addEntity(new NPCHealerEntity(Position2d.byTile(55, 79)));
+        entityManager.addEntity(new NPCDrunkEntity(Position2d.byTile(71, 84)));
+        entityManager.addEntity(new NPCOgdenEntity(Position2d.byTile(55, 62)));
+        entityManager.addEntity(new NPCPegKidEntity(Position2d.byTile(11, 53)));
+        entityManager.addEntity(new NPCPriestEntity(Position2d.byTile(31, 50)));
+        entityManager.addEntity(new NPCWoundedEntity(Position2d.byTile(23, 32)));
 
-        entityManager.addEntity(new PlayerEntity(75 * 32, 75 * 32, PlayerEntity.CLASS_ROGUE, true));
+        entityManager.addEntity(new NPCCowEntity(Position2d.byTile(56, 14), 3));
+        entityManager.addEntity(new NPCCowEntity(Position2d.byTile(58, 16), 1));
+        entityManager.addEntity(new NPCCowEntity(Position2d.byTile(59, 20), 4));
 
         if (this.hasTheHell || this.hasHellfire)
         {
-            entityManager.addEntity(new NPCFarmerEntity(61 * 32, 22 * 32));
-            entityManager.addEntity(new NPCGirlEntity(77 * 32, 43 * 32));
+            entityManager.addEntity(new NPCFarmerEntity(Position2d.byTile(61, 22)));
+            entityManager.addEntity(new NPCGirlEntity(Position2d.byTile(77, 43)));
         }
         if (this.hasTheHell)
         {
-            entityManager.addEntity(new NPCWitchEntity(44 * 32, 68 * 32));
-            entityManager.addEntity(new NPCGillianEntity(55 * 32, 44 * 32));
+            entityManager.addEntity(new NPCWitchEntity(Position2d.byTile(44, 68)));
+            entityManager.addEntity(new NPCGillianEntity(Position2d.byTile(55, 44)));
         }
         else
         {
-            entityManager.addEntity(new NPCWitchEntity(80 * 32, 20 * 32));
-            entityManager.addEntity(new NPCGillianEntity(43 * 32, 66 * 32));
+            entityManager.addEntity(new NPCWitchEntity(Position2d.byTile(80, 20)));
+            entityManager.addEntity(new NPCGillianEntity(Position2d.byTile(43, 66)));
         }
 
-        //        entityManager.addEntity(new GoldEntity(58 * 32, 71 * 32, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(1 * 32, 0 * 32, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(0 * 32, 1 * 32, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(1 * 32, 1 * 32, 1000));
+        //        entityManager.addEntity(new GoldEntity(58, 71, 1000));
+        //        this.entityManager.addEntity(new GoldEntity(1, 0, 1000));
+        //        this.entityManager.addEntity(new GoldEntity(0, 1, 1000));
+        //        this.entityManager.addEntity(new GoldEntity(1, 1, 1000));
+    }
+
+    @Override
+    protected Position2d getStartPosition()
+    {
+        return Position2d.byTile(75, 75);
     }
 }

@@ -3,14 +3,15 @@ package org.openteufel.game.entities.townnpcs;
 import java.io.IOException;
 
 import org.openteufel.game.entities.NPCEntity;
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
 public class NPCStorytellerEntity extends NPCEntity
 {
-    public NPCStorytellerEntity(final int posX, final int posY)
+    public NPCStorytellerEntity(final Position2d pos)
     {
-        super(posX, posY);
+        super(pos);
     }
 
     @Override

@@ -58,8 +58,8 @@ public class LevelRenderer
             @Override
             public int compare(final Entity a, final Entity b)
             {
-                final int ay = cartesianToIsometricY(a.getPosX(), a.getPosY());
-                final int by = cartesianToIsometricY(b.getPosX(), b.getPosY());
+                final int ay = cartesianToIsometricY(a.getPos().getPosX(), a.getPos().getPosY());
+                final int by = cartesianToIsometricY(b.getPos().getPosX(), b.getPos().getPosY());
 
                 return by - ay;
             }
@@ -94,7 +94,7 @@ public class LevelRenderer
             while (entities.size() > 0)
             {
                 final Entity ent = entities.get(entities.size() - 1);
-                final int entY = cartesianToIsometricY(ent.getPosX(), ent.getPosY());
+                final int entY = cartesianToIsometricY(ent.getPos().getPosX(), ent.getPos().getPosY());
                 if (entY >= cartesianToIsometricY(startWorldX, startWorldY))
                     break;
                 this.drawEntity(ent);
@@ -109,12 +109,12 @@ public class LevelRenderer
 
     private void drawEntity(final Entity ent)
     {
-        final int tileDifX = this.cameraX - ent.getPosX();
-        final int tileDifY = this.cameraY - ent.getPosY();
+        final int tileDifX = this.cameraX - ent.getPos().getPosX();
+        final int tileDifY = this.cameraY - ent.getPos().getPosY();
 
         final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY);
         final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY);
-        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, calculateBrightness(ent.getPosX(), ent.getPosY()));
+        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, this.calculateBrightness(ent.getPos().getPosX(), ent.getPos().getPosY()));
     }
 
     private void drawSingleTile(final int worldTileX, final int worldTileY)
@@ -127,18 +127,18 @@ public class LevelRenderer
             final MINPillar pillarLeft = this.levelstate.getPillar(tilsquare.getPillarLeft());
             final MINPillar pillarRight = this.levelstate.getPillar(tilsquare.getPillarRight());
 
-            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
-            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
-            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
-            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
+            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
+            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
+            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
+            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
         }
     }
 
-    private double calculateBrightness(int x, int y)
+    private double calculateBrightness(final int x, final int y)
     {
-        int diffX = cameraX-x;
-        int diffY = cameraY-y;
-        
+        final int diffX = this.cameraX-x;
+        final int diffY = this.cameraY-y;
+
         double brightness = 1.3 - (Math.sqrt( (diffX*diffX) + (diffY*diffY) ) / 700);
         if(brightness > 1.0)
             brightness = 1.0;
@@ -146,8 +146,8 @@ public class LevelRenderer
             brightness = 0.0;
         return brightness;
     }
-    
-    private void drawPillar(final MINPillar pillar, final int worldTileX, final int worldTileY, final int offsetX, final int offsetY, double brightness)
+
+    private void drawPillar(final MINPillar pillar, final int worldTileX, final int worldTileY, final int offsetX, final int offsetY, final double brightness)
     {
         final int tileDifX = this.cameraX - worldTileX * 64;
         final int tileDifY = this.cameraY - worldTileY * 64;

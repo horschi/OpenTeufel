@@ -6,6 +6,7 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.utils.Position2d;
 
 public class LevelState1Cathedral extends LevelState
 {
@@ -79,5 +80,11 @@ public class LevelState1Cathedral extends LevelState
     protected void placeEntities(final EntityManager entityManager)
     {
 
+    }
+
+    @Override
+    protected Position2d getStartPosition()
+    {
+        return Position2d.byTile(1, 1);
     }
 }

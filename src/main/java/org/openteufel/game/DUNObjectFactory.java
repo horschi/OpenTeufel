@@ -1,6 +1,7 @@
 package org.openteufel.game;
 
 import org.openteufel.game.entities.DummyEntity;
+import org.openteufel.game.utils.Position2d;
 
 public class DUNObjectFactory
 {
@@ -14,7 +15,7 @@ public class DUNObjectFactory
             default:
                 break;
         }
-        return new DummyEntity(x * 32, y * 32, "o" + id);
+        return new DummyEntity(Position2d.byTile(x, y), "o" + id);
     }
 
     //    0: "Brazier", // l1braz (animated, ticksPerFrame 1)

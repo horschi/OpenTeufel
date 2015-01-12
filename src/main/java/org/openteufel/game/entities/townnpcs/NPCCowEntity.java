@@ -3,6 +3,7 @@ package org.openteufel.game.entities.townnpcs;
 import java.io.IOException;
 
 import org.openteufel.game.entities.NPCEntity;
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
@@ -10,9 +11,9 @@ public class NPCCowEntity extends NPCEntity
 {
     private final int dir;
 
-    public NPCCowEntity(final int posX, final int posY, final int dir)
+    public NPCCowEntity(final Position2d pos, final int dir)
     {
-        super(posX, posY);
+        super(pos);
         this.dir = dir % 8;
     }
 

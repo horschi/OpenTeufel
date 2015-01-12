@@ -15,8 +15,10 @@ import org.openteufel.file.dun.TILSquare;
 import org.openteufel.game.entities.DummyEntity;
 import org.openteufel.game.entities.NPCEntity;
 import org.openteufel.game.entities.items.GoldEntity;
+import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
 import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
+import org.openteufel.game.utils.Position2d;
 
 public abstract class LevelState
 {
@@ -29,6 +31,7 @@ public abstract class LevelState
     private final DUNFile        dun;
 
     private final EntityManager  entityManager;
+    private final PlayerEntity   playerEntity;
 
     public LevelState(final GamedataLoader dataLoader) throws IOException
     {
@@ -68,8 +71,9 @@ public abstract class LevelState
                 }
             }
         }
-        this.camX = this.dun.getWidth() * 64 / 2;
-        this.camY = this.dun.getHeight() * 64 / 2;
+
+        this.playerEntity = new PlayerEntity(this.getStartPosition(), PlayerEntity.CLASS_ROGUE, true);
+        this.entityManager.addEntity(this.playerEntity);
     }
 
     public EntityManager getEntityManager()
@@ -94,6 +98,8 @@ public abstract class LevelState
     protected abstract DUNFile loadDUN(GamedataLoader dataLoader) throws IOException;
 
     protected abstract void placeEntities(EntityManager entityManager);
+
+    protected abstract Position2d getStartPosition();
 
     public TILSquare getSquare(final int worldX, final int worldY)
     {
@@ -133,20 +139,18 @@ public abstract class LevelState
         this.entityManager.process(gametime);
     }
 
-    int camX, camY;
     public int getCameraX()
     {
-        return this.camX;
+        return this.playerEntity.getPos().getPosX();
     }
 
     public int getCameraY()
     {
-        return this.camY;
+        return this.playerEntity.getPos().getPosY();
     }
 
     public void updateCamPos(final int offX, final int offY)
     {
-        this.camX += offX;
-        this.camY += offY;
+        this.playerEntity.updateTarget(this.playerEntity.getPos().addNew(offX, offY));
     }
 }

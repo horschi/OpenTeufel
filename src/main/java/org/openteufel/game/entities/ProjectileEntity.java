@@ -3,6 +3,7 @@ package org.openteufel.game.entities;
 import java.io.IOException;
 
 import org.openteufel.game.utils.EntityUtils;
+import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 
 public abstract class ProjectileEntity extends AnimatedEntity
@@ -11,19 +12,19 @@ public abstract class ProjectileEntity extends AnimatedEntity
     private double moveX, moveY;
     private int    direction;
 
-    public ProjectileEntity(final int posX, final int posY, final int targetX, final int targetY, final int speed)
+    public ProjectileEntity(final Position2d pos, final Position2d target, final int speed)
     {
-        super(posX, posY);
-        this.updateTarget(targetX, targetY, speed);
+        super(pos);
+        this.updateTarget(target, speed);
     }
 
-    protected void updateTarget(final int targetX, final int targetY, final int speed)
+    protected void updateTarget(final Position2d target, final int speed)
     {
-        final double difX = targetX - this.posX;
-        final double difY = targetY - this.posY;
-        final double speedMult = ((double) speed) / (difX * difX + difY * difY);
-        this.moveX = difX * speedMult;
-        this.moveY = difY * speedMult;
+        final int difX = this.pos.calcDiffX(target);
+        final int difY = this.pos.calcDiffY(target);
+        final double speedMult = ((double) speed) / (double) (difX * difX + difY * difY);
+        this.moveX = (double) difX * speedMult;
+        this.moveY = (double) difY * speedMult;
 
         switch (this.getNumDirections())
         {
@@ -32,10 +33,10 @@ public abstract class ProjectileEntity extends AnimatedEntity
                 this.direction = 0;
                 break;
             case 8:
-                this.direction = EntityUtils.calcDirection8(this.posX, this.posY, targetX, targetY, -1);
+                this.direction = EntityUtils.calcDirection8(difX, difY, -1);
                 break;
             case 16:
-                this.direction = EntityUtils.calcDirection16(this.posX, this.posY, targetX, targetY, -1);
+                this.direction = EntityUtils.calcDirection16(difX, difY, -1);
                 break;
 
             default:
@@ -60,12 +61,17 @@ public abstract class ProjectileEntity extends AnimatedEntity
     protected abstract int getNumDirections();
 
     @Override
-    public final void process(final int gametime, final int currentFrameId)
+    protected final void preProcess(final int gametime, final int currentFrameId)
     {
         this.precisePosX += this.moveX;
         this.precisePosY += this.moveY;
-        this.posX = (int) (this.precisePosX);
-        this.posY = (int) (this.precisePosY);
+        this.pos.setPos((int) this.precisePosX, (int) this.precisePosY);
+    }
+
+
+    @Override
+    protected void finishAnimation(final int gametime, final int currentFrameId)
+    {
     }
 
     @Override
@@ -73,4 +79,11 @@ public abstract class ProjectileEntity extends AnimatedEntity
     {
         return 16;
     }
+
+    @Override
+    protected int getFrameDelay()
+    {
+        return 1;
+    }
+
 }
