@@ -117,6 +117,18 @@ public class PlayerEntity extends WalkingEntity
         }
     }
 
+
+    @Override
+    protected void preWalk(int gametime, int currentFrameId)
+    {
+    }
+
+
+    @Override
+    protected void finishWalk(int gametime, int currentFrameId)
+    {
+    }
+
     // e.g.: plrgfx\\rogue\\rhb\\rhbwl.cl2
 
     //    Character 1

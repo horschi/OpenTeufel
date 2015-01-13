@@ -67,6 +67,8 @@ public abstract class WalkingEntity extends AnimatedEntity
     @Override
     protected void preProcess(final int gametime, final int currentFrameId)
     {
+        preWalk(gametime, currentFrameId);
+        
         if (this.targetPos == null && this.targetEnt != null)
             this.targetPos = this.targetEnt.getPos(); // TODO:
 
@@ -74,6 +76,11 @@ public abstract class WalkingEntity extends AnimatedEntity
         { // zero offset
             if (this.targetPos != null)
             {
+                if (this.targetPos.getTileX() < 0)
+                    this.targetPos.setTileX(0);
+                if (this.targetPos.getTileY() < 0)
+                    this.targetPos.setTileY(0);
+
                 final int difX = this.targetPos.getTileX() - this.pos.getTileX();
                 final int difY = this.targetPos.getTileY() - this.pos.getTileY();
 
@@ -109,9 +116,13 @@ public abstract class WalkingEntity extends AnimatedEntity
         else
         {
             this.updateAnimation(ANIM_STANDING);
+            finishWalk(gametime, currentFrameId);
         }
     }
 
+    protected abstract void preWalk(final int gametime, final int currentFrameId);
+    protected abstract void finishWalk(final int gametime, final int currentFrameId);
+    
     @Override
     protected void finishAnimation(final int gametime, final int currentFrameId)
     {
@@ -133,15 +144,5 @@ public abstract class WalkingEntity extends AnimatedEntity
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
     {
         super.draw(imageLoader, renderer, screenX, screenY, brightness);
-    }
-
-    private static int cartesianToIsometricX(final int cartX, final int cartY)
-    {
-        return cartX - cartY;
-    }
-
-    private static int cartesianToIsometricY(final int cartX, final int cartY)
-    {
-        return (cartX + cartY) / 2;
     }
 }

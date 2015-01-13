@@ -6,6 +6,7 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.entities.monsters.SuccubusEntitiy;
 import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
 import org.openteufel.game.entities.townnpcs.NPCCowEntity;
@@ -136,6 +137,8 @@ public class LevelStateTown extends LevelState
         //        this.entityManager.addEntity(new GoldEntity(1, 0, 1000));
         //        this.entityManager.addEntity(new GoldEntity(0, 1, 1000));
         //        this.entityManager.addEntity(new GoldEntity(1, 1, 1000));
+
+        entityManager.addEntity(new SuccubusEntitiy(Position2d.byTile(65, 70)));
     }
 
     @Override
