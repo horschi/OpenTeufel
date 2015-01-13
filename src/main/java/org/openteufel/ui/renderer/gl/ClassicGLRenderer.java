@@ -23,7 +23,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     private static final Logger LOG = Logger.getLogger(ClassicGLRenderer.class.getName());
     private static final int AA_SAMPLES = 4;
-    public static int targetFps = -1;
+    public static int targetFps = 0;
 
     private final List<String> messageStack = new ArrayList<String>();
     private Point lastClick;
@@ -142,7 +142,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
                 case 0:
                     if (!Mouse.getEventButtonState()) {
                     final Point cursorpos = new Point(Mouse.getEventX(), Mouse.getEventY());
-                        this.lastClick = new Point(cursorpos.x - (getScreenWidth() / 2), (getScreenWidth() / 2) - cursorpos.y);
+                        this.lastClick = new Point(cursorpos.x - (getScreenWidth() / 2), (getScreenHeight() / 2) - cursorpos.y);
                     }
                     break;
                 default:
