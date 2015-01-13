@@ -108,13 +108,13 @@ public class TextRenderer
             byte[] data = dataloader.getFileByteBuffer(filename).array();
             PcxImageParser pcxParser = new PcxImageParser();
             BufferedImage img = pcxParser.getBufferedImage(data, null);
+            int w = img.getWidth();
             Object[] ret = new Object[256];
             for (byte b : CHARS)
             {
                 int character = b & 0xff;
                 try
                 {
-                    int w = img.getWidth();
                     int[] pixels = img.getRGB(0, character * h, w, h,  (int[]) null, 0, w);
                     int transparentColor = pixels[pixels.length-1];
                     for(int i=0;i<pixels.length;i++)
