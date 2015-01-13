@@ -39,7 +39,6 @@ public class LevelRenderer
         this.cameraX = this.levelstate.getCameraX();
         this.cameraY = this.levelstate.getCameraY();
 
-        this.renderer.startFrame();
         this.screenWidth = this.renderer.getScreenWidth();
         this.screenHeight = this.renderer.getScreenHeight();
 
@@ -103,8 +102,6 @@ public class LevelRenderer
             startWorldX += isometricToCartesianX(0, 64);
             startWorldY += isometricToCartesianY(0, 64);
         }
-
-        this.renderer.finishFrame();
     }
 
     private void drawEntity(final Entity ent)

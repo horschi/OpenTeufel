@@ -1,6 +1,7 @@
 package org.openteufel.ui;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.nio.charset.Charset;
 
 import org.apache.commons.imaging.formats.pcx.PcxImageParser;
@@ -114,6 +115,9 @@ public class TextRenderer
                 try
                 {
                     int w = img.getWidth();
+//                    ColorConvertOp xformOp = new ColorConvertOp(null);
+//                    BufferedImage newImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
+//                    xformOp.filter(img, newImg);
                     ret[c] = renderer.loadImage(img.getData().getPixels(0, c * h, w, h, (int[]) null), w, h);
                 }
                 catch (Exception e)

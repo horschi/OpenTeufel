@@ -49,12 +49,15 @@ public class GameRunner
             }
             level.runFrame(gametime);
 
+            this.renderer.startFrame();
+
             levelrenderer.renderFrame();
             
             textrenderer.writeText(100, 40, "Test text. Looks good huh? xxx", 42);
-            textrenderer.writeText(100, 80, "Test text. Looks good huh? xxx", 30);
-            textrenderer.writeText(100, 120, "Test text. Looks good huh? xxx", 24);
-            textrenderer.writeText(100, 140, "Test text. Looks good huh? xxx", 16);
+            textrenderer.writeText(100, 90, "Test text. Looks good huh? xxx", 30);
+            textrenderer.writeText(100, 130, "Test text. Looks good huh? xxx", 24);
+            textrenderer.writeText(100, 160, "Test text. Looks good huh? xxx", 16);
+            this.renderer.finishFrame();
         }
     }
 
