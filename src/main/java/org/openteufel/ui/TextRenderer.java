@@ -69,8 +69,8 @@ public class TextRenderer
             images42Grey = loadImages(FILENAME_FONT_42GREY, 42);
             images30Gold = loadImages(FILENAME_FONT_30GOLD, 31);
             images30Grey = loadImages(FILENAME_FONT_30GREY, 31);
-            images24Gold = loadImages(FILENAME_FONT_24GOLD, 25);
-            images24Grey = loadImages(FILENAME_FONT_24GREY, 25);
+            images24Gold = loadImages(FILENAME_FONT_24GOLD, 26);
+            images24Grey = loadImages(FILENAME_FONT_24GREY, 26);
             images16Gold = loadImages(FILENAME_FONT_16GOLD, 16);
             images16Grey = loadImages(FILENAME_FONT_16GREY, 16);
         }
@@ -111,18 +111,23 @@ public class TextRenderer
             Object[] ret = new Object[256];
             for (byte b : CHARS)
             {
-                int c = b & 0xff;
+                int character = b & 0xff;
                 try
                 {
                     int w = img.getWidth();
-//                    ColorConvertOp xformOp = new ColorConvertOp(null);
-//                    BufferedImage newImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
-//                    xformOp.filter(img, newImg);
-                    ret[c] = renderer.loadImage(img.getData().getPixels(0, c * h, w, h, (int[]) null), w, h);
+                    int[] pixels = img.getRGB(0, character * h, w, h,  (int[]) null, 0, w);
+                    int transparentColor = pixels[pixels.length-1];
+                    for(int i=0;i<pixels.length;i++)
+                    {
+                        int col = pixels[i];
+                        if(col == transparentColor)
+                            pixels[i] = 0;
+                    }
+                    ret[character] = renderer.loadImage(pixels, w, h);
                 }
                 catch (Exception e)
                 {
-                    throw new RuntimeException("Error loading char: "+c, e);
+                    throw new RuntimeException("Error loading char: "+character, e);
                 }
             }
             return ret;
