@@ -7,6 +7,7 @@ package org.openteufel.ui;
 public class MouseEvent {
 
     public enum eventType {
+
         COMBINED,
         SCROLL,
         CLICK,

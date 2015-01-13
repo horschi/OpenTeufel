@@ -1,8 +1,9 @@
 package org.openteufel.ui;
 
-public interface Renderer<ImageType>
-{
+public interface Renderer<ImageType> {
+
     public void initGame();
+
     public void close();
 
     public ImageType loadImage(final int[] pixels, final int w, int h);
@@ -10,6 +11,7 @@ public interface Renderer<ImageType>
     public void unloadImage(ImageType image);
 
     public int getScreenWidth();
+
     public int getScreenHeight();
 
     public void startFrame();

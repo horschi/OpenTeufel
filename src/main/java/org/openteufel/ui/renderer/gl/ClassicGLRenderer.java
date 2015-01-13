@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -33,22 +32,18 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private Point lastClick;
 
     private List<drawImageInfo> drawImageList = new ArrayList<drawImageInfo>();
-    private List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
+    private final List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
+
+    private final List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
 
     public void registerKeyboardEventHandler(KeyboardHandler handler) {
         keyboardHandlers.add(handler);
     }
 
-    private List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
-
     public void registerMouseEventHandler(MouseHandler handler) {
         mouseHandlers.add(handler);
     }
 
-    /**
-     *
-     * @param window
-     */
     @Override
     public void initGame() {
         final PixelFormat pixelFormat = new PixelFormat(8, 8, 8, AA_SAMPLES);
@@ -66,7 +61,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
                 Display.setVSyncEnabled(true);
             }
 
-
             Display.setTitle("OpenTeufel");
 
             Display.create(pixelFormat);
@@ -80,7 +74,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         resize();
-        
+
         try {
             Keyboard.create();
         } catch (LWJGLException ex) {
@@ -88,11 +82,10 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         }
     }
 
-    
     @Override
     public void close() {
     }
-    
+
     /**
      *
      * @param pixels
@@ -313,6 +306,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     }
 
     private class drawImageInfo {
+
         private final Sprite image;
         private final int x;
         private final int y;

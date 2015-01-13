@@ -51,7 +51,6 @@ public class Textures {
 
     private final IntBuffer intbuf = BufferUtils.createIntBuffer(1);
 
-
     private final Map<String, Texture> textureMap = new ConcurrentHashMap<String, Texture>();
     private final int[] allpixels;
     private final String[][] map;

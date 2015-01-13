@@ -12,6 +12,7 @@ import java.util.logging.Logger;
  * @author luxifer
  */
 public class KeyboardEvent {
+
     private static final Logger LOG = Logger.getLogger(KeyboardEvent.class.getName());
 
     public final char character;
