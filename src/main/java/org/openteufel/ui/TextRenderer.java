@@ -8,72 +8,70 @@ import org.openteufel.file.GamedataLoader;
 
 public class TextRenderer
 {
-    private static final String    FILENAME_FONT_SMALL  = "\\ctrlpan\\smaltext.cel";       // 16x16
+    private static final String  FILENAME_FONT_SMALL  = "\\ctrlpan\\smaltext.cel";       // 16x16
 
-    private static final String    FILENAME_FONT_42GOLD = "\\ui_art\\font42g.pcx";         // gold
-    private static final String    FILENAME_FONT_42GREY = "\\ui_art\\font42y.pcx";         // dark  
-    private static final String    FILENAME_WIDTH_42    = "\\ui_art\\font16.bin";
+    private static final String  FILENAME_FONT_42GOLD = "ui_art\\font42g.pcx";           // gold
+    private static final String  FILENAME_FONT_42GREY = "ui_art\\font42y.pcx";           // dark  
+    private static final String  FILENAME_WIDTH_42    = "ui_art\\font42.bin";
 
-    private static final String    FILENAME_FONT_30GOLD = "\\ui_art\\font30g.pcx";         // gold
-    private static final String    FILENAME_FONT_30GREY = "\\ui_art\\font30s.pcx";         // grey
-    private static final String    FILENAME_WIDTH_30    = "\\ui_art\\font16.bin";
+    private static final String  FILENAME_FONT_30GOLD = "ui_art\\font30g.pcx";           // gold
+    private static final String  FILENAME_FONT_30GREY = "ui_art\\font30s.pcx";           // grey
+    private static final String  FILENAME_WIDTH_30    = "ui_art\\font30.bin";
 
-    private static final String    FILENAME_FONT_24GOLD = "\\ui_art\\font24g.pcx";         // gold
-    private static final String    FILENAME_FONT_24GREY = "\\ui_art\\font24s.pcx";         // grey
-    private static final String    FILENAME_WIDTH_24    = "\\ui_art\\font16.bin";
+    private static final String  FILENAME_FONT_24GOLD = "ui_art\\font24g.pcx";           // gold
+    private static final String  FILENAME_FONT_24GREY = "ui_art\\font24s.pcx";           // grey
+    private static final String  FILENAME_WIDTH_24    = "ui_art\\font24.bin";
 
-    private static final String    FILENAME_FONT_16GOLD = "\\ui_art\\font16g.pcx";         // gold
-    private static final String    FILENAME_FONT_16GREY = "\\ui_art\\font16s.pcx";         // grey
-    private static final String    FILENAME_WIDTH_16    = "\\ui_art\\font16.bin";
+    private static final String  FILENAME_FONT_16GOLD = "ui_art\\font16g.pcx";           // gold
+    private static final String  FILENAME_FONT_16GREY = "ui_art\\font16s.pcx";           // grey
+    private static final String  FILENAME_WIDTH_16    = "ui_art\\font16.bin";
 
-    private static final Charset   charset              = Charset.forName("ISO-8859-1");
-    private static final byte[]    CHARS                = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u00a1\u00a2\u00a3\u00a4\u00a5\u00a6\u00a7\u00a8\u00a9\u00aa\u00ab\u00acSHY\u00ae\u00af\u00b0\u00b1\u00b2\u00b3\u00b4\u00b5\u00b6\u00b7\u00b8\u00b9\u00ba\u00bb\u00bc\u00bd\u00be\u00bf\u00c0\u00c1\u00c2\u00c3\u00c4\u00c5\u00c6\u00c7\u00c8\u00c9\u00ca\u00cb\u00cc\u00cd\u00ce\u00cf\u00d0\u00d1\u00d2\u00d3\u00d4\u00d5\u00d6\u00d7\u00d8\u00d9\u00da\u00db\u00dc\u00dd\u00de\u00df\u00e0\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f7\u00f8\u00f9\u00fa\u00fb\u00fc\u00fd\u00fe\u00ff"
-                                                                        .getBytes(charset);
+    private static final Charset charset              = Charset.forName("ISO-8859-1");
+    private static final byte[]  CHARS                = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u00a1\u00a2\u00a3\u00a4\u00a5\u00a6\u00a7\u00a8\u00a9\u00aa\u00ab\u00acSHY\u00ae\u00af\u00b0\u00b1\u00b2\u00b3\u00b4\u00b5\u00b6\u00b7\u00b8\u00b9\u00ba\u00bb\u00bc\u00bd\u00be\u00bf\u00c0\u00c1\u00c2\u00c3\u00c4\u00c5\u00c6\u00c7\u00c8\u00c9\u00ca\u00cb\u00cc\u00cd\u00ce\u00cf\u00d0\u00d1\u00d2\u00d3\u00d4\u00d5\u00d6\u00d7\u00d8\u00d9\u00da\u00db\u00dc\u00dd\u00de\u00df\u00e0\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f0\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f7\u00f8\u00f9\u00fa\u00fb\u00fc\u00fd\u00fe\u00ff"
+                                                                      .getBytes(charset);
 
-    private final Renderer<Object> renderer;
-    private final GamedataLoader   dataloader;
-    private final ImageLoader      imageLoader;
+    private final Renderer       renderer;
+    private final GamedataLoader dataloader;
 
-    private final Object[]         imagesSmall;
-    private final Object[]         images42Gold;
-    private final Object[]         images42Grey;
-    private final Object[]         images30Gold;
-    private final Object[]         images30Grey;
-    private final Object[]         images24Gold;
-    private final Object[]         images24Grey;
-    private final Object[]         images16Gold;
-    private final Object[]         images16Grey;
+    private final Object[]       imagesSmall;
+    private final Object[]       images42Gold;
+    private final Object[]       images42Grey;
+    private final Object[]       images30Gold;
+    private final Object[]       images30Grey;
+    private final Object[]       images24Gold;
+    private final Object[]       images24Grey;
+    private final Object[]       images16Gold;
+    private final Object[]       images16Grey;
 
-    private final int[]            widthsSmall;
-    private final int[]            widths42;
-    private final int[]            widths30;
-    private final int[]            widths24;
-    private final int[]            widths16;
+    private final int[]          widthsSmall;
+    private final int[]          widths42;
+    private final int[]          widths30;
+    private final int[]          widths24;
+    private final int[]          widths16;
 
-    public TextRenderer(final Renderer<Object> renderer, GamedataLoader dataloader, final ImageLoader imageLoader)
+    public TextRenderer(final Renderer renderer, GamedataLoader dataloader)
     {
         super();
         this.renderer = renderer;
         this.dataloader = dataloader;
-        this.imageLoader = imageLoader;
 
         try
         {
-            imagesSmall = null;
-            images42Gold = loadImages(FILENAME_FONT_42GOLD, 42);
-            images42Grey = loadImages(FILENAME_FONT_42GREY, 42);
-            images30Gold = loadImages(FILENAME_FONT_30GOLD, 30);
-            images30Grey = loadImages(FILENAME_FONT_30GREY, 30);
-            images24Gold = loadImages(FILENAME_FONT_24GOLD, 24);
-            images24Grey = loadImages(FILENAME_FONT_24GREY, 24);
-            images16Gold = loadImages(FILENAME_FONT_16GOLD, 16);
-            images16Grey = loadImages(FILENAME_FONT_16GREY, 16);
-
             widthsSmall = null;
             widths42 = loadWidths(FILENAME_WIDTH_42);
             widths30 = loadWidths(FILENAME_WIDTH_30);
             widths24 = loadWidths(FILENAME_WIDTH_24);
             widths16 = loadWidths(FILENAME_WIDTH_16);
+
+            imagesSmall = null;
+            images42Gold = loadImages(FILENAME_FONT_42GOLD, 42);
+            images42Grey = loadImages(FILENAME_FONT_42GREY, 42);
+            images30Gold = loadImages(FILENAME_FONT_30GOLD, 31);
+            images30Grey = loadImages(FILENAME_FONT_30GREY, 31);
+            images24Gold = loadImages(FILENAME_FONT_24GOLD, 25);
+            images24Grey = loadImages(FILENAME_FONT_24GREY, 25);
+            images16Gold = loadImages(FILENAME_FONT_16GOLD, 16);
+            images16Grey = loadImages(FILENAME_FONT_16GREY, 16);
         }
         catch (Exception e)
         {
@@ -98,11 +96,11 @@ public class TextRenderer
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeException("loadWidths(" + filename + ")", e);
         }
     }
 
-    private Object[] loadImages(String filename, int size)
+    private Object[] loadImages(String filename, int h)
     {
         try
         {
@@ -113,13 +111,21 @@ public class TextRenderer
             for (byte b : CHARS)
             {
                 int c = b & 0xff;
-                ret[c] = renderer.loadImage(img.getData().getPixels(0, c * 8, 8, 8, (int[]) null), 8, 8);
+                try
+                {
+                    int w = img.getWidth();
+                    ret[c] = renderer.loadImage(img.getData().getPixels(0, c * h, w, h, (int[]) null), w, h);
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException("Error loading char: "+c, e);
+                }
             }
             return ret;
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeException("loadImages(" + filename + "," + h + ")", e);
         }
     }
 
@@ -178,7 +184,7 @@ public class TextRenderer
         for (byte b : text.getBytes(charset))
         {
             int ch = b & 0xff;
-            
+
             Object image = images[ch];
             if (image != null)
                 renderer.drawImage(image, x, y, 99, 1.0);

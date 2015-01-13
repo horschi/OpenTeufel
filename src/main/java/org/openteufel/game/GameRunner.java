@@ -12,6 +12,7 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.game.levels.LevelStateTown;
 import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
+import org.openteufel.ui.TextRenderer;
 
 public class GameRunner
 {
@@ -30,13 +31,15 @@ public class GameRunner
     {
         final LevelState level = new LevelStateTown(this.dataLoader);
         final LevelRenderer levelrenderer = new LevelRenderer(this.dataLoader, level, this.renderer);
-
+        final TextRenderer textrenderer = new TextRenderer(renderer, dataLoader);
+        
         int gametime = 0;
         while (runGame)
         {
             gametime++;
             levelrenderer.applyUserInput();
-            switch (renderer.processKeyboard()) {
+            switch (renderer.processKeyboard())
+            {
                 case 1:
                 case 27:
                     runGame = false;
@@ -47,6 +50,11 @@ public class GameRunner
             level.runFrame(gametime);
 
             levelrenderer.renderFrame();
+            
+            textrenderer.writeText(100, 40, "Test text. Looks good huh? xxx", 42);
+            textrenderer.writeText(100, 80, "Test text. Looks good huh? xxx", 30);
+            textrenderer.writeText(100, 120, "Test text. Looks good huh? xxx", 24);
+            textrenderer.writeText(100, 140, "Test text. Looks good huh? xxx", 16);
         }
     }
 
