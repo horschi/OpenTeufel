@@ -24,8 +24,10 @@ public class Textures {
     private static final Logger LOG = Logger.getLogger(Textures.class.getName());
     private static final Textures firstTexture = new Textures();
     private static int lastBound = -1;
+    private static final int MAP_TEXTURE_SIZE = 4096;
+    private static final int MIN_TEXTURE_SIZE = 8;
 
-    public static Texture getTexture(final int[] pixels, final int width, final int height) {
+    public static Texture getTexture(final int[] pixels, final int width, final int height) throws Exception {
         final String textureHash = String.valueOf(Arrays.hashCode(pixels));
         firstTexture.addTexture(pixels, width, height);
         return firstTexture.getTexture(textureHash);
@@ -49,8 +51,6 @@ public class Textures {
 
     private final IntBuffer intbuf = BufferUtils.createIntBuffer(1);
 
-    private static final int MAP_TEXTURE_SIZE = 4096;
-    private static final int MIN_TEXTURE_SIZE = 8;
 
     private final Map<String, Texture> textureMap = new ConcurrentHashMap<String, Texture>();
     private final int[] allpixels;
@@ -95,7 +95,10 @@ public class Textures {
         }
     }
 
-    private void addFromPixels(final int[] pixels, final int width, final int height, final String textureHash) throws IllegalStateException {
+    private void addFromPixels(int[] pixels, final int width, final int height, final String textureHash) throws Exception {
+        if (pixels.length != width * height) {
+            throw new Exception("Implausible Data: Pixel array has length " + pixels.length + " but should have length " + (width * height) + " (width=" + width + " * height=" + height + ")");
+        }
         int texWidth = 2;
         int texHeight = 2;
         while (texWidth < width) {
@@ -183,7 +186,7 @@ public class Textures {
         }
     }
 
-    public void addTexture(final int[] pixels, final int width, final int height) {
+    public void addTexture(final int[] pixels, final int width, final int height) throws Exception {
         final String textureHash = String.valueOf(Arrays.hashCode(pixels));
         if (getTexture(textureHash) == null) {
             addFromPixels(pixels, width, height, textureHash);
