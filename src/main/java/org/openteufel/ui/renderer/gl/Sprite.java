@@ -19,7 +19,7 @@ public class Sprite {
      * @param width
      * @param height
      */
-    public Sprite(final int[] pixels, final int width, final int height) {
+    public Sprite(final int[] pixels, final int width, final int height) throws Exception {
         texture = Textures.getTexture(pixels, width, height);
     }
 

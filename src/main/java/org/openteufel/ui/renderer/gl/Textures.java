@@ -148,7 +148,7 @@ public class Textures {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 pos = (xpos + x) + ((ypos + y) * MAP_TEXTURE_SIZE);
-                allpixels[pos] = pixels[x + (y * height)];
+                allpixels[pos] = pixels[x + (y * width)];
             }
         }
 

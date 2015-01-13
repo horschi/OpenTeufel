@@ -87,7 +87,14 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
      */
     @Override
     public Sprite loadImage(final int[] pixels, final int w, final int h) {
-        return new Sprite(pixels, h, h);
+        try
+        {
+            return new Sprite(pixels, w, h);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
