@@ -13,6 +13,10 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
+import org.openteufel.ui.KeyboardEvent;
+import org.openteufel.ui.KeyboardHandler;
+import org.openteufel.ui.MouseEvent;
+import org.openteufel.ui.MouseHandler;
 import org.openteufel.ui.Renderer;
 
 /**
@@ -29,6 +33,17 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private Point lastClick;
 
     private List<drawImageInfo> drawImageList = new ArrayList<drawImageInfo>();
+    private List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
+
+    public void registerKeyboardEventHandler(KeyboardHandler handler) {
+        keyboardHandlers.add(handler);
+    }
+
+    private List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
+
+    public void registerMouseEventHandler(MouseHandler handler) {
+        mouseHandlers.add(handler);
+    }
 
     /**
      *
@@ -87,13 +102,11 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
      */
     @Override
     public Sprite loadImage(final int[] pixels, final int w, final int h) {
-        try
-        {
-            return new Sprite(pixels, w, h);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
+        try {
+            return new Sprite(pixels, h, h);
+        } catch (Exception ex) {
+            Logger.getLogger(ClassicGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
@@ -145,16 +158,14 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     private void processEvents() {
         while (Mouse.next()) {
-            switch (Mouse.getEventButton()) {
-                case 0:
-                    if (!Mouse.getEventButtonState()) {
-                    final Point cursorpos = new Point(Mouse.getEventX(), Mouse.getEventY());
-                        this.lastClick = new Point(cursorpos.x - (getScreenWidth() / 2), (getScreenHeight() / 2) - cursorpos.y);
-                    }
-                    break;
-                default:
-                    break;
+            for (MouseHandler h : mouseHandlers) {
+                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
+            }
+        }
 
+        while (Keyboard.next()) {
+            for (KeyboardHandler h : keyboardHandlers) {
+                h.handleKeyboardEvent(new KeyboardEvent(Keyboard.getEventCharacter(), Keyboard.getEventKey(), Keyboard.getEventKeyState(), Keyboard.getEventNanoseconds()));
             }
         }
 
@@ -282,26 +293,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         }
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Point getLastRelativeClickPos() {
-        final Point ret = this.lastClick;
-        this.lastClick = null;
-        return ret;
-    }
-    
-
-    @Override
-    public int processKeyboard() {
-        if (Keyboard.next()) {
-            return Keyboard.getEventKey();
-        }
-        return -1;
-    }
-
     private void resize() {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -309,6 +300,16 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glViewport(0, 0, getScreenWidth(), getScreenHeight());
+    }
+
+    @Override
+    public void registerKeyboardHandler(KeyboardHandler handler) {
+        keyboardHandlers.add(handler);
+    }
+
+    @Override
+    public void registerMouseHandler(MouseHandler handler) {
+        mouseHandlers.add(handler);
     }
 
     private class drawImageInfo {

@@ -1,9 +1,5 @@
 package org.openteufel.ui;
 
-import java.awt.Point;
-
-import javax.swing.JFrame;
-
 public interface Renderer<ImageType>
 {
     public void initGame();
@@ -28,7 +24,7 @@ public interface Renderer<ImageType>
 
     public void finishFrame();
 
-    public Point getLastRelativeClickPos();
-    
-    public int processKeyboard();
+    public void registerKeyboardHandler(KeyboardHandler handler);
+
+    public void registerMouseHandler(MouseHandler handler);
 }

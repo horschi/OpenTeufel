@@ -10,12 +10,13 @@ import org.lwjgl.input.Keyboard;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.game.levels.LevelStateTown;
+import org.openteufel.ui.KeyboardEvent;
+import org.openteufel.ui.KeyboardHandler;
 import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
 import org.openteufel.ui.TextRenderer;
 
-public class GameRunner
-{
+public class GameRunner implements KeyboardHandler {
     private final GamedataLoader dataLoader;
     private final Renderer<?>    renderer;
 
@@ -25,6 +26,7 @@ public class GameRunner
     {
         this.dataLoader = new GamedataLoader(new File("."));
         this.renderer = renderer;
+        renderer.registerKeyboardHandler(this);
     }
 
     public void runGame() throws Exception
@@ -38,15 +40,6 @@ public class GameRunner
         {
             gametime++;
             levelrenderer.applyUserInput();
-            switch (renderer.processKeyboard())
-            {
-                case 1:
-                case 27:
-                    runGame = false;
-                    break;
-                default:
-                    break;
-            }
             level.runFrame(gametime);
 
             this.renderer.startFrame();
@@ -58,6 +51,18 @@ public class GameRunner
             textrenderer.writeText(100, 130, "Test text. Looks good huh? xxx", 24);
             textrenderer.writeText(100, 160, "Test text. Looks good huh? xxx", 16);
             this.renderer.finishFrame();
+        }
+    }
+
+    @Override
+    public void handleKeyboardEvent(KeyboardEvent e) {
+        switch (e.key) {
+            case 1:
+            case 27:
+                runGame = false;
+                break;
+            default:
+                break;
         }
     }
 

@@ -6,26 +6,30 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.lwjgl.input.Mouse;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.MINPillar;
 import org.openteufel.file.dun.TILSquare;
 import org.openteufel.ui.ImageLoader;
+import org.openteufel.ui.MouseEvent;
+import org.openteufel.ui.MouseHandler;
 import org.openteufel.ui.Renderer;
 
-public class LevelRenderer
-{
+public class LevelRenderer implements MouseHandler {
     private final ImageLoader<?> imageLoader;
     private final LevelState     levelstate;
     private final Renderer       renderer;
     private int                  screenWidth, screenHeight;
     private int                  cameraX, cameraY;
+    private Point lastClickPos;
 
     public LevelRenderer(final GamedataLoader dataLoader, final LevelState levelstate, final Renderer renderer) throws IOException
     {
         super();
         this.levelstate = levelstate;
         this.renderer = renderer;
+        renderer.registerMouseHandler(this);
 
         this.imageLoader = new ImageLoader(dataLoader, renderer, levelstate.getPALPath());
         this.imageLoader.preloadTileCel(levelstate.getCELPath(), levelstate.getAllFrameIdsPlus1Pillars());
@@ -171,11 +175,11 @@ public class LevelRenderer
 
     public void applyUserInput()
     {
-        final Point screenPos = this.renderer.getLastRelativeClickPos();
-        if (screenPos != null)
-        {
-            final int isoX = screenPos.x;
-            final int isoY = screenPos.y;
+        if (this.lastClickPos != null)        {
+            final int isoX = this.lastClickPos.x;
+            final int isoY = this.lastClickPos.y;
+            this.lastClickPos = null;
+
             this.levelstate.updateCamPos(isometricToCartesianX(isoX, isoY), isometricToCartesianY(isoX, isoY));
         }
     }
@@ -200,5 +204,12 @@ public class LevelRenderer
     private static int isometricToCartesianY(final int isoX, final int isoY)
     {
         return (2 * isoY - isoX) / 2;
+    }
+
+    @Override
+    public void handleMouseEvent(MouseEvent e) {
+        if (e.eventState) {
+            this.lastClickPos = new Point(e.x - (renderer.getScreenWidth() / 2), (renderer.getScreenHeight() / 2) - e.y);
+        }
     }
 }

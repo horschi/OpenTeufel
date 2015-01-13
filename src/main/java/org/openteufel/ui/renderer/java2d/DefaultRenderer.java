@@ -15,9 +15,15 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.lwjgl.input.Keyboard;
+import org.openteufel.ui.KeyboardEvent;
+import org.openteufel.ui.KeyboardHandler;
+import org.openteufel.ui.MouseHandler;
 
 import org.openteufel.ui.Renderer;
 
@@ -29,6 +35,17 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     private Graphics2D     currentGraphicsContext = null;
     private Point          lastClick              = null;
     private int lastKey = -1;
+
+    private List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
+    public void registerKeyboardHandler(KeyboardHandler handler) {
+        keyboardHandlers.add(handler);
+    }
+
+    private List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
+
+    public void registerMouseHandler(MouseHandler handler) {
+        mouseHandlers.add(handler);
+    }
 
     public DefaultRenderer()
     {
@@ -145,8 +162,10 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     }
 
     @Override
-    public void mouseWheelMoved(final MouseWheelEvent arg0)
-    {
+    public void mouseWheelMoved(final MouseWheelEvent e) {
+        for (MouseHandler h : mouseHandlers) {
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getWheelRotation()));
+        }
     }
 
     @Override
@@ -165,18 +184,19 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     }
 
     @Override
-    public void mousePressed(final MouseEvent arg0)
-    {
-        final Point cursorpos = arg0.getPoint();
-        this.lastClick = new Point(cursorpos.x - (this.canvas.getWidth() / 2), cursorpos.y - (this.canvas.getHeight() / 2));
+    public void mousePressed(final MouseEvent e) {
+        for (MouseHandler h : mouseHandlers) {
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX(), e.getY(), true));
+        }
     }
 
     @Override
-    public void mouseReleased(final MouseEvent arg0)
-    {
+    public void mouseReleased(final MouseEvent e)    {
+        for (MouseHandler h : mouseHandlers) {
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX(), e.getY(), false));
+        }
     }
 
-    @Override
     public Point getLastRelativeClickPos()
     {
         final Point ret = this.lastClick;
@@ -184,9 +204,13 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
         return ret;
     }
 
-    @Override
     public int processKeyboard()
     {
+        if (lastKey >= 0) {
+            for (KeyboardHandler h : keyboardHandlers) {
+                h.handleKeyboardEvent(new KeyboardEvent(lastKey));
+            }
+        }
         int k = lastKey;
         lastKey = -1;
         return k;
