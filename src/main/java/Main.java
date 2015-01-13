@@ -1,10 +1,7 @@
 
-import org.luxifer.misc.Hacks;
 import org.openteufel.game.GameRunner;
-import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
-import org.openteufel.ui.renderer.java2d.DefaultRenderer;
-import org.openteufel.ui.renderer.java2d.Window;
+import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 
 public class Main
 {
