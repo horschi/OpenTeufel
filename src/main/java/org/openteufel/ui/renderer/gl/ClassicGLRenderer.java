@@ -152,7 +152,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private void processEvents() {
         while (Mouse.next()) {
             for (MouseHandler h : mouseHandlers) {
-                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX(), Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
+                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX()- (getScreenWidth() / 2), (getScreenHeight() / 2) - Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
             }
         }
 

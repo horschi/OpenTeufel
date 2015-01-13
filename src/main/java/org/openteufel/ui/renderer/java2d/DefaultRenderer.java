@@ -186,14 +186,14 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     @Override
     public void mousePressed(final MouseEvent e) {
         for (MouseHandler h : mouseHandlers) {
-            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX(), e.getY(), true));
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX()-(getScreenWidth()/2), e.getY()-(getScreenHeight()/2), true));
         }
     }
 
     @Override
     public void mouseReleased(final MouseEvent e)    {
         for (MouseHandler h : mouseHandlers) {
-            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX(), e.getY(), false));
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX()-(getScreenWidth()/2), e.getY()-(getScreenHeight()/2), false));
         }
     }
 
