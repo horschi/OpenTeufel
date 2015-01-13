@@ -19,9 +19,9 @@ public abstract class WalkingEntity extends AnimatedEntity
     private final int          speed;
     private int                currentAnimation;
 
-    public WalkingEntity(final Position2d pos, final int speed)
+    public WalkingEntity(final Position2d pos, final int speed, int team)
     {
-        super(pos);
+        super(pos, team);
         this.targetPos = null;
         this.targetEnt = null;
         this.direction = 0;
@@ -141,8 +141,8 @@ public abstract class WalkingEntity extends AnimatedEntity
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final int screenZ, final double brightness)
     {
-        super.draw(imageLoader, renderer, screenX, screenY, brightness);
+        super.draw(imageLoader, renderer, screenX, screenY, screenZ, brightness);
     }
 }

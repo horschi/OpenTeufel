@@ -12,9 +12,9 @@ public abstract class ProjectileEntity extends AnimatedEntity
     private double moveX, moveY;
     private int    direction;
 
-    public ProjectileEntity(final Position2d pos, final Position2d target, final int speed)
+    public ProjectileEntity(final Position2d pos, final Position2d target, final int speed, int team)
     {
-        super(pos);
+        super(pos, team);
         this.updateTarget(target, speed);
     }
 

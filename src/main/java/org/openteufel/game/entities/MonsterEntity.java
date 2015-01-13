@@ -6,7 +6,7 @@ public abstract class MonsterEntity extends WalkingEntity
 {
     public MonsterEntity(Position2d pos, int speed)
     {
-        super(pos, speed);
+        super(pos, speed, TEAM_BAD);
     }
 
     @Override

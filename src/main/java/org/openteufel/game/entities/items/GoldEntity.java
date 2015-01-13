@@ -3,6 +3,7 @@ package org.openteufel.game.entities.items;
 import java.io.IOException;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
@@ -14,7 +15,7 @@ public class GoldEntity extends Entity
 
     public GoldEntity(final Position2d pos, final int amount)
     {
-        super(pos);
+        super(pos,TEAM_NEUTRAL);
         this.amount = amount;
     }
 
@@ -25,14 +26,14 @@ public class GoldEntity extends Entity
     }
 
     @Override
-    public void process(final int gametime)
+    public void process(final int gametime, WorldCallback world)
     {
         if (this.frameId < 9)
             this.frameId++;
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, int screenZ, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("items\\goldflip.cel", this.frameId), screenX, screenY, 0, 14, brightness);
     }

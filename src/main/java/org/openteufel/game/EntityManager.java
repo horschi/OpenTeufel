@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openteufel.file.dun.DUNFile;
 import org.openteufel.ui.ImageLoader;
 
-public class EntityManager
+public class EntityManager implements WorldCallback
 {
     private Entity[] entities = new Entity[100];
 
-    public EntityManager()
+    public EntityManager(DUNFile dun)
     {
     }
 
@@ -31,7 +32,7 @@ public class EntityManager
         {
             if (ent != null)
             {
-                ent.process(gametime);
+                ent.process(gametime, this);
             }
         }
     }
@@ -52,7 +53,7 @@ public class EntityManager
         this.addEntity(ent);
     }
 
-    public Entity getEntityClosest(final int x, final int y, final int maxradius)
+    public Entity getEntityClosest(final int x, final int y, final int maxradius, Entity ignore)
     {
         Entity ret = null;
         double retdist = maxradius;

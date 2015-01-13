@@ -43,7 +43,7 @@ public class NPCFarmerEntity extends NPCEntity
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final int screenZ, final double brightness)
     {
         switch (this.type)
         {

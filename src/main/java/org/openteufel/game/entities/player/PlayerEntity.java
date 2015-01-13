@@ -22,7 +22,7 @@ public class PlayerEntity extends WalkingEntity
 
     public PlayerEntity(final Position2d pos, final int playerclass, final boolean isTown)
     {
-        super(pos, 5);
+        super(pos, 5, TEAM_GOOD);
         this.playerclass = playerclass;
         this.isTown = isTown;
 

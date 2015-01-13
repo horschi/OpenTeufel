@@ -1,6 +1,7 @@
 package org.openteufel.game.entities;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.utils.Position2d;
 
 public abstract class NPCEntity extends Entity
@@ -11,11 +12,11 @@ public abstract class NPCEntity extends Entity
 
     public NPCEntity(final Position2d pos)
     {
-        super(pos);
+        super(pos, TEAM_NEUTRAL);
     }
 
     @Override
-    public final void process(final int gametime)
+    public final void process(final int gametime, WorldCallback world)
     {
         if ((gametime % this.getFrameDelay()) == 0)
         {

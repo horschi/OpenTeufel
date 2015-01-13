@@ -39,7 +39,7 @@ public class NPCDrunkEntity extends NPCEntity
     }
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final int screenZ, final double brightness)
     {
         renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\drunk\\twndrunk.cel", this.frameId), screenX, screenY, 16, 0, brightness);
         //        renderer.drawMarker(screenX, screenY, "" + this.frameId);

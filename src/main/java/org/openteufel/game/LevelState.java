@@ -44,7 +44,7 @@ public abstract class LevelState
         this.til = new TILFile(dataLoader.getFileByteBuffer(this.getTILPath()));
 
         this.dun = this.loadDUN(dataLoader);
-        this.entityManager = new EntityManager();
+        this.entityManager = new EntityManager(dun);
         this.placeEntities(this.entityManager);
 
         for (int y = 0; y < this.dun.getHeight() * 2; y++)
@@ -54,13 +54,11 @@ public abstract class LevelState
                 final short monster = this.dun.getMonster(x, y);
                 if (monster != 0)
                 {
-                    System.out.println("m " + x + " " + y);
                     this.entityManager.addEntity(DUNMonsterFactory.createEntityFromMonsterId(monster, x, y));
                 }
                 final short object = this.dun.getObject(x, y);
                 if (object != 0)
                 {
-                    System.out.println("o " + x + " " + y);
                     this.entityManager.addEntity(DUNObjectFactory.createEntityFromObjectId(object, x, y));
                 }
                 final short trans = this.dun.getTransparencies(x, y);

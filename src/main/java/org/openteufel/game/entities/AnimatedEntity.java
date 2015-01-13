@@ -1,8 +1,7 @@
 package org.openteufel.game.entities;
 
-import java.io.IOException;
-
 import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
@@ -12,9 +11,9 @@ public abstract class AnimatedEntity extends Entity
     private int    minFrameId, maxFrameId, currentFrameId;
     private String currentCelPath;
 
-    public AnimatedEntity(final Position2d pos)
+    public AnimatedEntity(final Position2d pos, int team)
     {
-        super(pos);
+        super(pos, team);
     }
 
     protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId)
@@ -31,7 +30,7 @@ public abstract class AnimatedEntity extends Entity
     }
 
     @Override
-    public final void process(final int gametime)
+    public final void process(final int gametime, WorldCallback world)
     {
         if ((gametime % this.getFrameDelay()) == 0)
             this.currentFrameId++;
@@ -52,7 +51,7 @@ public abstract class AnimatedEntity extends Entity
     protected abstract int getFrameDelay();
 
     @Override
-    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final double brightness)
+    public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final int screenZ, final double brightness)
     {
         if (this.currentCelPath == null)
             throw new NullPointerException();
