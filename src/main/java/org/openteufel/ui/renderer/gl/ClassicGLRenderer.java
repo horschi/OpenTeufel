@@ -26,7 +26,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     private static final Logger LOG = Logger.getLogger(ClassicGLRenderer.class.getName());
     private static final int AA_SAMPLES = 4;
-    public static int targetFps = 0;
+    public static int targetFps = -1;
 
     private final List<String> messageStack = new ArrayList<String>();
     private Point lastClick;

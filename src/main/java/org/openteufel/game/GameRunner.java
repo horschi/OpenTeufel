@@ -22,6 +22,8 @@ public class GameRunner implements KeyboardHandler {
 
     private boolean runGame = true;
 
+    private static int targetFps = 30;
+
     public GameRunner(final Renderer<?> renderer) throws IOException
     {
         this.dataLoader = new GamedataLoader(new File("."));
@@ -39,6 +41,7 @@ public class GameRunner implements KeyboardHandler {
         long lastFrameClock = System.nanoTime();
         while (runGame)
         {
+            long startClock = System.nanoTime();
             gametime++;
             levelrenderer.applyUserInput();
             level.runFrame(gametime);
@@ -52,12 +55,11 @@ public class GameRunner implements KeyboardHandler {
             textrenderer.writeText(100, 130, "Test text. Looks good huh? xxx", 24);
             textrenderer.writeText(100, 160, "Test text. Looks good huh? xxx", 16);
             this.renderer.finishFrame();
-            
-            long newClock = System.nanoTime();
-            long difClock = newClock-lastFrameClock;
-            if(difClock < 30000000)
-                Thread.sleep(difClock/1000000);
-            lastFrameClock = newClock;
+
+            long endClock = System.nanoTime();
+            if (endClock - startClock < 1000000000 / targetFps) {
+                Thread.sleep((1000000000 / targetFps - (endClock - startClock)) / 1000000);
+            }
         }
     }
 
