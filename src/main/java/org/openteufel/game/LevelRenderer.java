@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.MINPillar;
 import org.openteufel.file.dun.TILSquare;
+import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.MouseEvent;
@@ -56,7 +57,7 @@ public class LevelRenderer implements MouseHandler {
         int startWorldX = (this.cameraX - screenHalfWidthCart) & 0xffffffc0;
         int startWorldY = (this.cameraY - screenHalfHeightCart) & 0xffffffc0;
 
-        final List<Entity> entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart);
+        final List<Entity> entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart, Entity.TEAM_NEUTRAL);
         Collections.sort(entities, new Comparator<Entity>()
         {
             @Override

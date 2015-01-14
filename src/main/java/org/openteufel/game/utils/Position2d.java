@@ -162,6 +162,11 @@ public class Position2d
         this.normalizeOffsets();
     }
 
+    public Position2d clone()
+    {
+        return byPos(this.getPosX(), this.getPosY());
+    }
+
     public Position2d addNew(final int x, final int y)
     {
         return byPos(this.getPosX() + x, this.getPosY() + y);
@@ -171,6 +176,7 @@ public class Position2d
     {
         return byPos(this.getPosX() - x, this.getPosY() - y);
     }
+
     //
     public int calcDiffX(final Position2d target)
     {
@@ -180,6 +186,21 @@ public class Position2d
     public int calcDiffY(final Position2d target)
     {
         return target.getPosY() - this.getPosY();
+    }
+
+    public int calcDist(final Position2d target)
+    {
+        int dx = calcDiffX(target);
+        int dy = calcDiffY(target);
+        return (int) (Math.sqrt(dx * dx + dy * dy));
+    }
+
+    public Position2d calcMidPoint(final Position2d target, double mult)
+    {
+        int dx = calcDiffX(target);
+        int dy = calcDiffY(target);
+
+        return byPos((int) (getPosX() + (dx * mult)), (int) (getPosY() + (dy * mult)));
     }
 
     //

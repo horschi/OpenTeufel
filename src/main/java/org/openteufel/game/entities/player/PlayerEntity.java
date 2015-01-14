@@ -3,6 +3,7 @@ package org.openteufel.game.entities.player;
 import java.io.IOException;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.entities.AnimatedEntity;
 import org.openteufel.game.entities.WalkingEntity;
 import org.openteufel.game.utils.Position2d;
@@ -56,6 +57,12 @@ public class PlayerEntity extends WalkingEntity
         return 16;
     }
 
+    @Override
+    protected Entity[] getAdditionalPreloadEntitites()
+    {
+        return null;
+    }
+    
     @Override
     protected String getCelPath(final int animType)
     {
@@ -113,19 +120,24 @@ public class PlayerEntity extends WalkingEntity
         }
         else
         {
-            return new int[] { ANIM_STANDING, ANIM_WALKING, };
+            return new int[] { ANIM_STANDING, ANIM_WALKING, ANIM_ATTACKING, ANIM_HIT };
         }
     }
 
 
     @Override
-    protected void preWalk(int gametime, int currentFrameId)
+    protected void preWalk(int gametime, int currentFrameId, WorldCallback world)
     {
     }
 
 
     @Override
-    protected void finishWalk(int gametime, int currentFrameId)
+    protected void finishWalk(int gametime, int currentFrameId, WorldCallback world)
+    {
+    }
+
+    @Override
+    protected void finishAnimation(int gametime, int currentFrameId, WorldCallback world)
     {
     }
 

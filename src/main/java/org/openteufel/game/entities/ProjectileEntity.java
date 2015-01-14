@@ -2,6 +2,8 @@ package org.openteufel.game.entities;
 
 import java.io.IOException;
 
+import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.utils.EntityUtils;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
@@ -11,6 +13,7 @@ public abstract class ProjectileEntity extends AnimatedEntity
     private double precisePosX, precisePosY;
     private double moveX, moveY;
     private int    direction;
+    private int ttl = 256;
 
     public ProjectileEntity(final Position2d pos, final Position2d target, final int speed, int team)
     {
@@ -20,9 +23,12 @@ public abstract class ProjectileEntity extends AnimatedEntity
 
     protected void updateTarget(final Position2d target, final int speed)
     {
+        precisePosX = getPos().getPosX();
+        precisePosY = getPos().getPosY();
+        
         final int difX = this.pos.calcDiffX(target);
         final int difY = this.pos.calcDiffY(target);
-        final double speedMult = ((double) speed) / (double) (difX * difX + difY * difY);
+        final double speedMult = ((double) speed) / Math.sqrt(difX * difX + difY * difY);
         this.moveX = (double) difX * speedMult;
         this.moveY = (double) difY * speedMult;
 
@@ -50,8 +56,13 @@ public abstract class ProjectileEntity extends AnimatedEntity
     public final void preload(final ImageLoader imageLoader) throws IOException
     {
         final int numdirs = this.getNumDirections();
-        for (int i = 0; i < numdirs; i++)
-            imageLoader.preloadObjectCel(this.getCelPath(i));
+        if(numdirs == 0)
+            imageLoader.preloadObjectCel(this.getCelPath(0));
+        else
+        {
+            for (int i = 0; i < numdirs; i++)
+                imageLoader.preloadObjectCel(this.getCelPath(i));
+        }
     }
 
     protected abstract String getCelPath(int dir);
@@ -61,16 +72,28 @@ public abstract class ProjectileEntity extends AnimatedEntity
     protected abstract int getNumDirections();
 
     @Override
-    protected final void preProcess(final int gametime, final int currentFrameId)
+    protected final void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        this.precisePosX += this.moveX;
-        this.precisePosY += this.moveY;
-        this.pos.setPos((int) this.precisePosX, (int) this.precisePosY);
+        if(ttl < 0)
+            killEntity();
+        else
+        {
+            ttl--;
+            this.precisePosX += this.moveX;
+            this.precisePosY += this.moveY;
+            this.pos.setPos((int) this.precisePosX, (int) this.precisePosY);
+
+            Entity hitEnt = world.getEntityClosest(pos.getPosX(), pos.getPosY(), 20, getEnemyTeam());
+            if(hitEnt != null)
+            { // hit
+                killEntity();
+            }
+        }
     }
 
 
     @Override
-    protected void finishAnimation(final int gametime, final int currentFrameId)
+    protected void finishAnimation(final int gametime, final int currentFrameId, WorldCallback world)
     {
     }
 

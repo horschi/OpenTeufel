@@ -34,17 +34,17 @@ public abstract class AnimatedEntity extends Entity
     {
         if ((gametime % this.getFrameDelay()) == 0)
             this.currentFrameId++;
-        this.preProcess(gametime, this.currentFrameId);
+        this.preProcess(gametime, this.currentFrameId, world);
         if (this.currentFrameId > this.maxFrameId)
         {
             this.currentFrameId = this.minFrameId;
-            this.finishAnimation(gametime, this.currentFrameId);
+            this.finishAnimation(gametime, this.currentFrameId, world);
         }
     }
 
-    protected abstract void preProcess(final int gametime, int currentFrameId);
+    protected abstract void preProcess(final int gametime, int currentFrameId, WorldCallback world);
 
-    protected abstract void finishAnimation(final int gametime, int currentFrameId);
+    protected abstract void finishAnimation(final int gametime, int currentFrameId, WorldCallback world);
 
     protected abstract int getBottomOffset();
 

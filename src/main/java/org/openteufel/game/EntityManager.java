@@ -28,11 +28,14 @@ public class EntityManager implements WorldCallback
 
     public void process(final int gametime)
     {
-        for (final Entity ent : this.entities)
+        for (int i = entities.length - 1; i >= 0; i--)
         {
+            final Entity ent = this.entities[i];
             if (ent != null)
             {
                 ent.process(gametime, this);
+                if (!ent.isEntityAlive())
+                    entities[i] = null;
             }
         }
     }
@@ -41,7 +44,8 @@ public class EntityManager implements WorldCallback
     {
         for (int i = this.entities.length - 1; i >= 0; i--)
         {
-            if (this.entities[i] == null)
+            Entity t = this.entities[i];
+            if (t == null || !t.isEntityAlive())
             {
                 this.entities[i] = ent;
                 return;
@@ -53,13 +57,13 @@ public class EntityManager implements WorldCallback
         this.addEntity(ent);
     }
 
-    public Entity getEntityClosest(final int x, final int y, final int maxradius, Entity ignore)
+    public Entity getEntityClosest(final int x, final int y, final int maxradius, int team)
     {
         Entity ret = null;
         double retdist = maxradius;
         for (final Entity ent : this.entities)
         {
-            if (ent != null)
+            if (ent != null && (team == Entity.TEAM_NEUTRAL || ent.getTeam() == team))
             {
                 final long diffX = Math.abs(ent.getPos().getPosX() - x);
                 final long diffY = Math.abs(ent.getPos().getPosY() - y);
@@ -76,12 +80,12 @@ public class EntityManager implements WorldCallback
         return ret;
     }
 
-    public List<Entity> getEntities(final int x, final int y, final int radius)
+    public List<Entity> getEntities(final int x, final int y, final int radius, int team)
     {
         final List<Entity> ret = new ArrayList<Entity>();
         for (final Entity ent : this.entities)
         {
-            if (ent != null)
+            if (ent != null && (team == Entity.TEAM_NEUTRAL || ent.getTeam() == team))
             {
                 final long diffX = Math.abs(ent.getPos().getPosX() - x);
                 final long diffY = Math.abs(ent.getPos().getPosY() - y);
@@ -95,12 +99,12 @@ public class EntityManager implements WorldCallback
         return ret;
     }
 
-    public List<Entity> getEntities(final int x1, final int y1, final int x2, final int y2)
+    public List<Entity> getEntities(final int x1, final int y1, final int x2, final int y2, int team)
     {
         final List<Entity> ret = new ArrayList<Entity>();
         for (final Entity ent : this.entities)
         {
-            if (ent != null)
+            if (ent != null && (team == Entity.TEAM_NEUTRAL || ent.getTeam() == team))
             {
                 final int entX = ent.getPos().getPosX();
                 if (entX <= x2 && entX >= x1)

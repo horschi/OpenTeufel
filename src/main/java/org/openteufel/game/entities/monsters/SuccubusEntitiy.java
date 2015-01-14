@@ -1,7 +1,8 @@
 package org.openteufel.game.entities.monsters;
 
+import org.openteufel.game.Entity;
 import org.openteufel.game.entities.MonsterEntity;
-import org.openteufel.game.entities.WalkingEntity;
+import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.utils.Position2d;
 
 public class SuccubusEntitiy extends MonsterEntity
@@ -56,18 +57,18 @@ public class SuccubusEntitiy extends MonsterEntity
     @Override
     protected int getNumFramesAttack()
     {
-        return 0;
+        return 16;
     }
 
     @Override
     protected int getNumFramesHit()
     {
-        return 0;
+        return 7;
     }
 
     @Override
     protected int getNumFramesDeath()
     {
-        return 0;
+        return 24;
     }
 }

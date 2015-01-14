@@ -14,11 +14,13 @@ public abstract class Entity
 
     protected Position2d    pos;
     protected int           team;
+    private boolean         alive;
 
     public Entity(final Position2d pos, int team)
     {
         this.pos = pos;
         this.team = team;
+        alive = true;
     }
 
     public int getTeam()
@@ -26,9 +28,32 @@ public abstract class Entity
         return team;
     }
 
+    public int getEnemyTeam()
+    {
+        switch (team)
+        {
+            case TEAM_BAD:
+                return TEAM_GOOD;
+            case TEAM_GOOD:
+                return TEAM_BAD;
+            default:
+                throw new RuntimeException();
+        }
+    }
+
     public Position2d getPos()
     {
         return this.pos;
+    }
+
+    protected void killEntity()
+    {
+        alive = false;
+    }
+
+    public boolean isEntityAlive()
+    {
+        return alive;
     }
 
     public abstract void preload(ImageLoader imageLoader) throws IOException;

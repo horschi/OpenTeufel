@@ -3,6 +3,7 @@ package org.openteufel.game.entities;
 import java.io.IOException;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.WorldCallback;
 import org.openteufel.game.utils.EntityUtils;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
@@ -12,7 +13,10 @@ public abstract class WalkingEntity extends AnimatedEntity
 {
     protected static final int ANIM_STANDING = 0;
     protected static final int ANIM_WALKING  = 1;
-
+    protected static final int ANIM_ATTACKING  = 2;
+    protected static final int ANIM_HIT  = 3;
+    protected static final int ANIM_DEATH  = 4;
+    
     private Position2d         targetPos;
     private Entity             targetEnt;
     private int                direction;
@@ -48,7 +52,14 @@ public abstract class WalkingEntity extends AnimatedEntity
     {
         for (final int animType : this.getAnimTypes())
             imageLoader.preloadObjectCel(this.getCelPath(animType));
+        
+        Entity[] addPreloadEntitties = getAdditionalPreloadEntitites();
+        if (addPreloadEntitties != null)
+            for (final Entity ent : addPreloadEntitties)
+                ent.preload(imageLoader);
     }
+
+    protected abstract Entity[] getAdditionalPreloadEntitites();
 
     protected abstract String getCelPath(int animType);
 
@@ -56,6 +67,16 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     protected abstract int[] getAnimTypes();
 
+    protected void updateDirection(final int direction)
+    {
+        this.direction = direction;
+    }
+    
+    protected void updateDirection(final Position2d target)
+    {
+        this.direction = EntityUtils.calcDirection8(pos.calcDiffX(target), pos.calcDiffY(target), this.direction);
+    }
+    
     protected void updateAnimation(final int animType)
     {
         this.currentAnimation = animType;
@@ -65,9 +86,32 @@ public abstract class WalkingEntity extends AnimatedEntity
     }
 
     @Override
-    protected void preProcess(final int gametime, final int currentFrameId)
+    protected void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        preWalk(gametime, currentFrameId);
+        switch (currentAnimation)
+        {
+            case ANIM_STANDING:
+            case ANIM_WALKING:
+                preProcessWalk(gametime, currentFrameId, world);
+                break;
+                
+            case ANIM_ATTACKING:
+                break;
+
+            case ANIM_DEATH:
+                break;
+
+            case ANIM_HIT:
+                break;
+
+            default:
+                throw new RuntimeException();
+        }
+    }
+    
+    private void preProcessWalk(final int gametime, final int currentFrameId, WorldCallback world)
+    {
+        preWalk(gametime, currentFrameId, world);
         
         if (this.targetPos == null && this.targetEnt != null)
             this.targetPos = this.targetEnt.getPos(); // TODO:
@@ -116,17 +160,13 @@ public abstract class WalkingEntity extends AnimatedEntity
         else
         {
             this.updateAnimation(ANIM_STANDING);
-            finishWalk(gametime, currentFrameId);
+            finishWalk(gametime, currentFrameId, world);
         }
     }
 
-    protected abstract void preWalk(final int gametime, final int currentFrameId);
-    protected abstract void finishWalk(final int gametime, final int currentFrameId);
-    
-    @Override
-    protected void finishAnimation(final int gametime, final int currentFrameId)
-    {
-    }
+    protected abstract void preWalk(final int gametime, final int currentFrameId, WorldCallback world);
+    protected abstract void finishWalk(final int gametime, final int currentFrameId, WorldCallback world);
+
 
     @Override
     protected int getBottomOffset()
