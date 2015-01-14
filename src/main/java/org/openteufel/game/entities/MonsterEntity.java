@@ -118,6 +118,9 @@ public abstract class MonsterEntity extends WalkingEntity
         {
             attackTarget = world.getEntityClosest(getPos().getPosX(), getPos().getPosY(), getMaxLookDist(), getEnemyTeam());
         }
+
+        if (attackTarget == null)
+            updateAnimation(ANIM_STANDING);
         else
         {
             int dist = getPos().calcDist(attackTarget.getPos());
@@ -146,7 +149,10 @@ public abstract class MonsterEntity extends WalkingEntity
     @Override
     protected void finishAnimation(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        world.addEntity(new BloodstarEntity(getPos().clone(), attackTarget.getPos(), getTeam()));
-        updateAnimation(ANIM_STANDING);
+        if(this.getCurrentAnimation() == ANIM_ATTACKING)
+        {
+            world.addEntity(new BloodstarEntity(getPos().clone(), attackTarget.getPos(), getTeam()));
+            updateAnimation(ANIM_STANDING);
+        }
     }
 }

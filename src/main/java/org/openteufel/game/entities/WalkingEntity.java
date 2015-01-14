@@ -85,6 +85,11 @@ public abstract class WalkingEntity extends AnimatedEntity
         this.updateAnimationParams(this.getCelPath(animType), frame, frame + num - 1);
     }
 
+    public int getCurrentAnimation()
+    {
+        return currentAnimation;
+    }
+
     @Override
     protected void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
     {
