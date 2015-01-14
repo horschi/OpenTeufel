@@ -36,6 +36,7 @@ public class GameRunner implements KeyboardHandler {
         final TextRenderer textrenderer = new TextRenderer(renderer, dataLoader);
         
         int gametime = 0;
+        long lastFrameClock = System.nanoTime();
         while (runGame)
         {
             gametime++;
@@ -51,6 +52,12 @@ public class GameRunner implements KeyboardHandler {
             textrenderer.writeText(100, 130, "Test text. Looks good huh? xxx", 24);
             textrenderer.writeText(100, 160, "Test text. Looks good huh? xxx", 16);
             this.renderer.finishFrame();
+            
+            long newClock = System.nanoTime();
+            long difClock = newClock-lastFrameClock;
+            if(difClock < 30000000)
+                Thread.sleep(difClock/1000000);
+            lastFrameClock = newClock;
         }
     }
 
