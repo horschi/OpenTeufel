@@ -28,6 +28,7 @@ public class GameRunner implements KeyboardHandler {
     {
         this.dataLoader = new GamedataLoader(new File("."));
         this.renderer = renderer;
+        this.renderer.setTargetFps(30);
         renderer.registerKeyboardHandler(this);
     }
 
@@ -38,10 +39,8 @@ public class GameRunner implements KeyboardHandler {
         final TextRenderer textrenderer = new TextRenderer(renderer, dataLoader);
         
         int gametime = 0;
-        long lastFrameClock = System.nanoTime();
         while (runGame)
         {
-            long startClock = System.nanoTime();
             gametime++;
             levelrenderer.applyUserInput();
             level.runFrame(gametime);
@@ -55,11 +54,6 @@ public class GameRunner implements KeyboardHandler {
             textrenderer.writeText(100, 130, "Test text. Looks good huh? xxx", 24);
             textrenderer.writeText(100, 160, "Test text. Looks good huh? xxx", 16);
             this.renderer.finishFrame();
-
-            long endClock = System.nanoTime();
-            if (endClock - startClock < 1000000000 / targetFps) {
-                Thread.sleep((1000000000 / targetFps - (endClock - startClock)) / 1000000);
-            }
         }
     }
 

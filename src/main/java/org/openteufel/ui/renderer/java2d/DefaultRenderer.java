@@ -17,10 +17,10 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import org.lwjgl.input.Keyboard;
 import org.openteufel.ui.KeyboardEvent;
 import org.openteufel.ui.KeyboardHandler;
 import org.openteufel.ui.MouseHandler;
@@ -34,22 +34,50 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     private BufferStrategy buffer                 = null;
     private Graphics2D     currentGraphicsContext = null;
     private Point          lastClick              = null;
+    private long fps;
+    private long lastFrameTime;
     private int lastKey = -1;
+    private int targetFps;
 
-    private List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
-    public void registerKeyboardHandler(KeyboardHandler handler) {
-        keyboardHandlers.add(handler);
-    }
+    private final List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
 
-    private List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
-
-    public void registerMouseHandler(MouseHandler handler) {
-        mouseHandlers.add(handler);
-    }
+    private final List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
 
     public DefaultRenderer()
     {
         System.setProperty("sun.java2d.opengl", "true");
+        lastFrameTime = System.nanoTime();
+    }
+
+    @Override
+    public int getTargetFps()
+    {
+        return targetFps;
+    }
+
+    @Override
+    public void setTargetFps(int targetFps)
+    {
+        this.targetFps = targetFps;
+        if (targetFps < 0) {
+            // unlimited
+        }
+
+        if (targetFps == 0) {
+            // vsync
+        }
+    }
+
+    @Override
+    public void registerKeyboardHandler(KeyboardHandler handler)
+    {
+        keyboardHandlers.add(handler);
+    }
+
+    @Override
+    public void registerMouseHandler(MouseHandler handler)
+    {
+        mouseHandlers.add(handler);
     }
 
     @Override
@@ -147,6 +175,19 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     {
         this.currentGraphicsContext.dispose();
         this.buffer.show();
+
+        if(targetFps > 0) {
+            long now = System.nanoTime();
+            if (now - lastFrameTime < 1000000000 / targetFps) {
+                try {
+                    Thread.sleep((1000000000 / targetFps - (now - lastFrameTime)) / 1000000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(DefaultRenderer.class.getName()).log(Level.WARNING, "Someone interrupted my slumber: {0}\n{1}", new Object[]{ex.toString(), ex.getStackTrace().toString()});
+                }
+            }
+            fps = 1000000000 / (now - lastFrameTime);
+            lastFrameTime = now;
+        }
     }
 
     @Override

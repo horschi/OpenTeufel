@@ -29,4 +29,8 @@ public interface Renderer<ImageType> {
     public void registerKeyboardHandler(KeyboardHandler handler);
 
     public void registerMouseHandler(MouseHandler handler);
+
+    public void setTargetFps(int fps);
+
+    public int getTargetFps();
 }

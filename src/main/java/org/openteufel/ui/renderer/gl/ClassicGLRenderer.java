@@ -26,7 +26,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     private static final Logger LOG = Logger.getLogger(ClassicGLRenderer.class.getName());
     private static final int AA_SAMPLES = 4;
-    public static int targetFps = -1;
+    private int targetFps = -1;
 
     private final List<String> messageStack = new ArrayList<String>();
     private Point lastClick;
@@ -35,6 +35,21 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private final List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
 
     private final List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
+
+    public int getTargetFps() {
+        return targetFps;
+    }
+
+    public void setTargetFps(int targetFps) {
+        this.targetFps = targetFps;
+        if (targetFps < 0) {
+            Display.setVSyncEnabled(false);
+        }
+
+        if (targetFps == 0) {
+            Display.setVSyncEnabled(true);
+        }
+    }
 
     public void registerKeyboardEventHandler(KeyboardHandler handler) {
         keyboardHandlers.add(handler);
@@ -53,14 +68,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
             Display.setFullscreen(false);
             Display.setResizable(true);
 
-            if (targetFps < 0) {
-                Display.setVSyncEnabled(false);
-            }
-
-            if (targetFps == 0) {
-                Display.setVSyncEnabled(true);
-            }
-
             Display.setTitle("OpenTeufel");
 
             Display.create(pixelFormat);
@@ -70,6 +77,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
             Logger.getLogger(ClassicGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        setTargetFps(0);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -95,10 +103,13 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
      */
     @Override
     public Sprite loadImage(final int[] pixels, final int w, final int h) {
+        if (pixels.length != w * h) {
+            LOG.warning("Implausible Image Data: got " + pixels.length + "pixels for " + w + "*" + h + "px image (should be " + (w * h) + ")");
+        }
         try {
-            return new Sprite(pixels, h, h);
+            return new Sprite(pixels, w, h);
         } catch (Exception ex) {
-            Logger.getLogger(ClassicGLRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -289,7 +300,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private void resize() {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glOrtho(0, getScreenWidth(), getScreenHeight(), 0, -10, 10);
+        GL11.glOrtho(0, getScreenWidth(), getScreenHeight(), 0, -100, 100);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glViewport(0, 0, getScreenWidth(), getScreenHeight());
