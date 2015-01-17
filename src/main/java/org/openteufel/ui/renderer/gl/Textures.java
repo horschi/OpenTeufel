@@ -68,14 +68,14 @@ public class Textures {
         }
         GL11.glGenTextures(intbuf);
         id = intbuf.get(0);
+        if (id == 0) {
+            LOG.severe("got no texture id!");
+        }
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
     }
 
     private void updateTextureMap() {
         if (needsUpdate) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
             final ByteBuffer buf = ByteBuffer.allocateDirect(MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE * 4);
             buf.order(ByteOrder.LITTLE_ENDIAN);
             for (int y = 0; y < MAP_TEXTURE_SIZE; y++) {
@@ -89,7 +89,12 @@ public class Textures {
                 }
             }
             buf.rewind();
+
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+
             needsUpdate = false;
         }
     }
@@ -141,28 +146,34 @@ public class Textures {
                 nextMap = new Textures();
             }
             nextMap.addFromPixels(pixels, width, height, textureHash);
-        }
+        } else {
+            int pos;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    pos = (xpos + x) + ((ypos + y) * MAP_TEXTURE_SIZE);
+                    try {
+                        allpixels[pos] = pixels[x + (y * width)];
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new Exception(e);
+                    }
 
-        int pos;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                pos = (xpos + x) + ((ypos + y) * MAP_TEXTURE_SIZE);
-                allpixels[pos] = pixels[x + (y * width)];
+                }
             }
+
+            final Texture result = new Texture(GL11.GL_TEXTURE_2D, id);
+            result.setTexHeight(MAP_TEXTURE_SIZE);
+            result.setTexWidth(MAP_TEXTURE_SIZE);
+            result.setTexXPos(xpos);
+            result.setTexYPos(ypos);
+            result.setImgWidth(width);
+            result.setImgHeight(height);
+            result.setImgHash(textureHash);
+
+            textureMap.put(textureHash, result);
+
+            needsUpdate = true;
         }
 
-        final Texture result = new Texture(GL11.GL_TEXTURE_2D, id);
-        result.setTexHeight(MAP_TEXTURE_SIZE);
-        result.setTexWidth(MAP_TEXTURE_SIZE);
-        result.setTexXPos(xpos);
-        result.setTexYPos(ypos);
-        result.setImgWidth(width);
-        result.setImgHeight(height);
-        result.setImgHash(textureHash);
-
-        textureMap.put(textureHash, result);
-
-        needsUpdate = true;
     }
 
     public Texture getTexture(final String hash) {

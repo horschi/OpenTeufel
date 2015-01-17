@@ -25,23 +25,6 @@ public class Texture {
 
     private String imgHash;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-    private int id;
-
-    public String getImgHash() {
-        return imgHash;
-    }
-
-    public void setImgHash(final String imgHash) {
-        this.imgHash = imgHash;
-    }
-
     /**
      *
      * @param target
@@ -50,6 +33,18 @@ public class Texture {
     public Texture(final int target, final int textureID) {
         this.target = target;
         this.textureID = textureID;
+    }
+
+    public int getId() {
+        return textureID;
+    }
+
+    public String getImgHash() {
+        return imgHash;
+    }
+
+    public void setImgHash(final String imgHash) {
+        this.imgHash = imgHash;
     }
 
     public int getTexXPos() {
