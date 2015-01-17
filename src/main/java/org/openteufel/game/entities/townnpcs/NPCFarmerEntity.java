@@ -48,15 +48,15 @@ public class NPCFarmerEntity extends NPCEntity
         switch (this.type)
         {
             case 1: // cow
-                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\cfrmrn2.cel", this.frameId), screenX, screenY, 16, 0, brightness);
+                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\cfrmrn2.cel", this.frameId), screenX, screenY, 0, 16, brightness);
                 break;
             case 2: // elk
-                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\mfrmrn2.cel", this.frameId), screenX, screenY, 16, 0, brightness);
+                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\mfrmrn2.cel", this.frameId), screenX, screenY, 0, 16, brightness);
                 break;
 
             case 0: // farmer
             default:
-                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\Farmrn2.cel", this.frameId), screenX, screenY, 16, 0, brightness);
+                renderer.drawImageCentered(imageLoader.loadObjectImage("Towners\\Farmer\\Farmrn2.cel", this.frameId), screenX, screenY, 0, 16, brightness);
         }
     }
 
