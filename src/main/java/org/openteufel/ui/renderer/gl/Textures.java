@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.openteufel.ui.renderer.gl;
 
 import java.nio.ByteBuffer;
@@ -15,10 +10,6 @@ import java.util.logging.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-/**
- *
- * @author luxifer
- */
 public class Textures {
 
     private static final Logger LOG = Logger.getLogger(Textures.class.getName());
@@ -58,7 +49,7 @@ public class Textures {
     private boolean needsUpdate = false;
     private Textures nextMap = null;
 
-    public Textures() {
+    private Textures() {
         allpixels = new int[MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE];
         map = new String[MAP_TEXTURE_SIZE / MIN_TEXTURE_SIZE][MAP_TEXTURE_SIZE / MIN_TEXTURE_SIZE];
         for (int x = 0; x < MAP_TEXTURE_SIZE / MIN_TEXTURE_SIZE; x++) {
@@ -103,11 +94,13 @@ public class Textures {
         if (pixels.length != width * height) {
             throw new Exception("Implausible Data: Pixel array has length " + pixels.length + " but should have length " + (width * height) + " (width=" + width + " * height=" + height + ")");
         }
+
         int texWidth = 2;
-        int texHeight = 2;
         while (texWidth < width) {
             texWidth *= 2;
         }
+
+        int texHeight = 2;
         while (texHeight < height) {
             texHeight *= 2;
         }
@@ -115,6 +108,7 @@ public class Textures {
         int xpos = -1, ypos = -1;
         final int wunits = (texWidth / MIN_TEXTURE_SIZE);
         final int hunits = (texHeight / MIN_TEXTURE_SIZE);
+
         test:
         for (int y = 0; y < (MAP_TEXTURE_SIZE / MIN_TEXTURE_SIZE) - hunits; y += hunits) {
             for (int x = 0; x < MAP_TEXTURE_SIZE / MIN_TEXTURE_SIZE - wunits; x += wunits) {
@@ -176,12 +170,7 @@ public class Textures {
 
     }
 
-    public Texture getTexture(final String hash) {
-        /*
-         if (needsUpdate) {
-         updateTextureMap();
-         }
-         */
+    private Texture getTexture(final String hash) {
         final Texture texture = textureMap.get(hash);
         if (texture == null && nextMap != null) {
             return nextMap.getTexture(hash);
@@ -189,21 +178,21 @@ public class Textures {
         return texture;
     }
 
-    public void triggerUpdate() {
+    private void triggerUpdate() {
         updateTextureMap();
         if (nextMap != null) {
             nextMap.triggerUpdate();
         }
     }
 
-    public void addTexture(final int[] pixels, final int width, final int height) throws Exception {
+    private void addTexture(final int[] pixels, final int width, final int height) throws Exception {
         final String textureHash = String.valueOf(Arrays.hashCode(pixels));
         if (getTexture(textureHash) == null) {
             addFromPixels(pixels, width, height, textureHash);
         }
     }
 
-    public int count() {
+    private int count() {
         if (nextMap == null) {
             return 1;
         } else {

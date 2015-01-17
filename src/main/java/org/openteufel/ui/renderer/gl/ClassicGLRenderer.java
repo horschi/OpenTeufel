@@ -1,6 +1,5 @@
 package org.openteufel.ui.renderer.gl;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,10 +17,6 @@ import org.openteufel.ui.MouseEvent;
 import org.openteufel.ui.MouseHandler;
 import org.openteufel.ui.Renderer;
 
-/**
- *
- * @author luxifer
- */
 public class ClassicGLRenderer implements Renderer<Sprite> {
 
     private static final Logger LOG = Logger.getLogger(ClassicGLRenderer.class.getName());
@@ -29,17 +24,18 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private int targetFps = -1;
 
     private final List<String> messageStack = new ArrayList<String>();
-    private Point lastClick;
 
     private List<drawImageInfo> drawImageList = new ArrayList<drawImageInfo>();
     private final List<KeyboardHandler> keyboardHandlers = new ArrayList<KeyboardHandler>();
 
     private final List<MouseHandler> mouseHandlers = new ArrayList<MouseHandler>();
 
+    @Override
     public int getTargetFps() {
         return targetFps;
     }
 
+    @Override
     public void setTargetFps(int targetFps) {
         this.targetFps = targetFps;
         if (targetFps < 0) {
@@ -94,17 +90,10 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     public void close() {
     }
 
-    /**
-     *
-     * @param pixels
-     * @param w
-     * @param h
-     * @return
-     */
     @Override
     public Sprite loadImage(final int[] pixels, final int w, final int h) {
         if (pixels.length != w * h) {
-            LOG.warning("Implausible Image Data: got " + pixels.length + "pixels for " + w + "*" + h + "px image (should be " + (w * h) + ")");
+            LOG.log(Level.WARNING, "Implausible Image Data: got {0}pixels for {1}*{2}px image (should be {3})", new Object[]{pixels.length, w, h, w * h});
         }
         try {
             return new Sprite(pixels, w, h);
@@ -114,36 +103,21 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         }
     }
 
-    /**
-     *
-     * @param image
-     */
     @Override
     public void unloadImage(final Sprite image) {
         //nop
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int getScreenWidth() {
         return Display.getWidth();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public int getScreenHeight() {
         return Display.getHeight();
     }
 
-    /**
-     *
-     */
     @Override
     public void startFrame() {
         Textures.update();
@@ -163,7 +137,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private void processEvents() {
         while (Mouse.next()) {
             for (MouseHandler h : mouseHandlers) {
-                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX()- (getScreenWidth() / 2), (getScreenHeight() / 2) - Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
+                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX() - (getScreenWidth() / 2), (getScreenHeight() / 2) - Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
             }
         }
 
@@ -181,39 +155,16 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         }
     }
 
-    /**
-     *
-     * @param image
-     * @param screenX
-     * @param screenY
-     * @param screenZ
-     * @param brightness
-     */
     @Override
     public void drawImage(final Sprite image, final int screenX, final int screenY, final int screenZ, final double brightness) {
         drawImageList.add(new drawImageInfo(image, screenX, screenY, screenZ, brightness));
     }
 
-    /**
-     *
-     * @param image
-     * @param screenX
-     * @param screenY
-     * @param screenZ
-     * @param bottomOffset
-     * @param brightness
-     */
     @Override
     public void drawImageCentered(final Sprite image, final int screenX, final int screenY, final int screenZ, final int bottomOffset, final double brightness) {
         drawImage(image, screenX - (image.getWidth() >> 1), screenY + bottomOffset - image.getHeight(), screenZ, brightness);
     }
 
-    /**
-     *
-     * @param screenX
-     * @param screenY
-     * @param text
-     */
     @Override
     public void drawMarker(final int screenX, final int screenY, final String text) {
         drawRect(screenX - 32, screenY - 16, 64, 32);
@@ -222,13 +173,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     }
 
-    /**
-     *
-     * @param screenX
-     * @param screenY
-     * @param width
-     * @param height
-     */
     public void drawRect(final int screenX, final int screenY, final int width, final int height) {
         drawLine(screenX, screenY, screenX + width, screenY);
         drawLine(screenX + width, screenY, screenX + width, screenY + height);
@@ -236,13 +180,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         drawLine(screenX, screenY + height, screenX, screenY);
     }
 
-    /**
-     *
-     * @param screenX1
-     * @param screenY1
-     * @param screenX2
-     * @param screenY2
-     */
     @Override
     public void drawLine(final int screenX1, final int screenY1, final int screenX2, final int screenY2) {
         GL11.glPushMatrix();
@@ -256,9 +193,6 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glPopMatrix();
     }
 
-    /**
-     *
-     */
     @Override
     public void finishFrame() {
         int lx = 0, ly = 0, lz = 0;
