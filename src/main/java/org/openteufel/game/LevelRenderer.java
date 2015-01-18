@@ -182,7 +182,9 @@ public class LevelRenderer implements MouseHandler {
         {
             final int isoX = this.lastClickPos.x;
             final int isoY = this.lastClickPos.y;
-            this.lastClickPos = null;
+            if (!lmbIsPressed) {
+                this.lastClickPos = null;
+            }
 
             this.levelstate.updateCamPos(isometricToCartesianX(isoX, isoY), isometricToCartesianY(isoX, isoY));
         }

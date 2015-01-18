@@ -22,7 +22,7 @@ public class GameRunner implements KeyboardHandler
 
     private boolean              runGame   = true;
 
-    private static final int     targetFps = 20;
+    private static final int targetFps = 60;
 
     public GameRunner(final Renderer<?> renderer) throws IOException
     {
