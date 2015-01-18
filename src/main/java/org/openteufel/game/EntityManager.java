@@ -15,6 +15,17 @@ public class EntityManager implements WorldCallback
     {
     }
 
+    public int getNumEntities()
+    {
+        int n = 0;
+        for (Entity ent : this.entities)
+        {
+            if (ent != null)
+                n++;
+        }
+        return n;
+    }
+    
     public void preload(final ImageLoader imageLoader) throws IOException
     {
         for (final Entity ent : this.entities)

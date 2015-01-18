@@ -90,7 +90,7 @@ public class TextRenderer
             {
                 int w = (data[i + 2]) & 0xff;
                 if (w == 0)
-                    w = (data[1]) & 0xff;
+                    w = (data[0]) & 0xff;
                 ret[i] = w;
             }
             return ret;
@@ -138,7 +138,7 @@ public class TextRenderer
         }
     }
 
-    public void writeText(int x, int y, String text, int size)
+    public int writeText(int x, int y, String text, int size)
     {
         Object[] images;
         int[] widths;
@@ -200,5 +200,6 @@ public class TextRenderer
 
             x += widths[ch];
         }
+        return x;
     }
 }
