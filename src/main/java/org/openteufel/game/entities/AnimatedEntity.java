@@ -16,14 +16,14 @@ public abstract class AnimatedEntity extends Entity
         super(pos, team);
     }
 
-    protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId)
+    protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId, boolean resetAnimationFrame)
     {
         if (currentCelPath != null)
             this.currentCelPath = currentCelPath;
         this.minFrameId = minFrameId;
         this.maxFrameId = maxFrameId;
 
-        if (this.currentFrameId > this.maxFrameId || this.currentFrameId < minFrameId)
+        if (resetAnimationFrame || this.currentFrameId >= this.maxFrameId || this.currentFrameId < minFrameId)
         {
             this.currentFrameId = this.minFrameId;
         }
@@ -35,7 +35,7 @@ public abstract class AnimatedEntity extends Entity
         if ((gametime % this.getFrameDelay()) == 0)
             this.currentFrameId++;
         this.preProcess(gametime, this.currentFrameId, world);
-        if (this.currentFrameId > this.maxFrameId)
+        if (this.currentFrameId >= this.maxFrameId)
         {
             this.currentFrameId = this.minFrameId;
             this.finishAnimation(gametime, this.currentFrameId, world);

@@ -195,7 +195,7 @@ public class Position2d
         return (int) (Math.sqrt(dx * dx + dy * dy));
     }
 
-    public Position2d calcMidPoint(final Position2d target, double mult)
+    public Position2d calcMidPointRelative(final Position2d target, double mult)
     {
         int dx = calcDiffX(target);
         int dy = calcDiffY(target);
@@ -203,6 +203,19 @@ public class Position2d
         return byPos((int) (getPosX() + (dx * mult)), (int) (getPosY() + (dy * mult)));
     }
 
+    public Position2d calcMidPointAbsolute(final Position2d target, int dist)
+    {
+        int dx = calcDiffX(target);
+        int dy = calcDiffY(target);
+
+        double d = Math.sqrt(dx * dx + dy * dy);
+
+        int ox = (int) ((dx * dist) / d);
+        int oy = (int) ((dy * dist) / d);
+        
+        return byPos((getPosX() + ox), (getPosY() + oy));
+    }
+    
     //
 
     public boolean equalsTile(final Position2d other)

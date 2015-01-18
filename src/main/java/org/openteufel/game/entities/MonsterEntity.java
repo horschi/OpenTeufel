@@ -91,7 +91,7 @@ public abstract class MonsterEntity extends WalkingEntity
     }
 
     @Override
-    protected void preWalk(final int gametime, final int currentFrameId, WorldCallback world)
+    protected void performWalk(final int gametime, final int currentFrameId, WorldCallback world)
     {
 
     }
@@ -126,11 +126,11 @@ public abstract class MonsterEntity extends WalkingEntity
             int dist = getPos().calcDist(attackTarget.getPos());
             if (dist < getMinAttackDist())
             { // walk away
-                updateTarget(getPos().calcMidPoint(attackTarget.getPos(), -0.3));
+                updateTarget(getPos().calcMidPointAbsolute(attackTarget.getPos(), -getMinAttackDist()/2));
             }
             else if (dist > getMaxAttackDist())
             { // walk to enemy
-                updateTarget(getPos().calcMidPoint(attackTarget.getPos(), 0.3));
+                updateTarget(getPos().calcMidPointRelative(attackTarget.getPos(), 0.4));
             }
             else
             { // attack
@@ -153,6 +153,7 @@ public abstract class MonsterEntity extends WalkingEntity
         {
             world.addEntity(new BloodstarEntity(getPos().clone(), attackTarget.getPos(), getTeam()));
             updateAnimation(ANIM_STANDING);
+            finishWalk(gametime, currentFrameId, world);
         }
     }
 }

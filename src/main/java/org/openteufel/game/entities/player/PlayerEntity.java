@@ -126,7 +126,7 @@ public class PlayerEntity extends WalkingEntity
 
 
     @Override
-    protected void preWalk(int gametime, int currentFrameId, WorldCallback world)
+    protected void performWalk(int gametime, int currentFrameId, WorldCallback world)
     {
     }
 

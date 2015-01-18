@@ -11,12 +11,12 @@ import org.openteufel.ui.Renderer;
 
 public abstract class WalkingEntity extends AnimatedEntity
 {
-    protected static final int ANIM_STANDING = 0;
-    protected static final int ANIM_WALKING  = 1;
-    protected static final int ANIM_ATTACKING  = 2;
-    protected static final int ANIM_HIT  = 3;
-    protected static final int ANIM_DEATH  = 4;
-    
+    protected static final int ANIM_STANDING  = 1;
+    protected static final int ANIM_WALKING   = 2;
+    protected static final int ANIM_ATTACKING = 3;
+    protected static final int ANIM_HIT       = 4;
+    protected static final int ANIM_DEATH     = 5;
+
     private Position2d         targetPos;
     private Entity             targetEnt;
     private int                direction;
@@ -30,7 +30,6 @@ public abstract class WalkingEntity extends AnimatedEntity
         this.targetEnt = null;
         this.direction = 0;
         this.speed = speed;
-        this.currentAnimation = ANIM_STANDING;
     }
 
     public void updateTarget(final Position2d targetPos)
@@ -43,8 +42,8 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     public void updateTarget(final Entity targetEnt)
     {
-        this.targetPos = null;
         this.targetEnt = targetEnt;
+        this.targetPos = this.targetEnt.getPos(); // TODO:
     }
 
     @Override
@@ -52,7 +51,7 @@ public abstract class WalkingEntity extends AnimatedEntity
     {
         for (final int animType : this.getAnimTypes())
             imageLoader.preloadObjectCel(this.getCelPath(animType));
-        
+
         Entity[] addPreloadEntitties = getAdditionalPreloadEntitites();
         if (addPreloadEntitties != null)
             for (final Entity ent : addPreloadEntitties)
@@ -69,20 +68,32 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     protected void updateDirection(final int direction)
     {
-        this.direction = direction;
+        if (this.direction != direction)
+        {
+            this.direction = direction;
+            if(currentAnimation > 0)
+            {
+                final int num = this.getNumFrames(currentAnimation);
+                final int frame = (num * this.direction);
+                this.updateAnimationParams(this.getCelPath(currentAnimation), frame, frame + num, false);
+            }
+        }
     }
-    
+
     protected void updateDirection(final Position2d target)
     {
-        this.direction = EntityUtils.calcDirection8(pos.calcDiffX(target), pos.calcDiffY(target), this.direction);
+        updateDirection(EntityUtils.calcDirection8(pos.calcDiffX(target), pos.calcDiffY(target), this.direction));
     }
-    
+
     protected void updateAnimation(final int animType)
     {
-        this.currentAnimation = animType;
-        final int num = this.getNumFrames(animType);
-        final int frame = (num * this.direction);
-        this.updateAnimationParams(this.getCelPath(animType), frame, frame + num - 1);
+        if (currentAnimation != animType)
+        {
+            this.currentAnimation = animType;
+            final int num = this.getNumFrames(animType);
+            final int frame = (num * this.direction);
+            this.updateAnimationParams(this.getCelPath(animType), frame, frame + num, true);
+        }
     }
 
     public int getCurrentAnimation()
@@ -95,11 +106,6 @@ public abstract class WalkingEntity extends AnimatedEntity
     {
         switch (currentAnimation)
         {
-            case ANIM_STANDING:
-            case ANIM_WALKING:
-                preProcessWalk(gametime, currentFrameId, world);
-                break;
-                
             case ANIM_ATTACKING:
                 break;
 
@@ -109,19 +115,19 @@ public abstract class WalkingEntity extends AnimatedEntity
             case ANIM_HIT:
                 break;
 
+            case ANIM_STANDING:
+            case ANIM_WALKING:
             default:
-                throw new RuntimeException();
+                preProcessWalk(gametime, currentFrameId, world);
+                break;
         }
     }
-    
+
     private void preProcessWalk(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        preWalk(gametime, currentFrameId, world);
-        
-        if (this.targetPos == null && this.targetEnt != null)
-            this.targetPos = this.targetEnt.getPos(); // TODO:
+        performWalk(gametime, currentFrameId, world);
 
-        if(this.pos.decreaseOffset(this.speed))
+        if (this.pos.decreaseOffset(this.speed))
         { // zero offset
             if (this.targetPos != null)
             {
@@ -157,21 +163,27 @@ public abstract class WalkingEntity extends AnimatedEntity
             }
         }
 
-        if(this.pos.hasOffset())
+        if (this.pos.hasOffset())
         {
-            this.direction = EntityUtils.calcDirection8(-this.pos.getOffsetX(), -this.pos.getOffsetY(), this.direction);
+            updateDirection(EntityUtils.calcDirection8(-this.pos.getOffsetX(), -this.pos.getOffsetY(), this.direction));
             this.updateAnimation(ANIM_WALKING);
         }
         else
         {
-            this.updateAnimation(ANIM_STANDING);
             finishWalk(gametime, currentFrameId, world);
+            if (targetPos == null || targetPos.equals(pos))
+            {
+                if (currentAnimation == ANIM_WALKING)
+                    this.updateAnimation(ANIM_STANDING);
+            }
+            else
+                this.updateAnimation(ANIM_WALKING);
         }
     }
 
-    protected abstract void preWalk(final int gametime, final int currentFrameId, WorldCallback world);
-    protected abstract void finishWalk(final int gametime, final int currentFrameId, WorldCallback world);
+    protected abstract void performWalk(final int gametime, final int currentFrameId, WorldCallback world);
 
+    protected abstract void finishWalk(final int gametime, final int currentFrameId, WorldCallback world);
 
     @Override
     protected int getBottomOffset()
@@ -182,7 +194,7 @@ public abstract class WalkingEntity extends AnimatedEntity
     @Override
     protected int getFrameDelay()
     {
-        return 2;
+        return 1;
     }
 
     @Override

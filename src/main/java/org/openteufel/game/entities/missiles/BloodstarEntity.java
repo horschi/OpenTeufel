@@ -11,20 +11,33 @@ public class BloodstarEntity extends ProjectileEntity
     }
 
     @Override
-    protected String getCelPath(int dir)
+    protected String getProjectileCelPath(int dir)
     {
-        return "missiles\\Scubmisd.cl2"; // missiles\Scbsexpd.cl2
+        return "missiles\\Scubmisd.cl2";
     }
-
+    
     @Override
-    protected int getNumFrames()
+    protected int getNumProjectileFrames()
     {
         return 16;
     }
 
     @Override
-    protected int getNumDirections()
+    protected int getNumProjectileDirections()
     {
         return 0;
+    }
+    
+
+    @Override
+    protected String getExplosionCelPath()
+    {
+        return "missiles\\Scbsexpd.cl2";
+    }
+
+    @Override
+    protected int getNumExplosionFrames()
+    {
+        return 7;
     }
 }

@@ -1,14 +1,14 @@
 package org.openteufel.game.entities.monsters;
 
 import org.openteufel.game.Entity;
+import org.openteufel.game.entities.MeleeMonsterEntity;
 import org.openteufel.game.entities.MonsterEntity;
-import org.openteufel.game.entities.RangedMonsterEntity;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.utils.Position2d;
 
-public class SuccubusEntitiy extends RangedMonsterEntity
+public class BlackKnightEntitiy extends MeleeMonsterEntity
 {
-    public SuccubusEntitiy(Position2d pos)
+    public BlackKnightEntitiy(Position2d pos)
     {
         super(pos, 5);
     }
@@ -16,37 +16,37 @@ public class SuccubusEntitiy extends RangedMonsterEntity
     @Override
     protected String getCelPathStand()
     {
-        return "monsters\\succ\\scbsn.cl2";
+        return "monsters\\black\\blackn.cl2";
     }
 
     @Override
     protected String getCelPathWalk()
     {
-        return "monsters\\succ\\scbsw.cl2";
+        return "monsters\\black\\blackw.cl2";
     }
 
     @Override
     protected String getCelPathAttack()
     {
-        return "monsters\\succ\\scbsa.cl2";
+        return "monsters\\black\\blacka.cl2";
     }
 
     @Override
     protected String getCelPathHit()
     {
-        return "monsters\\succ\\scbsh.cl2";
+        return "monsters\\black\\blackh.cl2";
     }
 
     @Override
     protected String getCelPathDeath()
     {
-        return "monsters\\succ\\scbsd.cl2";
+        return "monsters\\black\\blackd.cl2";
     }
 
     @Override
     protected int getNumFramesStand()
     {
-        return 14;
+        return 8;
     }
 
     @Override
