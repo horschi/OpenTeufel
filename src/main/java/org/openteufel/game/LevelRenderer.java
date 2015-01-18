@@ -25,6 +25,7 @@ public class LevelRenderer implements MouseHandler {
     private int                  screenWidth, screenHeight;
     private int                  cameraX, cameraY;
     private Point lastClickPos;
+    private boolean lmbIsPressed;
 
     public LevelRenderer(final GamedataLoader dataLoader, final LevelState levelstate, final Renderer renderer) throws IOException
     {
@@ -211,7 +212,14 @@ public class LevelRenderer implements MouseHandler {
 
     @Override
     public void handleMouseEvent(MouseEvent e) {
-        if (e.eventState) {
+        System.err.print(e.type);
+        if (e.type == MouseEvent.eventType.COMBINED) {
+            if (e.button == 0) {
+                lmbIsPressed = e.eventState;
+            }
+        }
+
+        if (lmbIsPressed) {
             this.lastClickPos = new Point(e.x, e.y);
         }
     }

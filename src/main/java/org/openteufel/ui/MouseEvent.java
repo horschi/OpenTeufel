@@ -13,7 +13,8 @@ public class MouseEvent {
         CLICK,
         PRESS,
         RELEASE,
-        WHEEL
+        WHEEL,
+        MOVE
     }
 
     public final int button;
@@ -51,6 +52,13 @@ public class MouseEvent {
         dy = edy;
         dz = edz;
         relativeNanos = n;
+        if (t == eventType.COMBINED) {
+            if (b < 0) {
+                t = eventType.MOVE;
+            } else {
+                t = eventType.COMBINED;
+            }
+        }
         type = t;
     }
 }
