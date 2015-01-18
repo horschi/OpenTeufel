@@ -8,12 +8,15 @@ import org.openteufel.ui.Renderer;
 
 public abstract class AnimatedEntity extends Entity
 {
-    private int    minFrameId, maxFrameId, currentFrameId;
+    private int minFrameId, maxFrameId, currentFrameId, targetFps;
+    private long lastNanos;
     private String currentCelPath;
 
     public AnimatedEntity(final Position2d pos, int team)
     {
         super(pos, team);
+        lastNanos = System.nanoTime();
+        targetFps = 20;
     }
 
     protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId, boolean resetAnimationFrame)
@@ -32,8 +35,11 @@ public abstract class AnimatedEntity extends Entity
     @Override
     public final void process(final int gametime, WorldCallback world)
     {
-        if ((gametime % this.getFrameDelay()) == 0)
+        final long currentNanos = System.nanoTime();
+        if (currentNanos - lastNanos > 1000000000 / targetFps) {
             this.currentFrameId++;
+            lastNanos = currentNanos;
+        }
         this.preProcess(gametime, this.currentFrameId, world);
         if (this.currentFrameId >= this.maxFrameId)
         {
