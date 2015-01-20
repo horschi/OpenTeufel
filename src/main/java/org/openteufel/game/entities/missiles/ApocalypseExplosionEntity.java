@@ -7,7 +7,7 @@ public class ApocalypseExplosionEntity extends ProjectileEntity
 {
     public ApocalypseExplosionEntity(Position2d pos, Position2d target, int team)
     {
-        super(pos, target, 8, team);
+        super(pos, target, 32, team);
     }
 
     @Override

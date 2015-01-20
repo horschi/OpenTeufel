@@ -141,10 +141,10 @@ public class LevelStateTown extends LevelState
         //        this.entityManager.addEntity(new GoldEntity(0, 1, 1000));
         //        this.entityManager.addEntity(new GoldEntity(1, 1, 1000));
 
-//        entityManager.addEntity(new SuccubusEntitiy(Position2d.byTile(65, 70)));
-//        entityManager.addEntity(new BlackKnightEntitiy(Position2d.byTile(66, 70)));
+        entityManager.addEntity(new SuccubusEntitiy(Position2d.byTile(65, 70)));
+        entityManager.addEntity(new BlackKnightEntitiy(Position2d.byTile(66, 70)));
         entityManager.addEntity(new DiabloEntitiy(Position2d.byTile(67, 70)));
-//        entityManager.addEntity(new SnakeEntitiy(Position2d.byTile(65, 69)));
+        entityManager.addEntity(new SnakeEntitiy(Position2d.byTile(65, 69)));
     }
 
     @Override
