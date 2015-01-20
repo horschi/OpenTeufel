@@ -10,11 +10,47 @@ import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
 
+// e.g.: plrgfx\\rogue\\rhb\\rhbwl.cl2
+
+//    Character 1
+//    r rogue
+//    s sorceror
+//    w warrior
+
+//    Character 2
+//    h heavy armor
+//    m
+//    l
+
+//    Character 3
+//    a axe
+//    b bow
+//    d swort + shield
+//    h mace + shield
+//    m mace
+//    n nothing
+//    s sword
+//    t staff
+//    u shield
+
+//    Character 4+5
+//    as standing (ready for attack)
+//    at attack
+//    aw walking (ready for attack)
+//
+//    wl town walking
+//    st town standing
+//
+//    ht getting hit
+//
+//    fm fire magic
+//    qm holy magic
+//    lm lightning magic
 public class PlayerEntity extends WalkingEntity
 {
-    public static final int CLASS_WARRIOR = 0;
+    public static final int CLASS_WARRIOR  = 0;
     public static final int CLASS_SORCEROR = 1;
-    public static final int CLASS_ROGUE = 2;
+    public static final int CLASS_ROGUE    = 2;
 
     private final int       playerclass;
     private final boolean   isTown;
@@ -50,7 +86,6 @@ public class PlayerEntity extends WalkingEntity
         this.updateAnimation(ANIM_STANDING);
     }
 
-
     @Override
     protected int getBottomOffset()
     {
@@ -62,53 +97,21 @@ public class PlayerEntity extends WalkingEntity
     {
         return null;
     }
-    
-    @Override
-    protected String getCelPath(final int animType)
-    {
-        final StringBuilder ret = new StringBuilder(this.celBasePath);
-        switch (animType)
-        {
-            case ANIM_STANDING:
-                if (this.isTown)
-                    ret.append("st");
-                else
-                    ret.append("as");
-                break;
 
-            case ANIM_WALKING:
-                if (this.isTown)
-                    ret.append("wl");
-                else
-                    ret.append("aw");
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-        ret.append(".cl2");
-        return ret.toString();
+    @Override
+    protected void performWalk(int gametime, int currentFrameId, WorldCallback world)
+    {
     }
 
     @Override
-    protected int getNumFrames(final int animType)
+    protected void finishWalk(int gametime, int currentFrameId, WorldCallback world)
     {
-        switch (animType)
-        {
-            case ANIM_STANDING:
-                if (this.isTown)
-                    return 160 / 8; // st
-                else
-                    return 64 / 8; // as
+    }
 
-            case ANIM_WALKING:
-                if (this.isTown)
-                    return 64 / 8; // wl
-                else
-                    return 64 / 8; // aw
+    @Override
+    protected void performAttack(final int gametime, WorldCallback world, Entity targetEntity)
+    {
 
-            default:
-                throw new IllegalArgumentException();
-        }
     }
 
     @Override
@@ -124,59 +127,88 @@ public class PlayerEntity extends WalkingEntity
         }
     }
 
-
     @Override
-    protected void performWalk(int gametime, int currentFrameId, WorldCallback world)
+    protected String getCelPathStand()
     {
+        final StringBuilder ret = new StringBuilder(this.celBasePath);
+        if (this.isTown)
+            ret.append("st");
+        else
+            ret.append("as");
+        ret.append(".cl2");
+        return ret.toString();
     }
 
-
     @Override
-    protected void finishWalk(int gametime, int currentFrameId, WorldCallback world)
+    protected String getCelPathWalk()
     {
+        final StringBuilder ret = new StringBuilder(this.celBasePath);
+        if (this.isTown)
+            ret.append("wl");
+        else
+            ret.append("aw");
+        ret.append(".cl2");
+        return ret.toString();
     }
 
     @Override
-    protected void finishAnimation(int gametime, int currentFrameId, WorldCallback world)
+    protected String getCelPathAttack()
     {
+        return null;
     }
 
-    // e.g.: plrgfx\\rogue\\rhb\\rhbwl.cl2
+    @Override
+    protected String getCelPathHit()
+    {
+        return null;
+    }
 
-    //    Character 1
-    //    r rogue
-    //    s sorceror
-    //    w warrior
+    @Override
+    protected String getCelPathDeath()
+    {
+        return null;
+    }
 
-    //    Character 2
-    //    h heavy armor
-    //    m
-    //    l
+    @Override
+    protected int getNumFramesStand()
+    {
+        if (this.isTown)
+            return 160 / 8; // st
+        else
+            return 64 / 8; // as
+    }
 
-    //    Character 3
-    //    a axe
-    //    b bow
-    //    d swort + shield
-    //    h mace + shield
-    //    m mace
-    //    n nothing
-    //    s sword
-    //    t staff
-    //    u shield
+    @Override
+    protected int getNumFramesWalk()
+    {
+        if (this.isTown)
+            return 64 / 8; // wl
+        else
+            return 64 / 8; // aw
+    }
 
-    //    Character 4+5
-    //    as standing (ready for attack)
-    //    at attack
-    //    aw walking (ready for attack)
-    //
-    //    wl town walking
-    //    st town standing
-    //
-    //    ht getting hit
-    //
-    //    fm fire magic
-    //    qm holy magic
-    //    lm lightning magic
+    @Override
+    protected int getNumFramesAttack()
+    {
+        return 0;
+    }
 
+    @Override
+    protected int getNumFramesHit()
+    {
+        return 0;
+    }
+
+    @Override
+    protected int getNumFramesDeath()
+    {
+        return 0;
+    }
+
+    @Override
+    protected int getFrameAttack()
+    {
+        return 0;
+    }
 
 }

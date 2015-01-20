@@ -64,13 +64,8 @@ public abstract class ProjectileEntity extends AnimatedEntity
     public final void preload(final ImageLoader imageLoader) throws IOException
     {
         final int numdirs = this.getNumProjectileDirections();
-        if(numdirs == 0)
-            imageLoader.preloadObjectCel(this.getProjectileCelPath(0));
-        else
-        {
-            for (int i = 0; i < numdirs; i++)
-                imageLoader.preloadObjectCel(this.getProjectileCelPath(i));
-        }
+        for (int i = 0; i < numdirs; i++)
+            imageLoader.preloadObjectCel(this.getProjectileCelPath(i));
 
         if(getExplosionCelPath() != null)
             imageLoader.preloadObjectCel(this.getExplosionCelPath());

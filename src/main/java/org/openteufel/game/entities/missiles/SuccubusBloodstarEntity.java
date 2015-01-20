@@ -3,9 +3,9 @@ package org.openteufel.game.entities.missiles;
 import org.openteufel.game.entities.ProjectileEntity;
 import org.openteufel.game.utils.Position2d;
 
-public class BloodstarEntity extends ProjectileEntity
+public class SuccubusBloodstarEntity extends ProjectileEntity
 {
-    public BloodstarEntity(Position2d pos, Position2d target, int team)
+    public SuccubusBloodstarEntity(Position2d pos, Position2d target, int team)
     {
         super(pos, target, 8, team);
     }
@@ -13,7 +13,7 @@ public class BloodstarEntity extends ProjectileEntity
     @Override
     protected String getProjectileCelPath(int dir)
     {
-        return "missiles\\Scubmisd.cl2";
+        return "monsters\\succ\\flare.cel";
     }
     
     @Override
@@ -32,7 +32,7 @@ public class BloodstarEntity extends ProjectileEntity
     @Override
     protected String getExplosionCelPath()
     {
-        return "missiles\\Scbsexpd.cl2";
+        return "monsters\\succ\\flarexp.cel";
     }
 
     @Override

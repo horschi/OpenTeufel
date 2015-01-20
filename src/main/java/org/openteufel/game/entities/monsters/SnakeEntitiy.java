@@ -6,9 +6,9 @@ import org.openteufel.game.entities.MonsterEntity;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.utils.Position2d;
 
-public class BlackKnightEntitiy extends MeleeMonsterEntity
+public class SnakeEntitiy extends MeleeMonsterEntity
 {
-    public BlackKnightEntitiy(Position2d pos)
+    public SnakeEntitiy(Position2d pos)
     {
         super(pos, 5);
     }
@@ -16,61 +16,61 @@ public class BlackKnightEntitiy extends MeleeMonsterEntity
     @Override
     protected String getCelPathStand()
     {
-        return "monsters\\black\\blackn.cl2";
+        return "monsters\\snake\\snaken.cl2";
     }
 
     @Override
     protected String getCelPathWalk()
     {
-        return "monsters\\black\\blackw.cl2";
+        return "monsters\\snake\\snakew.cl2";
     }
 
     @Override
     protected String getCelPathAttack()
     {
-        return "monsters\\black\\blacka.cl2";
+        return "monsters\\snake\\snakea.cl2";
     }
 
     @Override
     protected String getCelPathHit()
     {
-        return "monsters\\black\\blackh.cl2";
+        return "monsters\\snake\\snakeh.cl2";
     }
 
     @Override
     protected String getCelPathDeath()
     {
-        return "monsters\\black\\blackd.cl2";
+        return "monsters\\snake\\snaked.cl2";
     }
 
     @Override
     protected int getNumFramesStand()
     {
-        return 8;
+        return 12;
     }
 
     @Override
     protected int getNumFramesWalk()
     {
-        return 8;
+        return 11;
     }
 
     @Override
     protected int getNumFramesAttack()
     {
-        return 16;
+        return 13;
     }
 
     @Override
     protected int getNumFramesHit()
     {
-        return 7;
+        return 6;
     }
 
     @Override
     protected int getNumFramesDeath()
     {
-        return 24;
+        return 18;
     }
 
     @Override

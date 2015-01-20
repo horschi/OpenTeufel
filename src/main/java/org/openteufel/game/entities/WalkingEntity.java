@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.openteufel.game.Entity;
 import org.openteufel.game.WorldCallback;
+import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.utils.EntityUtils;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
@@ -60,9 +61,74 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     protected abstract Entity[] getAdditionalPreloadEntitites();
 
-    protected abstract String getCelPath(int animType);
+    protected String getCelPath(int animType)
+    {
+        switch (animType)
+        {
+            case ANIM_STANDING:
+                return getCelPathStand();
 
-    protected abstract int getNumFrames(int animType);
+            case ANIM_WALKING:
+                return getCelPathWalk();
+
+            case ANIM_ATTACKING:
+                return getCelPathAttack();
+                
+            case ANIM_HIT:
+                return getCelPathHit();
+                
+            case ANIM_DEATH:
+                return getCelPathDeath();
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+    
+    protected abstract String getCelPathStand();
+
+    protected abstract String getCelPathWalk();
+
+    protected abstract String getCelPathAttack();
+
+    protected abstract String getCelPathHit();
+
+    protected abstract String getCelPathDeath();
+
+    protected int getNumFrames(int animType)
+    {
+        switch (animType)
+        {
+            case ANIM_STANDING:
+                return getNumFramesStand();
+
+            case ANIM_WALKING:
+                return getNumFramesWalk();
+
+            case ANIM_ATTACKING:
+                return getNumFramesAttack();
+
+            case ANIM_HIT:
+                return getNumFramesHit();
+                
+            case ANIM_DEATH:
+                return getNumFramesDeath();
+                
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    protected abstract int getNumFramesStand();
+
+    protected abstract int getNumFramesWalk();
+
+    protected abstract int getNumFramesAttack();
+
+    protected abstract int getNumFramesHit();
+
+    protected abstract int getNumFramesDeath();
+
+    protected abstract int getFrameAttack();
 
     protected abstract int[] getAnimTypes();
 
@@ -102,11 +168,15 @@ public abstract class WalkingEntity extends AnimatedEntity
     }
 
     @Override
-    protected void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
+    protected final void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
     {
         switch (currentAnimation)
         {
             case ANIM_ATTACKING:
+                if((currentFrameId % getNumFramesAttack()) == getFrameAttack())
+                {
+                    performAttack(gametime, world, targetEnt);
+                }
                 break;
 
             case ANIM_DEATH:
@@ -120,6 +190,18 @@ public abstract class WalkingEntity extends AnimatedEntity
             default:
                 preProcessWalk(gametime, currentFrameId, world);
                 break;
+        }
+    }
+
+    protected abstract void performAttack(final int gametime, WorldCallback world, Entity targetEntity);
+
+    @Override
+    protected final void finishAnimation(final int gametime, final int currentFrameId, WorldCallback world)
+    {
+        if(this.getCurrentAnimation() == ANIM_ATTACKING)
+        {
+            updateAnimation(ANIM_STANDING);
+            finishWalk(gametime, currentFrameId, world);
         }
     }
 

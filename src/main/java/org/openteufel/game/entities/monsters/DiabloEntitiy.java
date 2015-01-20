@@ -3,13 +3,14 @@ package org.openteufel.game.entities.monsters;
 import org.openteufel.game.Entity;
 import org.openteufel.game.WorldCallback;
 import org.openteufel.game.entities.RangedMonsterEntity;
+import org.openteufel.game.entities.missiles.ApocalypseExplosionEntity;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.entities.missiles.SuccubusBloodstarEntity;
 import org.openteufel.game.utils.Position2d;
 
-public class SuccubusEntitiy extends RangedMonsterEntity
+public class DiabloEntitiy extends RangedMonsterEntity
 {
-    public SuccubusEntitiy(Position2d pos)
+    public DiabloEntitiy(Position2d pos)
     {
         super(pos, 5);
     }
@@ -17,49 +18,49 @@ public class SuccubusEntitiy extends RangedMonsterEntity
     @Override
     protected Entity[] getAdditionalPreloadEntitites()
     {
-        return new Entity[] { new SuccubusBloodstarEntity(getPos().clone(), getPos().clone(), getTeam()) };
+        return new Entity[] { new ApocalypseExplosionEntity(getPos().clone(), getPos().clone(), getTeam()) };
     }
 
     @Override
     protected String getCelPathStand()
     {
-        return "monsters\\succ\\scbsn.cl2";
+        return "monsters\\diablo\\diablon.cl2";
     }
 
     @Override
     protected String getCelPathWalk()
     {
-        return "monsters\\succ\\scbsw.cl2";
+        return "monsters\\diablo\\diablow.cl2";
     }
 
     @Override
     protected String getCelPathAttack()
     {
-        return "monsters\\succ\\scbsa.cl2";
+        return "monsters\\diablo\\diabloa.cl2";
     }
 
     @Override
     protected String getCelPathHit()
     {
-        return "monsters\\succ\\scbsh.cl2";
+        return "monsters\\diablo\\diabloh.cl2";
     }
 
     @Override
     protected String getCelPathDeath()
     {
-        return "monsters\\succ\\scbsd.cl2";
+        return "monsters\\diablo\\diablod.cl2";
     }
 
     @Override
     protected int getNumFramesStand()
     {
-        return 14;
+        return 16;
     }
 
     @Override
     protected int getNumFramesWalk()
     {
-        return 8;
+        return 6;
     }
 
     @Override
@@ -71,13 +72,13 @@ public class SuccubusEntitiy extends RangedMonsterEntity
     @Override
     protected int getNumFramesHit()
     {
-        return 7;
+        return 6;
     }
 
     @Override
     protected int getNumFramesDeath()
     {
-        return 24;
+        return 16;
     }
 
     @Override
@@ -101,12 +102,12 @@ public class SuccubusEntitiy extends RangedMonsterEntity
     @Override
     protected int getMinAttackDist()
     {
-        return 32 * 6;
+        return 32 * 0;
     }
 
     @Override
     protected void performMonsterAttack(int gametime, WorldCallback world, Entity targetEntity)
     {
-        world.addEntity(new SuccubusBloodstarEntity(getPos().clone(), targetEntity.getPos(), getTeam()));
+        world.addEntity(new ApocalypseExplosionEntity(this.getPos().clone(), targetEntity.getPos().clone(), getTeam()));
     }
 }
