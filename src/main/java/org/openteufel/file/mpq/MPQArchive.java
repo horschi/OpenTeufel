@@ -231,6 +231,6 @@ public class MPQArchive
     @Override
     public String toString()
     {
-        return "MPQArchive [srcFile=" + srcFile + ", raf=" + raf + ", header=" + header + ", blockTable=" + blockTable + ", hashTable=" + hashTable + "]";
+        return "MPQArchive [srcFile=" + srcFile + ", raf=" + raf + ", header=" + header + ", blockTable=" + blockTable.count() + ", hashTable=" + hashTable.count() + "]";
     }
 }
