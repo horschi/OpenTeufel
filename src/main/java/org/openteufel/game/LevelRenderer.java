@@ -214,7 +214,6 @@ public class LevelRenderer implements MouseHandler {
 
     @Override
     public void handleMouseEvent(MouseEvent e) {
-        System.err.print(e.type);
         if (e.type == MouseEvent.eventType.COMBINED) {
             if (e.button == 0) {
                 lmbIsPressed = e.eventState;
