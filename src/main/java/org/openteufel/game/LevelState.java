@@ -1,6 +1,5 @@
 package org.openteufel.game;
 
-import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +9,19 @@ import org.openteufel.file.cel.PALFile;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.file.dun.MINFile;
 import org.openteufel.file.dun.MINPillar;
+import org.openteufel.file.dun.SOLFile;
 import org.openteufel.file.dun.TILFile;
-import org.openteufel.file.dun.TILSquare;
-import org.openteufel.game.entities.DummyEntity;
-import org.openteufel.game.entities.NPCEntity;
-import org.openteufel.game.entities.items.GoldEntity;
 import org.openteufel.game.entities.player.PlayerEntity;
-import org.openteufel.game.entities.townnpcs.NPCBlacksmithEntity;
-import org.openteufel.game.entities.townnpcs.NPCStorytellerEntity;
 import org.openteufel.game.utils.Position2d;
 
-public abstract class LevelState
+public abstract class LevelState implements WorldCallback
 {
     private final GamedataLoader dataLoader;
 
     private final PALFile        pal;
     private final MINFile        min;
     private final TILFile        til;
+    private final SOLFile        sol;
 
     private final DUNFile        dun;
 
@@ -42,9 +37,10 @@ public abstract class LevelState
         this.pal = new PALFile(dataLoader.getFileByteBuffer(this.getPALPath()));
         this.min = new MINFile(dataLoader.getFileByteBuffer(this.getMINPath()), this.getMINBlockSize());
         this.til = new TILFile(dataLoader.getFileByteBuffer(this.getTILPath()));
+        this.sol = new SOLFile(dataLoader.getFileByteBuffer(this.getSOLPath()));
 
         this.dun = this.loadDUN(dataLoader);
-        this.entityManager = new EntityManager(dun);
+        this.entityManager = new EntityManager();
         this.placeEntities(this.entityManager);
 
         for (int y = 0; y < this.dun.getHeight() * 2; y++)
@@ -99,7 +95,7 @@ public abstract class LevelState
 
     protected abstract Position2d getStartPosition();
 
-    public TILSquare getSquare(final int worldX, final int worldY)
+    public short[] getSquare(final int worldX, final int worldY)
     {
         final int squareId = this.dun.getSquare(worldX, worldY);
         if (squareId < 0)
@@ -134,7 +130,7 @@ public abstract class LevelState
 
     public void runFrame(final int gametime)
     {
-        this.entityManager.process(gametime);
+        this.entityManager.process(gametime, this);
     }
 
     public int getCameraX()
@@ -150,5 +146,28 @@ public abstract class LevelState
     public void updateCamPos(final int offX, final int offY)
     {
         this.playerEntity.updateTarget(this.playerEntity.getPos().addNew(offX, offY));
+    }
+
+    @Override
+    public void addEntity(final Entity ent)
+    {
+        entityManager.addEntity(ent);
+    }
+
+    @Override
+    public Entity getEntityClosest(final int x, final int y, final int maxradius, int team)
+    {
+        return entityManager.getEntityClosest(x, y, maxradius, team);
+    }
+
+    @Override
+    public boolean isSolid(int tileX, int tileY)
+    {
+        short[] square = this.getSquare(tileX >> 1, tileY >> 1);
+        int offX = tileX & 1;
+        int offY = tileX & 1;
+
+        short pillarId = square[offX + (offY << 1)];
+        return sol.getSolidBlock(pillarId & 0xffff);
     }
 }

@@ -10,7 +10,6 @@ import org.lwjgl.input.Mouse;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.MINPillar;
-import org.openteufel.file.dun.TILSquare;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.ui.ImageLoader;
@@ -18,7 +17,8 @@ import org.openteufel.ui.MouseEvent;
 import org.openteufel.ui.MouseHandler;
 import org.openteufel.ui.Renderer;
 
-public class LevelRenderer implements MouseHandler {
+public class LevelRenderer implements MouseHandler
+{
     private final ImageLoader<?> imageLoader;
     private final LevelState     levelstate;
     private final Renderer       renderer;
@@ -123,18 +123,24 @@ public class LevelRenderer implements MouseHandler {
 
     private void drawSingleTile(final int worldTileX, final int worldTileY)
     {
-        final TILSquare tilsquare = this.levelstate.getSquare(worldTileX, worldTileY);
+        final short[] tilsquare = this.levelstate.getSquare(worldTileX, worldTileY);
         if (tilsquare != null)
         {
-            final MINPillar pillarTop = this.levelstate.getPillar(tilsquare.getPillarTop());
-            final MINPillar pillarBottom = this.levelstate.getPillar(tilsquare.getPillarBottom());
-            final MINPillar pillarLeft = this.levelstate.getPillar(tilsquare.getPillarLeft());
-            final MINPillar pillarRight = this.levelstate.getPillar(tilsquare.getPillarRight());
+            for (int tileOffY = 0; tileOffY < 2; tileOffY++)
+            {
+                for (int tileOffX = 0; tileOffX < 2; tileOffX++)
+                {
+                    final MINPillar pillar = this.levelstate.getPillar(tilsquare[tileOffX+(tileOffY*2)]);
+                    int pxOffX = tileOffX*32;
+                    int pxOffY = tileOffY*32;
+                    this.drawPillar(pillar, worldTileX, worldTileY, cartesianToIsometricX(pxOffX, pxOffY)-16, cartesianToIsometricY(pxOffX, pxOffY)-16, this.calculateBrightness(worldTileX*64+tileOffX*32, worldTileY*64+tileOffY*32)); // 0 -16
+                }
+            }
 
-            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
-            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
-            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
-            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
+//            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
+//            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
+//            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
+//            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
         }
     }
 
@@ -213,14 +219,18 @@ public class LevelRenderer implements MouseHandler {
     }
 
     @Override
-    public void handleMouseEvent(MouseEvent e) {
-        if (e.type == MouseEvent.eventType.COMBINED) {
-            if (e.button == 0) {
+    public void handleMouseEvent(MouseEvent e)
+    {
+        if (e.type == MouseEvent.eventType.COMBINED)
+        {
+            if (e.button == 0)
+            {
                 lmbIsPressed = e.eventState;
             }
         }
 
-        if (lmbIsPressed) {
+        if (lmbIsPressed)
+        {
             this.lastClickPos = new Point(e.x, e.y);
         }
     }

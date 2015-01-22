@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openteufel.file.dun.DUNFile;
+import org.openteufel.file.dun.SOLFile;
 import org.openteufel.ui.ImageLoader;
 
-public class EntityManager implements WorldCallback
+public class EntityManager
 {
     private Entity[] entities = new Entity[100];
 
-    public EntityManager(DUNFile dun)
+    public EntityManager()
     {
     }
-
+    
     public int getNumEntities()
     {
         int n = 0;
@@ -37,14 +38,14 @@ public class EntityManager implements WorldCallback
         }
     }
 
-    public void process(final int gametime)
+    public void process(final int gametime, WorldCallback world)
     {
         for (int i = entities.length - 1; i >= 0; i--)
         {
             final Entity ent = this.entities[i];
             if (ent != null)
             {
-                ent.process(gametime, this);
+                ent.process(gametime, world);
                 if (!ent.isEntityAlive())
                     entities[i] = null;
             }
