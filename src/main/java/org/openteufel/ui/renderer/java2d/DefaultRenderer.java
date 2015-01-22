@@ -178,14 +178,15 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
 
         if(targetFps > 0) {
             long now = System.nanoTime();
-            if (now - lastFrameTime < 1000000000 / targetFps) {
+            long tdif = now - lastFrameTime;
+            if (tdif < 1000000000 / targetFps) {
                 try {
-                    Thread.sleep((1000000000 / targetFps - (now - lastFrameTime)) / 1000000);
+                    Thread.sleep(((1000000000 / targetFps) - tdif) / 1000000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DefaultRenderer.class.getName()).log(Level.WARNING, "Someone interrupted my slumber: {0}\n{1}", new Object[]{ex.toString(), ex.getStackTrace().toString()});
                 }
             }
-            fps = 1000000000 / (now - lastFrameTime);
+            fps = 1000000000 / tdif;
             lastFrameTime = now;
         }
     }
