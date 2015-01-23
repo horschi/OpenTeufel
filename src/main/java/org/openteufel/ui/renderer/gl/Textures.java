@@ -1,12 +1,23 @@
 package org.openteufel.ui.renderer.gl;
 
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -40,6 +51,10 @@ public class Textures {
         return firstTexture.count();
     }
 
+    public static void dumpTextures() {
+        Textures.firstTexture.dumpTextures(0);
+    }
+
     private final IntBuffer intbuf = BufferUtils.createIntBuffer(1);
 
     private final Map<String, Texture> textureMap = new ConcurrentHashMap<String, Texture>();
@@ -67,18 +82,7 @@ public class Textures {
 
     private void updateTextureMap() {
         if (needsUpdate) {
-            final ByteBuffer buf = ByteBuffer.allocateDirect(MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE * 4);
-            buf.order(ByteOrder.LITTLE_ENDIAN);
-            for (int y = 0; y < MAP_TEXTURE_SIZE; y++) {
-                buf.position(y * MAP_TEXTURE_SIZE * 4);
-                for (int x = 0; x < MAP_TEXTURE_SIZE; x++) {
-                    final int p = allpixels[(y * MAP_TEXTURE_SIZE) + x];
-                    buf.put((byte) ((p >> 16) & 0xff));
-                    buf.put((byte) ((p >> 8) & 0xff));
-                    buf.put((byte) ((p) & 0xff));
-                    buf.put((byte) ((p >> 24) & 0xff));
-                }
-            }
+            ByteBuffer buf = getBuffer(true);
             buf.rewind();
 
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
@@ -199,5 +203,47 @@ public class Textures {
             return nextMap.count() + 1;
         }
     }
+
+    private ByteBuffer getBuffer(boolean direct) {
+        final ByteBuffer buf;
+        if (direct) {
+            buf = ByteBuffer.allocateDirect(MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE * 4);
+        } else {
+            buf = ByteBuffer.allocate(MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE * 4);
+        }
+        
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        for (int y = 0; y < MAP_TEXTURE_SIZE; y++) {
+            buf.position(y * MAP_TEXTURE_SIZE * 4);
+            for (int x = 0; x < MAP_TEXTURE_SIZE; x++) {
+                final int p = allpixels[(y * MAP_TEXTURE_SIZE) + x];
+                buf.put((byte) ((p >> 16) & 0xff));
+                buf.put((byte) ((p >> 8) & 0xff));
+                buf.put((byte) ((p) & 0xff));
+                buf.put((byte) ((p >> 24) & 0xff));
+            }
+        }
+        return buf;
+        
+    }
+
+    private void dumpTextures(int no) {
+        ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8, 8}, true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+        WritableRaster raster = cm.createCompatibleWritableRaster(MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE);
+        ByteBuffer bb = ByteBuffer.allocate(MAP_TEXTURE_SIZE * MAP_TEXTURE_SIZE * 4);
+        raster.setDataElements(0, 0, MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE, getBuffer(false).array());
+        BufferedImage image = new BufferedImage(cm, raster, false, null);
+
+        File imageFile = new File("texturemap-" + no + ".png");
+        try {
+            ImageIO.write(image, "png", imageFile);
+        } catch (IOException ex) {
+            Logger.getLogger(Textures.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (this.nextMap != null) {
+            nextMap.dumpTextures(no + 1);
+        }
+    }
+
 
 }
