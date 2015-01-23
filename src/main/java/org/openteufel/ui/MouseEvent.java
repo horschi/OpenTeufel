@@ -35,6 +35,10 @@ public class MouseEvent {
         this(b, x, y, true, 0, 0, 0, 0, eventType.CLICK);
     }
 
+    public MouseEvent(final int x, final int y) {
+        this(-1, x, y, false, 0, 0, 0, 0, eventType.MOVE);
+    }
+
     public MouseEvent(final int b, final int x, final int y, final boolean s) {
         this(b, x, y, s, 0, 0, 0, 0, (s ? eventType.PRESS : eventType.RELEASE));
     }
@@ -60,5 +64,12 @@ public class MouseEvent {
             }
         }
         type = t;
+    }
+
+    @Override
+    public String toString() {
+        return "Button: " + button + ", X: " + x + ", Y: " + y + ", Stage: " + eventState
+                + ", dX: " + dx + ", dY: " + dy + ", dZ: " + dz
+                + ", relativeNanos: " + relativeNanos + ", type: " + type;
     }
 }

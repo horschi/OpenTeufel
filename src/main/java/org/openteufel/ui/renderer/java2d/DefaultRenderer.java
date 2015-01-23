@@ -21,14 +21,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 import org.openteufel.ui.KeyboardEvent;
 import org.openteufel.ui.KeyboardHandler;
 import org.openteufel.ui.MouseHandler;
 
 import org.openteufel.ui.Renderer;
 
-public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, MouseWheelListener, KeyListener
-{
+public class DefaultRenderer implements Renderer<BufferedImage>, MouseInputListener, MouseWheelListener, KeyListener {
     private Window window=null;
     private Canvas         canvas = null;
     private BufferStrategy buffer                 = null;
@@ -94,6 +94,7 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
         panel.add(this.canvas);
         this.canvas.setSize(panel.getWidth(), panel.getHeight());
         this.canvas.addMouseListener(this);
+        this.canvas.addMouseMotionListener(this);
         this.canvas.addMouseWheelListener(this);
         this.canvas.addKeyListener(this);
 
@@ -211,8 +212,7 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     }
 
     @Override
-    public void mouseClicked(final MouseEvent arg0)
-    {
+    public void mouseClicked(final MouseEvent e) {
     }
 
     @Override
@@ -228,14 +228,26 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     @Override
     public void mousePressed(final MouseEvent e) {
         for (MouseHandler h : mouseHandlers) {
-            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX()-(getScreenWidth()/2), e.getY()-(getScreenHeight()/2), true));
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton() - 1, e.getX() - (getScreenWidth() / 2), e.getY() - (getScreenHeight() / 2), true));
         }
     }
 
     @Override
     public void mouseReleased(final MouseEvent e)    {
         for (MouseHandler h : mouseHandlers) {
-            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton(), e.getX()-(getScreenWidth()/2), e.getY()-(getScreenHeight()/2), false));
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getButton() - 1, e.getX() - (getScreenWidth() / 2), e.getY() - (getScreenHeight() / 2), false));
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        mouseMoved(e);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        for (MouseHandler h : mouseHandlers) {
+            h.handleMouseEvent(new org.openteufel.ui.MouseEvent(e.getX() - (getScreenWidth() / 2), e.getY() - (getScreenHeight() / 2)));
         }
     }
 
@@ -274,4 +286,5 @@ public class DefaultRenderer implements Renderer<BufferedImage>, MouseListener, 
     public void keyTyped(KeyEvent e)
     {
     }
+
 }
