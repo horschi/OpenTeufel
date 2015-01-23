@@ -6,6 +6,7 @@ import org.openteufel.game.Entity;
 import org.openteufel.game.WorldCallback;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.utils.EntityUtils;
+import org.openteufel.game.utils.PathFinder;
 import org.openteufel.game.utils.Position2d;
 import org.openteufel.ui.ImageLoader;
 import org.openteufel.ui.Renderer;
@@ -218,30 +219,13 @@ public abstract class WalkingEntity extends AnimatedEntity
                 if (this.targetPos.getTileY() < 0)
                     this.targetPos.setTileY(0);
 
-                final int difX = this.targetPos.getTileX() - this.pos.getTileX();
-                final int difY = this.targetPos.getTileY() - this.pos.getTileY();
+                PathFinder pathFinder = new PathFinder(world, pos, targetPos);
 
-                if (difX > 0)
-                {
-                    this.pos.setTileX(this.pos.getTileX() + 1);
-                    this.pos.setOffsetX(-32);
-                }
-                else if (difX < 0)
-                {
-                    this.pos.setTileX(this.pos.getTileX() - 1);
-                    this.pos.setOffsetX(32);
-                }
-
-                if (difY > 0)
-                {
-                    this.pos.setTileY(this.pos.getTileY() + 1);
-                    this.pos.setOffsetY(-32);
-                }
-                else if (difY < 0)
-                {
-                    this.pos.setTileY(this.pos.getTileY() - 1);
-                    this.pos.setOffsetY(32);
-                }
+                Position2d nextPos = pathFinder.getNextTile(pos);
+                if(nextPos == null)
+                    targetPos = null;
+                else
+                    this.pos.snapToNextTile(nextPos);
             }
         }
 

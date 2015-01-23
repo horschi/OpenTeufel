@@ -148,6 +148,33 @@ public class Position2d
         return this.offsetX == 0 && this.offsetY == 0;
     }
 
+    public void snapToNextTile(Position2d targetPos)
+    {
+        final int difX = targetPos.getTileX() - this.getTileX();
+        final int difY = targetPos.getTileY() - this.getTileY();
+        if (difX > 0)
+        {
+            this.setTileX(this.getTileX() + 1);
+            this.setOffsetX(-32);
+        }
+        else if (difX < 0)
+        {
+            this.setTileX(this.getTileX() - 1);
+            this.setOffsetX(32);
+        }
+
+        if (difY > 0)
+        {
+            this.setTileY(this.getTileY() + 1);
+            this.setOffsetY(-32);
+        }
+        else if (difY < 0)
+        {
+            this.setTileY(this.getTileY() - 1);
+            this.setOffsetY(32);
+        }
+    }
+    
     public void add(final int x, final int y)
     {
         this.offsetX += x;

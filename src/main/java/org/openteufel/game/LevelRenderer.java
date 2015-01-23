@@ -10,6 +10,7 @@ import org.lwjgl.input.Mouse;
 
 import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.MINPillar;
+import org.openteufel.file.dun.SOLFile;
 import org.openteufel.game.entities.missiles.BloodstarEntity;
 import org.openteufel.game.entities.player.PlayerEntity;
 import org.openteufel.ui.ImageLoader;
@@ -130,17 +131,17 @@ public class LevelRenderer implements MouseHandler
             {
                 for (int tileOffX = 0; tileOffX < 2; tileOffX++)
                 {
-                    final MINPillar pillar = this.levelstate.getPillar(tilsquare[tileOffX+(tileOffY*2)]);
+                    short pillarId = tilsquare[tileOffX+(tileOffY*2)];
+                    final MINPillar pillar = this.levelstate.getPillar(pillarId);
                     int pxOffX = tileOffX*32;
                     int pxOffY = tileOffY*32;
-                    this.drawPillar(pillar, worldTileX, worldTileY, cartesianToIsometricX(pxOffX, pxOffY)-16, cartesianToIsometricY(pxOffX, pxOffY)-16, this.calculateBrightness(worldTileX*64+tileOffX*32, worldTileY*64+tileOffY*32)); // 0 -16
+                    
+                    double brightness = this.calculateBrightness(worldTileX*64+tileOffX*32, worldTileY*64+tileOffY*32);
+//                    if(levelstate.isSolid(worldTileX*2+tileOffX, worldTileY*2+tileOffY))
+//                        brightness = 0.0;
+                    this.drawPillar(pillar, worldTileX, worldTileY, cartesianToIsometricX(pxOffX, pxOffY)-16, cartesianToIsometricY(pxOffX, pxOffY)-16, brightness); // 0 -16
                 }
             }
-
-//            this.drawPillar(pillarTop, worldTileX, worldTileY, -16, -16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 -16
-//            this.drawPillar(pillarLeft, worldTileX, worldTileY, -48, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // -32 0
-//            this.drawPillar(pillarRight, worldTileX, worldTileY, 16, 0, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 32 0
-//            this.drawPillar(pillarBottom, worldTileX, worldTileY, -16, 16, this.calculateBrightness(worldTileX*64, worldTileY*64)); // 0 16
         }
     }
 

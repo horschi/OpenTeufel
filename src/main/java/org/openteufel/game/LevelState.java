@@ -164,10 +164,22 @@ public abstract class LevelState implements WorldCallback
     public boolean isSolid(int tileX, int tileY)
     {
         short[] square = this.getSquare(tileX >> 1, tileY >> 1);
+        if(square == null)
+            return true;
         int offX = tileX & 1;
         int offY = tileX & 1;
 
         short pillarId = square[offX + (offY << 1)];
         return sol.getSolidBlock(pillarId & 0xffff);
+    }
+    
+    @Override
+    public boolean isFreeTile(int tileX, int tileY)
+    {
+        if(isSolid(tileX, tileY))
+            return false;
+        if(entityManager.getEntityAt(tileX, tileY) != null)
+            return false;
+        return true;
     }
 }

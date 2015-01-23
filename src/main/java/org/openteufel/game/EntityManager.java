@@ -69,6 +69,17 @@ public class EntityManager
         this.addEntity(ent);
     }
 
+
+    public Entity getEntityAt(final int tileX, final int tileY)
+    {
+        for (final Entity ent : this.entities)
+        {
+            if(ent != null && ent.getPos().getTileX() == tileX && ent.getPos().getTileY() == tileY)
+                return ent;
+        }
+        return null;
+    }
+
     public Entity getEntityClosest(final int x, final int y, final int maxradius, int team)
     {
         Entity ret = null;
