@@ -21,6 +21,7 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     private Position2d         targetPos;
     private Entity             targetEnt;
+    private PathFinder         pathFinder;
     private int                direction;
     private final int          speed;
     private int                currentAnimation;
@@ -30,12 +31,14 @@ public abstract class WalkingEntity extends AnimatedEntity
         super(pos, true, team);
         this.targetPos = null;
         this.targetEnt = null;
+        this.pathFinder = null;
         this.direction = 0;
         this.speed = speed;
     }
 
     public void updateTarget(final Position2d targetPos)
     {
+        pathFinder = null;
         this.targetPos = targetPos;
         this.targetEnt = null;
         targetPos.setOffsetX(0);
@@ -44,8 +47,16 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     public void updateTarget(final Entity targetEnt)
     {
+        pathFinder = null;
         this.targetEnt = targetEnt;
         this.targetPos = this.targetEnt.getPos(); // TODO:
+    }
+    
+    public void clearTarget()
+    {
+        pathFinder = null;
+        this.targetEnt = null;
+        this.targetPos = null;
     }
 
     @Override
@@ -74,17 +85,17 @@ public abstract class WalkingEntity extends AnimatedEntity
 
             case ANIM_ATTACKING:
                 return getCelPathAttack();
-                
+
             case ANIM_HIT:
                 return getCelPathHit();
-                
+
             case ANIM_DEATH:
                 return getCelPathDeath();
             default:
                 throw new IllegalArgumentException();
         }
     }
-    
+
     protected abstract String getCelPathStand();
 
     protected abstract String getCelPathWalk();
@@ -110,10 +121,10 @@ public abstract class WalkingEntity extends AnimatedEntity
 
             case ANIM_HIT:
                 return getNumFramesHit();
-                
+
             case ANIM_DEATH:
                 return getNumFramesDeath();
-                
+
             default:
                 throw new IllegalArgumentException();
         }
@@ -138,7 +149,7 @@ public abstract class WalkingEntity extends AnimatedEntity
         if (this.direction != direction)
         {
             this.direction = direction;
-            if(currentAnimation > 0)
+            if (currentAnimation > 0)
             {
                 final int num = this.getNumFrames(currentAnimation);
                 final int frame = (num * this.direction);
@@ -174,7 +185,7 @@ public abstract class WalkingEntity extends AnimatedEntity
         switch (currentAnimation)
         {
             case ANIM_ATTACKING:
-                if((currentFrameId % getNumFramesAttack()) == getFrameAttack())
+                if ((currentFrameId % getNumFramesAttack()) == getFrameAttack())
                 {
                     performAttack(gametime, world, targetEnt);
                 }
@@ -199,7 +210,7 @@ public abstract class WalkingEntity extends AnimatedEntity
     @Override
     protected final void finishAnimation(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        if(this.getCurrentAnimation() == ANIM_ATTACKING)
+        if (this.getCurrentAnimation() == ANIM_ATTACKING)
         {
             updateAnimation(ANIM_STANDING);
             finishWalk(gametime, currentFrameId, world);
@@ -219,11 +230,22 @@ public abstract class WalkingEntity extends AnimatedEntity
                 if (this.targetPos.getTileY() < 0)
                     this.targetPos.setTileY(0);
 
-                PathFinder pathFinder = new PathFinder(world, pos, targetPos);
+                if(pathFinder == null)
+                    pathFinder = new PathFinder(world, pos, targetPos);
 
                 Position2d nextPos = pathFinder.getNextTile(pos);
-                if(nextPos == null)
-                    targetPos = null;
+                if (nextPos == null)
+                {
+                    finishWalk(gametime, currentFrameId, world);
+                    pathFinder = new PathFinder(world, pos, targetPos);
+                    nextPos = pathFinder.getNextTile(pos);
+                    if (nextPos == null)
+                    {
+                        clearTarget();
+                    }
+                    else
+                        this.pos.snapToNextTile(nextPos);
+                }
                 else
                     this.pos.snapToNextTile(nextPos);
             }
@@ -239,6 +261,7 @@ public abstract class WalkingEntity extends AnimatedEntity
             finishWalk(gametime, currentFrameId, world);
             if (targetPos == null || targetPos.equals(pos))
             {
+                pathFinder = null;
                 if (currentAnimation == ANIM_WALKING)
                     this.updateAnimation(ANIM_STANDING);
             }
@@ -267,5 +290,21 @@ public abstract class WalkingEntity extends AnimatedEntity
     public void draw(final ImageLoader imageLoader, final Renderer renderer, final int screenX, final int screenY, final int screenZ, final double brightness)
     {
         super.draw(imageLoader, renderer, screenX, screenY, screenZ, brightness);
+        if (targetPos != null)
+        {
+            int cartX = targetPos.getPosX() - pos.getPosX();
+            int cartY = targetPos.getPosY() - pos.getPosY();
+            renderer.drawLine(screenX, screenY, screenX + cartesianToIsometricX(cartX, cartY), screenY + cartesianToIsometricY(cartX, cartY));
+        }
+    }
+
+    private static int cartesianToIsometricX(final int cartX, final int cartY)
+    {
+        return cartX - cartY;
+    }
+
+    private static int cartesianToIsometricY(final int cartX, final int cartY)
+    {
+        return (cartX + cartY) / 2;
     }
 }
