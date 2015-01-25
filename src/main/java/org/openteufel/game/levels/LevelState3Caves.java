@@ -69,6 +69,6 @@ public class LevelState3Caves extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(5, 5);
     }
 }

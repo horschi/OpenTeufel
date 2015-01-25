@@ -2,16 +2,15 @@ package org.openteufel.game;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 
 import org.openteufel.file.GamedataLoader;
+import org.openteufel.game.levels.LevelState1Cathedral;
+import org.openteufel.game.levels.LevelState2Catacombs;
+import org.openteufel.game.levels.LevelState3Caves;
+import org.openteufel.game.levels.LevelState4Hell;
 import org.openteufel.game.levels.LevelStateTown;
 import org.openteufel.ui.KeyboardEvent;
 import org.openteufel.ui.KeyboardHandler;
-import org.openteufel.ui.renderer.gl.ClassicGLRenderer;
 import org.openteufel.ui.Renderer;
 import org.openteufel.ui.TextRenderer;
 
@@ -19,25 +18,27 @@ public class GameRunner implements KeyboardHandler
 {
     private final GamedataLoader dataLoader;
     private final Renderer<?>    renderer;
+    private LevelRenderer        levelrenderer = null;
+    private final TextRenderer   textrenderer;
 
-    private boolean              runGame   = true;
+    private LevelState           level         = null;
+    private boolean              runGame       = true;
 
-    private static final int targetFps = 20;
+    private static final int     targetFps     = 20;
 
     public GameRunner(final Renderer<?> renderer) throws IOException
     {
         this.dataLoader = new GamedataLoader(new File("."));
         this.renderer = renderer;
+        textrenderer = new TextRenderer(renderer, dataLoader);
+
+        switchLevel(0);
         this.renderer.setTargetFps(targetFps);
         renderer.registerKeyboardHandler(this);
     }
 
     public void runGame() throws Exception
     {
-        final LevelState level = new LevelStateTown(this.dataLoader);
-        final LevelRenderer levelrenderer = new LevelRenderer(this.dataLoader, level, this.renderer);
-        final TextRenderer textrenderer = new TextRenderer(renderer, dataLoader);
-
         int gametime = 0;
         while (runGame)
         {
@@ -54,9 +55,43 @@ public class GameRunner implements KeyboardHandler
             long renderTime = (System.nanoTime() - renderStart) / 1000000;
 
             textrenderer.writeText(1, 1, "proc=" + processTime + "ms / render=" + renderTime + "ms / mem=" + (Runtime.getRuntime().totalMemory() >> 20) + "M", 24);
-            textrenderer.writeText(2, 26, "pos=" + (level.getCameraX() / 32)+","+(level.getCameraY() / 32)+" / num=" + level.getEntityManager().getNumEntities()+" / t=" + gametime, 24);
+            textrenderer.writeText(2, 26, "pos=" + (level.getCameraX() / 32) + "," + (level.getCameraY() / 32) + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 24);
 
             this.renderer.finishFrame();
+        }
+    }
+
+    public void switchLevel(int level)
+    {
+        try
+        {
+            switch (level)
+            {
+                case 0:
+                    this.level = new LevelStateTown(this.dataLoader);
+                    break;
+
+                case 1:
+                    this.level = new LevelState1Cathedral(this.dataLoader);
+                    break;
+
+                case 5:
+                    this.level = new LevelState2Catacombs(this.dataLoader);
+                    break;
+
+                case 9:
+                    this.level = new LevelState3Caves(this.dataLoader);
+                    break;
+
+                case 13:
+                    this.level = new LevelState4Hell(this.dataLoader);
+                    break;
+            }
+            levelrenderer = new LevelRenderer(this.dataLoader, this.level, this.renderer);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
@@ -69,6 +104,27 @@ public class GameRunner implements KeyboardHandler
             case 27:
                 runGame = false;
                 break;
+
+            case 11:
+                switchLevel(0);
+                break;
+
+            case 2:
+                switchLevel(1);
+                break;
+
+            case 3:
+                switchLevel(5);
+                break;
+
+            case 4:
+                switchLevel(9);
+                break;
+
+            case 5:
+                switchLevel(13);
+                break;
+
             default:
                 break;
         }

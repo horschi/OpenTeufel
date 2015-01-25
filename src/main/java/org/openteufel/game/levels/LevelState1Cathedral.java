@@ -66,14 +66,7 @@ public class LevelState1Cathedral extends LevelState
         // banner1 banner2
         // lv1mazea lv1mazeb
         // rnd1 rnd2 rnd3 rnd4 rnd5 rnd6
-        //        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\hero2.dun"));
-
-        final DUNFile ret = new DUNFile(1, 1);
-        for (int x = 0; x < ret.getWidth(); x++)
-            for (int y = 0; y < ret.getHeight(); y++)
-                ret.setSquare(x, y, (short) 99); // (short) ((x + (y * ret.getWidth())) / 5)
-
-        return ret;
+        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\sklkng2.dun"));
     }
 
     @Override
@@ -85,6 +78,6 @@ public class LevelState1Cathedral extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(46, 31);
     }
 }

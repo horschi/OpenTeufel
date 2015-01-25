@@ -76,6 +76,6 @@ public class LevelState2Catacombs extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(4, 4);
     }
 }

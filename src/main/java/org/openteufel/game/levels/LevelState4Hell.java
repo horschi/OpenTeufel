@@ -66,7 +66,7 @@ public class LevelState4Hell extends LevelState
         // diab3a diab3b
         // diab4a diab4b - downwards stairs
         // vile1 vile2
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l4data\\vile3.dun"));
+        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l4data\\diab3b.dun"));
     }
 
     @Override
@@ -78,6 +78,6 @@ public class LevelState4Hell extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(4, 4);
     }
 }
