@@ -192,11 +192,13 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         drawRect(screenX - 32, screenY - 16, 64, 32);
         drawLine(screenX - 4, screenY - 4, screenX + 4, screenY + 4);
         drawLine(screenX + 4, screenY - 4, screenX - 4, screenY + 4);
-        drawText(screenX, screenY, text);
+        if(text != null)
+            drawText(screenX, screenY, text);
     }
 
     private void drawText(final int x, final int y, final String t) {
-        drawLineList.add(new drawLineInfo(x, y, t));
+        if(t != null)
+            drawLineList.add(new drawLineInfo(x, y, t));
     }
 
     public void drawRect(final int screenX, final int screenY, final int width, final int height) {
