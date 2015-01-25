@@ -56,8 +56,8 @@ public class LevelRenderer implements MouseHandler
         final int screenHalfWidthCart = isometricToCartesianX(screenHalfWidthIso, screenHalfHeightIso);
         final int screenHalfHeightCart = isometricToCartesianY(screenHalfWidthIso, screenHalfHeightIso);
 
-        int startWorldX = (this.cameraX - screenHalfWidthCart) & 0xffffffc0;
-        int startWorldY = (this.cameraY - screenHalfHeightCart) & 0xffffffc0;
+        int startWorldTileX = (this.cameraX - screenHalfWidthCart) / 32;
+        int startWorldTileY = (this.cameraY - screenHalfHeightCart) / 32;
 
         final List<Entity> entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart, Entity.TEAM_NEUTRAL);
         Collections.sort(entities, new Comparator<Entity>()
@@ -67,48 +67,55 @@ public class LevelRenderer implements MouseHandler
             {
                 final int ay = cartesianToIsometricY(a.getPos().getPosX(), a.getPos().getPosY());
                 final int by = cartesianToIsometricY(b.getPos().getPosX(), b.getPos().getPosY());
-
                 return by - ay;
             }
         });
 
-        final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 64;
-        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 64 + 4;
+        final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 32;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 32 + 4;
         for (int y = 0; y <= screenTilesHeightIso; y++)
         {
-            int rowStartWorldX = startWorldX - isometricToCartesianX(64, 0);
-            int rowStartWorldY = startWorldY - isometricToCartesianY(64, 0);
+            int rowStartWorldX = startWorldTileX - 1;
+            int rowStartWorldY = startWorldTileY;
             for (int x = 0; x <= screenTilesWidthIso; x++)
             {
                 if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
-                    this.drawSingleTile((rowStartWorldX) / 64, (rowStartWorldY) / 64);
+                    this.drawSingleTile(rowStartWorldX, rowStartWorldY);
 
-                rowStartWorldX += isometricToCartesianX(128, 0);
-                rowStartWorldY += isometricToCartesianY(128, 0);
+                rowStartWorldX ++;
+                rowStartWorldY --;
             }
 
-            rowStartWorldX = startWorldX;
-            rowStartWorldY = startWorldY;
+            drawEntities(entities, cartesianToIsometricY(rowStartWorldX*32, rowStartWorldY*32)+15 );
+            
+            rowStartWorldX = startWorldTileX;
+            rowStartWorldY = startWorldTileY;
             for (int x = 0; x <= screenTilesWidthIso; x++)
             {
                 if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
-                    this.drawSingleTile((rowStartWorldX) / 64, (rowStartWorldY) / 64);
+                    this.drawSingleTile(rowStartWorldX, rowStartWorldY);
 
-                rowStartWorldX += isometricToCartesianX(128, 0);
-                rowStartWorldY += isometricToCartesianY(128, 0);
+                rowStartWorldX ++;
+                rowStartWorldY --;
             }
 
-            while (entities.size() > 0)
-            {
-                final Entity ent = entities.get(entities.size() - 1);
-                final int entY = cartesianToIsometricY(ent.getPos().getPosX(), ent.getPos().getPosY());
-                if (entY >= cartesianToIsometricY(startWorldX, startWorldY))
-                    break;
-                this.drawEntity(ent, 0);
-                entities.remove(entities.size() - 1);
-            }
-            startWorldX += isometricToCartesianX(0, 64);
-            startWorldY += isometricToCartesianY(0, 64);
+            drawEntities(entities, cartesianToIsometricY(rowStartWorldX*32, rowStartWorldY*32)+15 );
+
+            startWorldTileX ++;
+            startWorldTileY ++;
+        }
+    }
+    
+    private void drawEntities(List<Entity> entities, int maxIsoY)
+    {
+        while (entities.size() > 0)
+        {
+            final Entity ent = entities.get(entities.size() - 1);
+            final int entY = cartesianToIsometricY(ent.getPos().getPosX(), ent.getPos().getPosY());
+            if (entY >= maxIsoY)
+                break;
+            this.drawEntity(ent, 0);
+            entities.remove(entities.size() - 1);
         }
     }
 
@@ -117,55 +124,37 @@ public class LevelRenderer implements MouseHandler
         final int tileDifX = this.cameraX - ent.getPos().getPosX();
         final int tileDifY = this.cameraY - ent.getPos().getPosY();
 
-        final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY);
-        final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY);
-        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, screenZ, this.calculateBrightness(ent.getPos().getPosX(), ent.getPos().getPosY()));
+        final int ixBase = (this.screenWidth >> 1) - cartesianToIsometricX(tileDifX, tileDifY);
+        final int iyBase = (this.screenHeight >> 1) - cartesianToIsometricY(tileDifX, tileDifY);
+        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, screenZ, this.calculateBrightness(tileDifX, tileDifY));
     }
 
     private void drawSingleTile(final int worldTileX, final int worldTileY)
     {
-        final short[] tilsquare = this.levelstate.getSquare(worldTileX, worldTileY);
+        final short[] tilsquare = this.levelstate.getSquare(worldTileX/2, worldTileY/2);
         if (tilsquare != null)
         {
-            for (int tileOffY = 0; tileOffY < 2; tileOffY++)
-            {
-                for (int tileOffX = 0; tileOffX < 2; tileOffX++)
-                {
-                    short pillarId = tilsquare[tileOffX+(tileOffY*2)];
-                    final MINPillar pillar = this.levelstate.getPillar(pillarId);
-                    int pxOffX = tileOffX*32;
-                    int pxOffY = tileOffY*32;
-                    
-                    double brightness = this.calculateBrightness(worldTileX*64+tileOffX*32, worldTileY*64+tileOffY*32);
-//                    if(levelstate.isSolid(worldTileX*2+tileOffX, worldTileY*2+tileOffY))
-//                        brightness = 0.0;
-                    this.drawPillar(pillar, worldTileX, worldTileY, cartesianToIsometricX(pxOffX, pxOffY)-16, cartesianToIsometricY(pxOffX, pxOffY)-16, brightness); // 0 -16
-                }
-            }
+            int tileOffX = worldTileX&1;
+            int tileOffY = worldTileY&1;
+            short pillarId = tilsquare[tileOffX+(tileOffY*2)];
+            final MINPillar pillar = this.levelstate.getPillar(pillarId);
+
+            final int difX = this.cameraX - worldTileX * 32;
+            final int difY = this.cameraY - worldTileY * 32;
+
+            double brightness = this.calculateBrightness(difX, difY);
+                if(levelstate.isSolid(worldTileX, worldTileY, false))
+                    brightness = 0.4;
+
+            final int ixBase = (this.screenWidth >> 1) - cartesianToIsometricX(difX, difY) -16;
+            final int iyBase = (this.screenHeight >> 1) - cartesianToIsometricY(difX, difY) -16;
+            
+            drawPillar(pillar, ixBase, iyBase, brightness);
         }
     }
-
-    private double calculateBrightness(final int x, final int y)
+    
+    public void drawPillar(MINPillar pillar, int ixBase, int iyBase, double brightness)
     {
-        final int diffX = this.cameraX-x;
-        final int diffY = this.cameraY-y;
-
-        double brightness = 1.3 - (Math.sqrt( (diffX*diffX) + (diffY*diffY) ) / 700);
-        if(brightness > 1.0)
-            brightness = 1.0;
-        if(brightness < 0.0)
-            brightness = 0.0;
-        return brightness;
-    }
-
-    private void drawPillar(final MINPillar pillar, final int worldTileX, final int worldTileY, final int offsetX, final int offsetY, final double brightness)
-    {
-        final int tileDifX = this.cameraX - worldTileX * 64;
-        final int tileDifY = this.cameraY - worldTileY * 64;
-
-        final int ixBase = (this.screenWidth >> 1) - this.cartesianToIsometricX(tileDifX, tileDifY) + offsetX;
-        final int iyBase = (this.screenHeight >> 1) - this.cartesianToIsometricY(tileDifX, tileDifY) + offsetY;
-
         final int num = pillar.getNumBlocks();
         for (int pillarZ = 0; pillarZ < num; pillarZ++)
         {
@@ -181,6 +170,16 @@ public class LevelRenderer implements MouseHandler
                 this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, 0, brightness);
             }
         }
+    }
+
+    private double calculateBrightness(final int diffX, final int diffY)
+    {
+        double brightness = 1.3 - (Math.sqrt( (diffX*diffX) + (diffY*diffY) ) / 700);
+        if(brightness > 1.0)
+            brightness = 1.0;
+        if(brightness < 0.0)
+            brightness = 0.0;
+        return brightness;
     }
 
     public void applyUserInput()
@@ -222,9 +221,8 @@ public class LevelRenderer implements MouseHandler
     @Override
     public void handleMouseEvent(MouseEvent e)
     {
-        if (e.type == MouseEvent.eventType.COMBINED
-                || e.type == MouseEvent.eventType.RELEASE
-                || e.type == MouseEvent.eventType.PRESS)        {
+        if (e.type == MouseEvent.eventType.COMBINED || e.type == MouseEvent.eventType.RELEASE || e.type == MouseEvent.eventType.PRESS)
+        {
             if (e.button == 0)
             {
                 lmbIsPressed = e.eventState;
