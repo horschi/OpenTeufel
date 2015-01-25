@@ -9,6 +9,7 @@ public class PathFinder
     private int              bufX, bufY;
     private int              bufW, bufH;
     private WorldCallback    world;
+    private int              destX, destY;
 
     public PathFinder(WorldCallback world, Position2d start, Position2d dest)
     {
@@ -24,6 +25,9 @@ public class PathFinder
         bufX = Math.min(startTileX, destTileX) - ADDITIONAL_SIZE;
         bufY = Math.min(startTileY, destTileY) - ADDITIONAL_SIZE;
 
+        destX = destTileX;
+        destY = destTileY;
+
         int s = bufW * bufH;
         buf = new int[s];
 
@@ -31,21 +35,6 @@ public class PathFinder
             buf[i] = Integer.MAX_VALUE;
 
         _findPath(0, startTileX, startTileY, destTileX, destTileY);
-
-//        for (int y = bufY; y < bufY + bufH; y++)
-//        {
-//            for (int x = bufX; x < bufX + bufW; x++)
-//            {
-//                int v = get(x, y);
-//                if(v >= 99)
-//                    System.out.print("  99");
-//                else if(v > 9)
-//                    System.out.print("  "+v);
-//                else
-//                    System.out.print("   "+v);
-//            }
-//            System.out.println();
-//        }
     }
 
     private int get(int tileX, int tileY)
@@ -84,6 +73,13 @@ public class PathFinder
                     if (x < bufX || x >= bufX + bufW)
                         continue;
 
+                    if(x != destTileX && y != destTileY) // diagonal
+                    {
+                        if (!world.isWalkable(destTileX, y))
+                            continue;
+                        if (!world.isWalkable(x, destTileY))
+                            continue;
+                    }
                     if (world.isWalkable(x, y))
                     {
                         _findPath(i + 1, startTileX, startTileY, x, y);
@@ -98,11 +94,12 @@ public class PathFinder
         int oldTileX = pos.getTileX();
         int oldTileY = pos.getTileY();
 
-        int old = get(oldTileX, oldTileY);
+        int oldSteps = get(oldTileX, oldTileY);
 
         int bestTileX = -1;
         int bestTileY = -1;
-        int bestDist = Integer.MAX_VALUE;
+        int bestDistSteps = Integer.MAX_VALUE-1;
+        long bestDistBeeline = Long.MAX_VALUE;
 
         for (int y = oldTileY - 1; y <= oldTileY + 1; y++)
         {
@@ -116,18 +113,46 @@ public class PathFinder
                     continue;
 
                 int dist = get(x, y);
-                if (dist < bestDist)
+                if (dist <= bestDistSteps)
                 {
-                    bestDist = dist;
-                    bestTileX = x;
-                    bestTileY = y;
+                    int difX = x - destX;
+                    int difY = y - destY;
+                    long distBeeline = difX*difX + difY*difY;
+                    if (dist < bestDistSteps || distBeeline < bestDistBeeline)
+                    {
+                        bestDistBeeline = distBeeline;
+                        bestDistSteps = dist;
+                        bestTileX = x;
+                        bestTileY = y;
+                    }
                 }
             }
         }
 
-        if (bestDist == Integer.MAX_VALUE || bestDist >= old || !world.isWalkable(bestTileX, bestTileY))
+        if (bestDistSteps == Integer.MAX_VALUE || bestDistSteps >= oldSteps || !world.isWalkable(bestTileX, bestTileY))
             return null;
 
         return Position2d.byTile(bestTileX, bestTileY);
     }
+
+    @Override
+    public String toString()
+    {
+        return "PathFinder [bufX=" + bufX + ", bufY=" + bufY + ", bufW=" + bufW + ", bufH=" + bufH + "]";
+        //      for (int y = bufY; y < bufY + bufH; y++)
+        //      {
+        //          for (int x = bufX; x < bufX + bufW; x++)
+        //          {
+        //              int v = get(x, y);
+        //              if(v >= 99)
+        //                  System.out.print("  99");
+        //              else if(v > 9)
+        //                  System.out.print("  "+v);
+        //              else
+        //                  System.out.print("   "+v);
+        //          }
+        //          System.out.println();
+        //      }
+    }
+
 }
