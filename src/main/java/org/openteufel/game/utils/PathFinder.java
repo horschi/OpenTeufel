@@ -99,7 +99,7 @@ public class PathFinder
         int bestTileX = -1;
         int bestTileY = -1;
         int bestDistSteps = Integer.MAX_VALUE-1;
-        long bestDistBeeline = Long.MAX_VALUE;
+        int bestDistBeeline = Integer.MAX_VALUE;
 
         for (int y = oldTileY - 1; y <= oldTileY + 1; y++)
         {
@@ -117,7 +117,7 @@ public class PathFinder
                 {
                     int difX = x - destX;
                     int difY = y - destY;
-                    long distBeeline = difX*difX + difY*difY;
+                    int distBeeline = difX*difX + difY*difY;
                     if (dist < bestDistSteps || distBeeline < bestDistBeeline)
                     {
                         bestDistBeeline = distBeeline;
