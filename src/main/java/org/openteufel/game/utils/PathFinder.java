@@ -84,7 +84,7 @@ public class PathFinder
                     if (x < bufX || x >= bufX + bufW)
                         continue;
 
-                    if (world.isFreeTile(x, y))
+                    if (world.isWalkable(x, y))
                     {
                         _findPath(i + 1, startTileX, startTileY, x, y);
                     }
@@ -125,7 +125,7 @@ public class PathFinder
             }
         }
 
-        if (bestDist == Integer.MAX_VALUE || bestDist >= old || !world.isFreeTile(bestTileX, bestTileY))
+        if (bestDist == Integer.MAX_VALUE || bestDist >= old || !world.isWalkable(bestTileX, bestTileY))
             return null;
 
         return Position2d.byTile(bestTileX, bestTileY);

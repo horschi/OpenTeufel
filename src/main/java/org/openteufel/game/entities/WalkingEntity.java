@@ -27,7 +27,7 @@ public abstract class WalkingEntity extends AnimatedEntity
 
     public WalkingEntity(final Position2d pos, final int speed, int team)
     {
-        super(pos, team);
+        super(pos, true, team);
         this.targetPos = null;
         this.targetEnt = null;
         this.direction = 0;

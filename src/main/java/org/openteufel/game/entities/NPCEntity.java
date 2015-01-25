@@ -12,7 +12,7 @@ public abstract class NPCEntity extends Entity
 
     public NPCEntity(final Position2d pos)
     {
-        super(pos, TEAM_NEUTRAL);
+        super(pos, true, TEAM_NEUTRAL);
     }
 
     @Override

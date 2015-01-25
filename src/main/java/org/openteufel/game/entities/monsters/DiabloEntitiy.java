@@ -108,6 +108,6 @@ public class DiabloEntitiy extends RangedMonsterEntity
     @Override
     protected void performMonsterAttack(int gametime, WorldCallback world, Entity targetEntity)
     {
-        world.addEntity(new ApocalypseExplosionEntity(this.getPos().clone(), targetEntity.getPos().clone(), getTeam()));
+        world.addEntity(new ApocalypseExplosionEntity(targetEntity.getPos().clone(), targetEntity.getPos().clone(), getTeam()));
     }
 }

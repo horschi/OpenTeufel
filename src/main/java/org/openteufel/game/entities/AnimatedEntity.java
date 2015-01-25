@@ -11,9 +11,9 @@ public abstract class AnimatedEntity extends Entity
     private int minFrameId, maxFrameId, currentFrameId;
     private String currentCelPath;
 
-    public AnimatedEntity(final Position2d pos, int team)
+    public AnimatedEntity(final Position2d pos, boolean solid, int team)
     {
-        super(pos, team);
+        super(pos, solid, team);
     }
 
     protected void updateAnimationParams(final String currentCelPath, final int minFrameId, final int maxFrameId, boolean resetAnimationFrame)
@@ -53,5 +53,7 @@ public abstract class AnimatedEntity extends Entity
     {
         if (this.currentCelPath != null)
             renderer.drawImageCentered(imageLoader.loadObjectImage(this.currentCelPath, this.currentFrameId), screenX, screenY, 0, this.getBottomOffset(), brightness);
+    
+//        renderer.drawMarker(screenX, screenY, null);
     }
 }

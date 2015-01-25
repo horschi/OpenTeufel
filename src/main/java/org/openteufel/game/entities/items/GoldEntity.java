@@ -15,7 +15,7 @@ public class GoldEntity extends Entity
 
     public GoldEntity(final Position2d pos, final int amount)
     {
-        super(pos,TEAM_NEUTRAL);
+        super(pos, false, TEAM_NEUTRAL);
         this.amount = amount;
     }
 

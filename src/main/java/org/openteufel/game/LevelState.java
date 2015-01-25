@@ -161,7 +161,7 @@ public abstract class LevelState implements WorldCallback
     }
 
     @Override
-    public boolean isSolid(int tileX, int tileY)
+    public boolean isSolid(int tileX, int tileY, boolean isRanged)
     {
         short[] square = this.getSquare(tileX >> 1, tileY >> 1);
         if(square == null)
@@ -170,16 +170,31 @@ public abstract class LevelState implements WorldCallback
         int offY = tileX & 1;
 
         short pillarId = square[offX + (offY << 1)];
-        return sol.getSolidBlock(pillarId & 0xffff);
+        if(isRanged)
+            return sol.getSolidBlockRange(pillarId & 0xffff);
+        else
+            return sol.getSolidBlock(pillarId & 0xffff);
     }
     
     @Override
-    public boolean isFreeTile(int tileX, int tileY)
+    public Entity hasEntity(int tileX, int tileY, boolean onlySolid, int selectTeam)
     {
-        if(isSolid(tileX, tileY))
+        Entity ent = entityManager.getEntityAt(tileX, tileY);
+        if(ent == null)
+            return null;
+        if(onlySolid && !ent.isSolid())
+            return null;
+        if(selectTeam >= 0 && ent.getTeam() != selectTeam)
+            return null;
+        return ent;
+    }
+    
+    @Override
+    public boolean isWalkable(int tileX, int tileY)
+    {
+        if(isSolid(tileX, tileY, false))
             return false;
-        if(entityManager.getEntityAt(tileX, tileY) != null)
-            return false;
-        return true;
+        
+        return hasEntity(tileX, tileY, true, -1) == null;
     }
 }

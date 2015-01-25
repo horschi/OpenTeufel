@@ -6,7 +6,9 @@ public interface WorldCallback
 
     public Entity getEntityClosest(final int x, final int y, final int maxradius, int team);
 
-    public boolean isSolid(int tileX, int tileY);
+    public boolean isSolid(int tileX, int tileY, boolean isRanged);
     
-    public boolean isFreeTile(int tileX, int tileY);
+    public Entity hasEntity(int tileX, int tileY, boolean onlySolid, int selectTeam);
+
+    public boolean isWalkable(int tileX, int tileY);
 }

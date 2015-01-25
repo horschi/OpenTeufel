@@ -18,13 +18,13 @@ public abstract class ProjectileEntity extends AnimatedEntity
 
     public ProjectileEntity(final Position2d pos, final Position2d target, final int speed, int team)
     {
-        super(pos, team);
+        super(pos, false, team);
         this.updateTarget(target, speed);
     }
 
     protected void updateTarget(final Position2d target, final int speed)
     {
-        if(isExplosion)
+        if (isExplosion)
         {
             killEntity();
         }
@@ -32,31 +32,38 @@ public abstract class ProjectileEntity extends AnimatedEntity
         {
             precisePosX = getPos().getPosX();
             precisePosY = getPos().getPosY();
-            
+
             final int difX = this.pos.calcDiffX(target);
             final int difY = this.pos.calcDiffY(target);
-            final double speedMult = ((double) speed) / Math.sqrt(difX * difX + difY * difY);
-            this.moveX = (double) difX * speedMult;
-            this.moveY = (double) difY * speedMult;
-    
-            switch (this.getNumProjectileDirections())
+            if (difX == 0 && difY == 0)
             {
-                case 0:
-                case 1:
-                    this.direction = 0;
-                    break;
-                case 8:
-                    this.direction = EntityUtils.calcDirection8(difX, difY, -1);
-                    break;
-                case 16:
-                    this.direction = EntityUtils.calcDirection16(difX, difY, -1);
-                    break;
-    
-                default:
-                    throw new IllegalStateException();
+                ttl = 1;
             }
-            if (this.direction >= 0)
-                this.updateAnimationParams(this.getProjectileCelPath(this.direction), 0, this.getNumProjectileFrames() - 1, false);
+            else
+            {
+                final double speedMult = ((double) speed) / Math.sqrt(difX * difX + difY * difY);
+                this.moveX = (double) difX * speedMult;
+                this.moveY = (double) difY * speedMult;
+
+                switch (this.getNumProjectileDirections())
+                {
+                    case 0:
+                    case 1:
+                        this.direction = 0;
+                        break;
+                    case 8:
+                        this.direction = EntityUtils.calcDirection8(difX, difY, -1);
+                        break;
+                    case 16:
+                        this.direction = EntityUtils.calcDirection16(difX, difY, -1);
+                        break;
+
+                    default:
+                        throw new IllegalStateException();
+                }
+                if (this.direction >= 0)
+                    this.updateAnimationParams(this.getProjectileCelPath(this.direction), 0, this.getNumProjectileFrames() - 1, false);
+            }
         }
     }
 
@@ -67,7 +74,7 @@ public abstract class ProjectileEntity extends AnimatedEntity
         for (int i = 0; i < numdirs; i++)
             imageLoader.preloadObjectCel(this.getProjectileCelPath(i));
 
-        if(getExplosionCelPath() != null)
+        if (getExplosionCelPath() != null)
             imageLoader.preloadObjectCel(this.getExplosionCelPath());
     }
 
@@ -78,15 +85,15 @@ public abstract class ProjectileEntity extends AnimatedEntity
     protected abstract int getNumProjectileDirections();
 
     protected abstract String getExplosionCelPath();
-    
+
     protected abstract int getNumExplosionFrames();
 
     @Override
     protected final void preProcess(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        if(!isExplosion)
+        if (!isExplosion)
         {
-            if(ttl < 0)
+            if (ttl < 0)
                 killEntity();
             else
             {
@@ -94,10 +101,14 @@ public abstract class ProjectileEntity extends AnimatedEntity
                 this.precisePosX += this.moveX;
                 this.precisePosY += this.moveY;
                 this.pos.setPos((int) this.precisePosX, (int) this.precisePosY);
-    
+
                 Entity hitEnt = world.getEntityClosest(pos.getPosX(), pos.getPosY(), 20, getEnemyTeam());
-                if(hitEnt != null)
+                if (hitEnt != null)
                 { // hit
+                    performHit(gametime, world);
+                }
+                else if (world.isSolid(pos.getTileX(), pos.getTileY(), true))
+                {
                     performHit(gametime, world);
                 }
             }
@@ -106,7 +117,7 @@ public abstract class ProjectileEntity extends AnimatedEntity
 
     private void performHit(final int gametime, WorldCallback world)
     {
-        if(getExplosionCelPath() == null)
+        if (getExplosionCelPath() == null)
             killEntity();
         else
         {
@@ -118,7 +129,7 @@ public abstract class ProjectileEntity extends AnimatedEntity
     @Override
     protected void finishAnimation(final int gametime, final int currentFrameId, WorldCallback world)
     {
-        if(isExplosion)
+        if (isExplosion)
             killEntity();
     }
 

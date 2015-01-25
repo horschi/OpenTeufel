@@ -14,7 +14,7 @@ public class DummyEntity extends Entity
 
     public DummyEntity(final Position2d pos, final String text)
     {
-        super(pos,TEAM_NEUTRAL);
+        super(pos, false, TEAM_NEUTRAL);
         this.text = text;
         if (text == null)
             this.text = "" + this.pos.getTileX() + "/" + this.pos.getTileY();

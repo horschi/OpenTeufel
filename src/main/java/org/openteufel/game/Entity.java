@@ -14,13 +14,20 @@ public abstract class Entity
 
     protected Position2d    pos;
     protected int           team;
+    protected boolean solid;
     private boolean         alive;
 
-    public Entity(final Position2d pos, int team)
+    public Entity(final Position2d pos, boolean solid, int team)
     {
         this.pos = pos;
+        this.solid = solid;
         this.team = team;
-        alive = true;
+        this.alive = true;
+    }
+
+    public boolean isSolid()
+    {
+        return solid;
     }
 
     public int getTeam()
