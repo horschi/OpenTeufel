@@ -246,14 +246,13 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
             drawCommand.image.draw(drawCommand.x - lx, drawCommand.y - ly, drawCommand.z - lz);
         }
         GL11.glEnd();
-        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
         Textures.setLastBound(-1);
 
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBegin(GL11.GL_LINES);
-        GL11.glColor4f(1, 0, 0, 1);
+        GL11.glColor4f(1, 0, 0, 0.3f);
         for (drawLineInfo drawCommand : drawLineList) {
             if (drawCommand.text == null) {
                 GL11.glVertex3f(drawCommand.X1, drawCommand.Y1, 50);
@@ -263,6 +262,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glEnd();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
+        GL11.glDisable(GL11.GL_BLEND);
 
         Display.update();
         if (targetFps > 1) {
