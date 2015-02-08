@@ -95,6 +95,11 @@ public abstract class LevelState implements WorldCallback
 
     protected abstract Position2d getStartPosition();
 
+    public int getSquareId(final int worldX, final int worldY)
+    {
+        return this.dun.getSquare(worldX, worldY);
+    }
+
     public short[] getSquare(final int worldX, final int worldY)
     {
         final int squareId = this.dun.getSquare(worldX, worldY);
@@ -133,14 +138,9 @@ public abstract class LevelState implements WorldCallback
         this.entityManager.process(gametime, this);
     }
 
-    public int getCameraX()
+    public Position2d getCameraPos()
     {
-        return this.playerEntity.getPos().getPosX();
-    }
-
-    public int getCameraY()
-    {
-        return this.playerEntity.getPos().getPosY();
+        return this.playerEntity.getPos();
     }
 
     public void updateCamPos(final int offX, final int offY)

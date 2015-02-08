@@ -44,8 +44,8 @@ public class LevelRenderer implements MouseHandler
     {
         final EntityManager entityManager = this.levelstate.getEntityManager();
 
-        this.cameraX = this.levelstate.getCameraX();
-        this.cameraY = this.levelstate.getCameraY();
+        this.cameraX = this.levelstate.getCameraPos().getPosX();
+        this.cameraY = this.levelstate.getCameraPos().getPosY();
 
         this.screenWidth = this.renderer.getScreenWidth();
         this.screenHeight = this.renderer.getScreenHeight();

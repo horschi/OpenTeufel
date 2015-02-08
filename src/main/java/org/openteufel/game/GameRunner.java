@@ -54,8 +54,8 @@ public class GameRunner implements KeyboardHandler
             levelrenderer.renderFrame();
             long renderTime = (System.nanoTime() - renderStart) / 1000000;
 
-            textrenderer.writeText(1, 1, "proc=" + processTime + "ms / render=" + renderTime + "ms / mem=" + (Runtime.getRuntime().totalMemory() >> 20) + "M", 24);
-            textrenderer.writeText(2, 26, "pos=" + (level.getCameraX() / 32) + "," + (level.getCameraY() / 32) + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 24);
+            textrenderer.writeText(1, 1, "proc=" + processTime + "ms / render=" + renderTime + "ms / mem=" + (Runtime.getRuntime().totalMemory() >> 20) + "M", 16);
+            textrenderer.writeText(1, 18, "pos=" + level.getCameraPos()  + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 16);
 
             this.renderer.finishFrame();
         }

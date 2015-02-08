@@ -303,6 +303,6 @@ public class Position2d
     @Override
     public String toString()
     {
-        return "Position2d[tileX=" + this.tileX + ", tileY=" + this.tileY + ", offsetX=" + this.offsetX + ", offsetY=" + this.offsetY + "]";
+        return "[X=" + this.tileX + "," + this.offsetX + "/Y=" + this.tileY + "," + this.offsetY + "]";
     }
 }
