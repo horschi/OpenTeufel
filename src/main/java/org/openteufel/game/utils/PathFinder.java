@@ -80,7 +80,7 @@ public class PathFinder
                         if (!world.isWalkable(x, destTileY))
                             continue;
                     }
-                    if (world.isWalkable(x, y))
+                    if (world.isWalkable(x, y) || (x == startTileX && y == startTileY))
                     {
                         _findPath(i + 1, startTileX, startTileY, x, y);
                     }
@@ -98,7 +98,7 @@ public class PathFinder
 
         int bestTileX = -1;
         int bestTileY = -1;
-        int bestDistSteps = Integer.MAX_VALUE-1;
+        int bestDistSteps = oldSteps;
         int bestDistBeeline = Integer.MAX_VALUE;
 
         for (int y = oldTileY - 1; y <= oldTileY + 1; y++)
@@ -113,12 +113,12 @@ public class PathFinder
                     continue;
 
                 int dist = get(x, y);
-                if (dist <= bestDistSteps)
+                if (dist == oldSteps - 1)
                 {
                     int difX = x - destX;
                     int difY = y - destY;
                     int distBeeline = difX*difX + difY*difY;
-                    if (dist < bestDistSteps || distBeeline < bestDistBeeline)
+                    if (distBeeline < bestDistBeeline)
                     {
                         bestDistBeeline = distBeeline;
                         bestDistSteps = dist;
