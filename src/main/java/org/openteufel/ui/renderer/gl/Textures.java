@@ -26,7 +26,7 @@ public class Textures {
     private static final Logger LOG = Logger.getLogger(Textures.class.getName());
     private static final Textures firstTexture = new Textures();
     private static int lastBound = -1;
-    private static final int MAP_TEXTURE_SIZE = 4096;
+    private static final int MAP_TEXTURE_SIZE = 512;
     private static final int MIN_TEXTURE_SIZE = 8;
 
     public static Texture getTexture(final int[] pixels, final int width, final int height) throws Exception {
