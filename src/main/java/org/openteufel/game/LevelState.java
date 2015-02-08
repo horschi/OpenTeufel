@@ -167,7 +167,7 @@ public abstract class LevelState implements WorldCallback
         if(square == null)
             return true;
         int offX = tileX & 1;
-        int offY = tileX & 1;
+        int offY = tileY & 1;
 
         short pillarId = square[offX + (offY << 1)];
         if(isRanged)
