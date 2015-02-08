@@ -23,6 +23,8 @@ import org.openteufel.ui.TextRenderer;
 
 public class ClassicGLRenderer implements Renderer<Sprite> {
 
+    private static final double ZOOM = 2f;
+    
     private static final Logger LOG = Logger.getLogger(ClassicGLRenderer.class.getName());
     private static final int AA_SAMPLES = 4;
     private int targetFps = -1;
@@ -68,7 +70,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     public void initGame() {
         final PixelFormat pixelFormat = new PixelFormat(8, 8, 8, AA_SAMPLES);
         try {
-            Display.setDisplayMode(new DisplayMode(800, 600));
+            Display.setDisplayMode(new DisplayMode(1024, 768));
 
             Display.setFullscreen(false);
             Display.setResizable(true);
@@ -127,12 +129,12 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
 
     @Override
     public int getScreenWidth() {
-        return Display.getWidth();
+        return (int)(Display.getWidth()/ZOOM);
     }
 
     @Override
     public int getScreenHeight() {
-        return Display.getHeight();
+        return (int)(Display.getHeight()/ZOOM);
     }
 
     @Override
@@ -156,7 +158,10 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
     private void processEvents() {
         while (Mouse.next()) {
             for (MouseHandler h : mouseHandlers) {
-                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), Mouse.getEventX() - (getScreenWidth() / 2), (getScreenHeight() / 2) - Mouse.getEventY(), Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
+                h.handleMouseEvent(new MouseEvent(Mouse.getEventButton(), //
+                                (int)((Mouse.getEventX()-(Display.getWidth()/2))/ZOOM), //
+                                (int)(((Display.getHeight()/2) - Mouse.getEventY())/ZOOM), //
+                                Mouse.getEventButtonState(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel(), Mouse.getEventNanoseconds()));
             }
         }
 
@@ -276,7 +281,7 @@ public class ClassicGLRenderer implements Renderer<Sprite> {
         GL11.glOrtho(0, getScreenWidth(), getScreenHeight(), 0, -100, 100);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
-        GL11.glViewport(0, 0, getScreenWidth(), getScreenHeight());
+        GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
     }
 
     @Override
