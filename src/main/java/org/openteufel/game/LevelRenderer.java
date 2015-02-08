@@ -136,8 +136,8 @@ public class LevelRenderer implements MouseHandler
             final int difY = this.cameraY - worldTileY * 32;
 
             double brightness = this.calculateBrightness(difX, difY);
-            if (levelstate.isSolid(worldTileX, worldTileY, false))
-                brightness = 0.4;
+            // if (levelstate.isSolid(worldTileX, worldTileY, false))
+            //    brightness = 0.4;
 
             final int ixBase = (this.screenWidth >> 1) - cartesianToIsometricX(difX, difY) - 16;
             final int iyBase = (this.screenHeight >> 1) - cartesianToIsometricY(difX, difY) - 16;
