@@ -40,24 +40,26 @@ public class GameRunner implements KeyboardHandler
     public void runGame() throws Exception
     {
         int gametime = 0;
+        long renderTime = 0;
         while (runGame)
         {
             gametime++;
-            levelrenderer.applyUserInput();
-
             long processStart = System.nanoTime();
+            levelrenderer.applyUserInput();
             level.runFrame(gametime);
             long processTime = (System.nanoTime() - processStart) / 1000000;
 
             long renderStart = System.nanoTime();
             this.renderer.startFrame();
             levelrenderer.renderFrame();
-            long renderTime = (System.nanoTime() - renderStart) / 1000000;
 
-            textrenderer.writeText(1, 1, "proc=" + processTime + "ms / render=" + renderTime + "ms / mem=" + (Runtime.getRuntime().totalMemory() >> 20) + "M", 16);
-            textrenderer.writeText(1, 18, "pos=" + level.getCameraPos()  + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 16);
-
+            {
+                textrenderer.writeText(1, 1, "proc=" + processTime + "ms / render=" + renderTime + "ms / mem=" + (Runtime.getRuntime().totalMemory() >> 20) + "M", 16);
+                textrenderer.writeText(1, 18, "pos=" + level.getCameraPos()  + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 16);
+                textrenderer.writeText(1, 34, "squareId="+level.getSquareId(level.getCameraPos().getTileX()/2, level.getCameraPos().getTileY()/2), 16);
+            }
             this.renderer.finishFrame();
+            renderTime = (System.nanoTime() - renderStart) / 1000000;
         }
     }
 
