@@ -73,10 +73,10 @@ public class LevelRenderer implements MouseHandler
         }
 
         final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 32;
-        final int screenTilesHeightIso = (screenHalfHeightIso * 4) / 32 + 6;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 4) / 32 + 12;
         
-        int startWorldTileX = (cameraX - isometricToCartesianX(-screenHalfWidthIso-32, screenHalfHeightIso))/32;
-        int startWorldTileY = (cameraY - isometricToCartesianY(-screenHalfWidthIso-32, screenHalfHeightIso))/32;
+        int startWorldTileX = (cameraX - isometricToCartesianX(screenHalfWidthIso+32, screenHalfHeightIso))/32;
+        int startWorldTileY = (cameraY - isometricToCartesianY(screenHalfWidthIso+32, screenHalfHeightIso))/32;
         for (int y = 0; y <= screenTilesHeightIso; y++)
         {
             drawTileLine(startWorldTileX , startWorldTileY, screenTilesWidthIso, true);
@@ -97,8 +97,8 @@ public class LevelRenderer implements MouseHandler
             if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
                 this.drawSingleTile(rowStartWorldX, rowStartWorldY, floor);
 
-            rowStartWorldX--;
-            rowStartWorldY++;
+            rowStartWorldX++;
+            rowStartWorldY--;
         }
     }
 
