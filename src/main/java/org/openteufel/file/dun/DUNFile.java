@@ -167,6 +167,9 @@ public class DUNFile
 
     public short getMonster(final int x, final int y)
     {
+        if(monsters== null)
+            return 0;
+        
         if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
             throw new IllegalArgumentException();
 
@@ -183,6 +186,9 @@ public class DUNFile
 
     public short getObject(final int x, final int y)
     {
+        if (objects == null)
+            return 0;
+        
         if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
             throw new IllegalArgumentException();
 
@@ -199,6 +205,9 @@ public class DUNFile
 
     public short getTransparencies(final int x, final int y)
     {
+        if (transparencies == null)
+            return 0;
+        
         if (x >= this.width * 2 || x < 0 || y >= this.height * 2 || y < 0)
             throw new IllegalArgumentException();
 

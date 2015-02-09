@@ -53,37 +53,40 @@ public class LevelRenderer implements MouseHandler
         final int screenHalfWidthIso = this.screenWidth / 2 + 32;
         final int screenHalfHeightIso = this.screenHeight / 2 + 32;
 
-        final int screenHalfWidthCart = isometricToCartesianX(screenHalfWidthIso, screenHalfHeightIso);
-        final int screenHalfHeightCart = isometricToCartesianY(screenHalfWidthIso, screenHalfHeightIso);
-
-        final List<Entity> entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart, Entity.TEAM_NEUTRAL);
-        Collections.sort(entities, new Comparator<Entity>()
+        // sort entities
+        final List<Entity> entities;
         {
-            @Override
-            public int compare(final Entity a, final Entity b)
+            final int screenHalfWidthCart = isometricToCartesianX(screenHalfWidthIso, screenHalfHeightIso);
+            final int screenHalfHeightCart = isometricToCartesianY(screenHalfWidthIso, screenHalfHeightIso);
+    
+            entities = entityManager.getEntities(this.cameraX - screenHalfWidthCart - screenHalfHeightCart, this.cameraY - screenHalfWidthCart - screenHalfHeightCart, this.cameraX + screenHalfWidthCart + screenHalfHeightCart, this.cameraY + screenHalfWidthCart + screenHalfHeightCart, Entity.TEAM_NEUTRAL);
+            Collections.sort(entities, new Comparator<Entity>()
             {
-                final int ay = cartesianToIsometricY(a.getPos().getPosX(), a.getPos().getPosY());
-                final int by = cartesianToIsometricY(b.getPos().getPosX(), b.getPos().getPosY());
-                return by - ay;
-            }
-        });
+                @Override
+                public int compare(final Entity a, final Entity b)
+                {
+                    final int ay = cartesianToIsometricY(a.getPos().getPosX(), a.getPos().getPosY());
+                    final int by = cartesianToIsometricY(b.getPos().getPosX(), b.getPos().getPosY());
+                    return by - ay;
+                }
+            });
+        }
 
         final int screenTilesWidthIso = (screenHalfWidthIso * 2) / 32;
-        final int screenTilesHeightIso = (screenHalfHeightIso * 2) / 32 + 4;
+        final int screenTilesHeightIso = (screenHalfHeightIso * 4) / 32 + 6;
         
-        int startWorldTileX = (this.cameraX - screenHalfWidthCart) / 32;
-        int startWorldTileY = (this.cameraY - screenHalfHeightCart) / 32;
+        int startWorldTileX = (cameraX - isometricToCartesianX(-screenHalfWidthIso-32, screenHalfHeightIso))/32;
+        int startWorldTileY = (cameraY - isometricToCartesianY(-screenHalfWidthIso-32, screenHalfHeightIso))/32;
         for (int y = 0; y <= screenTilesHeightIso; y++)
         {
             drawTileLine(startWorldTileX , startWorldTileY, screenTilesWidthIso, true);
-            drawTileLine(startWorldTileX + 1, startWorldTileY, screenTilesWidthIso, true);
-
-            drawEntities(entities, cartesianToIsometricY((startWorldTileX) * 32, startWorldTileY * 32)+16);
+            drawEntities(entities, cartesianToIsometricY((startWorldTileX) * 32, startWorldTileY * 32)+8);
             drawTileLine(startWorldTileX , startWorldTileY, screenTilesWidthIso, false);
-            drawTileLine(startWorldTileX + 1, startWorldTileY, screenTilesWidthIso, false);
 
-            startWorldTileX++;
-            startWorldTileY++;
+            if((y & 1) == 0)
+                startWorldTileX++;
+            else
+                startWorldTileY++;
         }
     }
     
@@ -94,8 +97,8 @@ public class LevelRenderer implements MouseHandler
             if (rowStartWorldX >= 0 && rowStartWorldY >= 0)
                 this.drawSingleTile(rowStartWorldX, rowStartWorldY, floor);
 
-            rowStartWorldX++;
-            rowStartWorldY--;
+            rowStartWorldX--;
+            rowStartWorldY++;
         }
     }
 
