@@ -10,13 +10,12 @@ import org.openteufel.game.utils.Position2d;
 
 public class LevelState1Cathedral extends LevelState
 {
-    public LevelState1Cathedral(final GamedataLoader dataLoader) throws IOException
+    public LevelState1Cathedral()
     {
-        super(dataLoader);
     }
 
     @Override
-    protected void init(final GamedataLoader dataLoader) throws IOException
+    protected void initInternal(final GamedataLoader dataLoader) throws IOException
     {
 
     }
@@ -66,7 +65,7 @@ public class LevelState1Cathedral extends LevelState
         // banner1 banner2
         // lv1mazea lv1mazeb
         // rnd1 rnd2 rnd3 rnd4 rnd5 rnd6
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\sklkng2.dun"));
+        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\lv1mazea.dun"));
     }
 
     @Override
@@ -78,6 +77,18 @@ public class LevelState1Cathedral extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(46, 31);
+        return Position2d.byTile(6, 6);
+    }
+    
+    @Override
+    public double getBaseBrightness()
+    {
+        return 1.3;
+    }
+    
+    @Override
+    public LevelState checkLevelChange(int tileX, int tileY)
+    {
+        return null;
     }
 }

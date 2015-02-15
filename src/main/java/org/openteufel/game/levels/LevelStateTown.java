@@ -6,6 +6,7 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.entities.DummyEntity;
 import org.openteufel.game.entities.monsters.BlackKnightEntitiy;
 import org.openteufel.game.entities.monsters.DiabloEntitiy;
 import org.openteufel.game.entities.monsters.SnakeEntitiy;
@@ -31,13 +32,12 @@ public class LevelStateTown extends LevelState
     private boolean hasHellfire;
     private boolean hasTheHell;
 
-    public LevelStateTown(final GamedataLoader dataLoader) throws IOException
+    public LevelStateTown()
     {
-        super(dataLoader);
     }
 
     @Override
-    protected void init(final GamedataLoader dataLoader) throws IOException
+    protected void initInternal(final GamedataLoader dataLoader) throws IOException
     {
         this.hasHellfire = dataLoader.getFileByteBuffer("nlevels\\towndata\\town.cel") != null;
         this.hasTheHell = dataLoader.getFileByteBuffer("levels\\towndata\\sector2s.dun") != null;
@@ -137,19 +137,54 @@ public class LevelStateTown extends LevelState
         }
 
         //        entityManager.addEntity(new GoldEntity(58, 71, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(1, 0, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(0, 1, 1000));
-        //        this.entityManager.addEntity(new GoldEntity(1, 1, 1000));
+        //        entityManager.addEntity(new GoldEntity(1, 0, 1000));
+        //        entityManager.addEntity(new GoldEntity(0, 1, 1000));
+        //        entityManager.addEntity(new GoldEntity(1, 1, 1000));
 
-        entityManager.addEntity(new SuccubusEntitiy(Position2d.byTile(65, 70)));
-        entityManager.addEntity(new BlackKnightEntitiy(Position2d.byTile(66, 70)));
-        entityManager.addEntity(new DiabloEntitiy(Position2d.byTile(67, 70)));
-        entityManager.addEntity(new SnakeEntitiy(Position2d.byTile(65, 69)));
+//        entityManager.addEntity(new SuccubusEntitiy(Position2d.byTile(65, 70)));
+//        entityManager.addEntity(new BlackKnightEntitiy(Position2d.byTile(66, 70)));
+//        entityManager.addEntity(new DiabloEntitiy(Position2d.byTile(67, 70)));
+//        entityManager.addEntity(new SnakeEntitiy(Position2d.byTile(65, 69)));
     }
 
     @Override
     protected Position2d getStartPosition()
     {
         return Position2d.byTile(75, 75);
+    }
+    
+    @Override
+    public double getBaseBrightness()
+    {
+        return 9.0;
+    }
+    
+    @Override
+    public LevelState checkLevelChange(int tileX, int tileY)
+    {
+        switch (tileY)
+        {
+            case 29:
+                if(tileX == 25)
+                    return new LevelState1Cathedral();
+                break;
+                
+            case 21:
+                if(tileX == 49)
+                    return new LevelState2Catacombs();
+                break;
+                
+            case 69:
+                if(tileX == 17)
+                    return new LevelState3Caves();
+                break;
+
+            case 77:
+            case 80:
+                if(tileX >= 39 && tileX <= 44)
+                    return new LevelState4Hell();
+                break;
+        }
+        return null;
     }
 }

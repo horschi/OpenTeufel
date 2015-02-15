@@ -46,7 +46,7 @@ public class GameRunner implements KeyboardHandler
             gametime++;
             long processStart = System.nanoTime();
             levelrenderer.applyUserInput();
-            level.runFrame(gametime);
+            LevelState newLevel = level.runFrame(gametime);
             long processTime = (System.nanoTime() - processStart) / 1000000;
 
             long renderStart = System.nanoTime();
@@ -58,8 +58,19 @@ public class GameRunner implements KeyboardHandler
                 textrenderer.writeText(1, 18, "pos=" + level.getCameraPos()  + " / num=" + level.getEntityManager().getNumEntities() + " / t=" + gametime, 16);
                 textrenderer.writeText(1, 34, "squareId="+level.getSquareId(level.getCameraPos().getTileX()/2, level.getCameraPos().getTileY()/2), 16);
             }
+            if(newLevel != null)
+            {
+                textrenderer.writeText(renderer.getScreenWidth()/2-(42*8), renderer.getScreenHeight()/2, "Loading ...", 42);
+            }
             this.renderer.finishFrame();
             renderTime = (System.nanoTime() - renderStart) / 1000000;
+            
+            if(newLevel != null)
+            {
+                newLevel.init(dataLoader);
+                level = newLevel;
+                levelrenderer = new LevelRenderer(this.dataLoader, this.level, this.renderer);
+            }
         }
     }
 
@@ -70,25 +81,26 @@ public class GameRunner implements KeyboardHandler
             switch (level)
             {
                 case 0:
-                    this.level = new LevelStateTown(this.dataLoader);
+                    this.level = new LevelStateTown();
                     break;
 
                 case 1:
-                    this.level = new LevelState1Cathedral(this.dataLoader);
+                    this.level = new LevelState1Cathedral();
                     break;
 
                 case 5:
-                    this.level = new LevelState2Catacombs(this.dataLoader);
+                    this.level = new LevelState2Catacombs();
                     break;
 
                 case 9:
-                    this.level = new LevelState3Caves(this.dataLoader);
+                    this.level = new LevelState3Caves();
                     break;
 
                 case 13:
-                    this.level = new LevelState4Hell(this.dataLoader);
+                    this.level = new LevelState4Hell();
                     break;
             }
+            this.level.init(dataLoader);
             levelrenderer = new LevelRenderer(this.dataLoader, this.level, this.renderer);
         }
         catch (Exception e)

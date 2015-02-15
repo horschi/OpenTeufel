@@ -122,7 +122,7 @@ public class LevelRenderer implements MouseHandler
 
         final int ixBase = (this.screenWidth >> 1) - cartesianToIsometricX(tileDifX, tileDifY);
         final int iyBase = (this.screenHeight >> 1) - cartesianToIsometricY(tileDifX, tileDifY);
-        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, screenZ, this.calculateBrightness(tileDifX, tileDifY));
+        ent.draw(this.imageLoader, this.renderer, ixBase, iyBase, screenZ, this.levelstate.calculateBrightness(ent.getPos().getPosX(), ent.getPos().getPosY()));
     }
 
     private void drawSingleTile(final int worldTileX, final int worldTileY, boolean floor)
@@ -135,13 +135,14 @@ public class LevelRenderer implements MouseHandler
             short pillarId = tilsquare[tileOffX + (tileOffY * 2)];
             final MINPillar pillar = this.levelstate.getPillar(pillarId);
 
-            final int difX = this.cameraX - worldTileX * 32;
-            final int difY = this.cameraY - worldTileY * 32;
-
-            double brightness = this.calculateBrightness(difX, difY);
+            int tilePosX = worldTileX << 5;
+            int tilePosY = worldTileY << 5;
+            double brightness = this.levelstate.calculateBrightness(tilePosX, tilePosY);
             // if (levelstate.isSolid(worldTileX, worldTileY, false))
             //    brightness = 0.4;
 
+            final int difX = this.cameraX - tilePosX;
+            final int difY = this.cameraY - tilePosY;
             final int ixBase = (this.screenWidth >> 1) - cartesianToIsometricX(difX, difY) - 16;
             final int iyBase = (this.screenHeight >> 1) - cartesianToIsometricY(difX, difY) - 16;
 
@@ -177,16 +178,6 @@ public class LevelRenderer implements MouseHandler
                 this.renderer.drawImage(this.imageLoader.loadTileImage(this.levelstate.getCELPath(), frameIdPlus1), ix, iy, 0, brightness);
             }
         }
-    }
-
-    private double calculateBrightness(final int diffX, final int diffY)
-    {
-        double brightness = 1.3 - (Math.sqrt((diffX * diffX) + (diffY * diffY)) / 700);
-        if (brightness > 1.0)
-            brightness = 1.0;
-        if (brightness < 0.0)
-            brightness = 0.0;
-        return brightness;
     }
 
     public void applyUserInput()

@@ -16,23 +16,32 @@ import org.openteufel.game.utils.Position2d;
 
 public abstract class LevelState implements WorldCallback
 {
-    private final GamedataLoader dataLoader;
+    private GamedataLoader dataLoader = null;
 
-    private final PALFile        pal;
-    private final MINFile        min;
-    private final TILFile        til;
-    private final SOLFile        sol;
+    private PALFile        pal;
+    private MINFile        min;
+    private TILFile        til;
+    private SOLFile        sol;
 
-    private final DUNFile        dun;
+    private DUNFile        dun;
 
-    private final EntityManager  entityManager;
-    private final PlayerEntity   playerEntity;
+    private EntityManager  entityManager;
+    private PlayerEntity   playerEntity;
 
-    public LevelState(final GamedataLoader dataLoader) throws IOException
+    public LevelState()
+    {
+    }
+
+    public EntityManager getEntityManager()
+    {
+        return this.entityManager;
+    }
+
+    public final void init(GamedataLoader dataLoader) throws IOException
     {
         this.dataLoader = dataLoader;
 
-        this.init(dataLoader);
+        this.initInternal(dataLoader);
 
         this.pal = new PALFile(dataLoader.getFileByteBuffer(this.getPALPath()));
         this.min = new MINFile(dataLoader.getFileByteBuffer(this.getMINPath()), this.getMINBlockSize());
@@ -60,7 +69,6 @@ public abstract class LevelState implements WorldCallback
                 final short trans = this.dun.getTransparencies(x, y);
                 if (trans != 0)
                 {
-                    //                    System.out.println("t " + x + " " + y);
                     //                    this.entityManager.addEntity(new DummyEntity(x * 32, y * 32, "t" + trans));
                 }
             }
@@ -70,12 +78,7 @@ public abstract class LevelState implements WorldCallback
         this.entityManager.addEntity(this.playerEntity);
     }
 
-    public EntityManager getEntityManager()
-    {
-        return this.entityManager;
-    }
-
-    protected abstract void init(GamedataLoader dataLoader) throws IOException;
+    protected abstract void initInternal(GamedataLoader dataLoader) throws IOException;
 
     protected abstract String getPALPath();
 
@@ -133,11 +136,30 @@ public abstract class LevelState implements WorldCallback
         return this.pal;
     }
 
-    public void runFrame(final int gametime)
+    public LevelState runFrame(final int gametime)
     {
         this.entityManager.process(gametime, this);
+        
+        if(playerEntity.getPos().hasOffset())
+            return null;
+        return this.checkLevelChange(playerEntity.getPos().getTileX(), playerEntity.getPos().getTileY());
     }
 
+    public abstract double getBaseBrightness();
+    
+    public double calculateBrightness(final int posX, final int posY)
+    {
+        Position2d cam = getCameraPos();
+        int diffX = cam.getPosX() - posX;
+        int diffY = cam.getPosY() - posY;
+        double brightness = getBaseBrightness() - (Math.sqrt((diffX * diffX) + (diffY * diffY)) / 700);
+        if (brightness > 1.0)
+            brightness = 1.0;
+        if (brightness < 0.0)
+            brightness = 0.0;
+        return brightness;
+    }
+    
     public Position2d getCameraPos()
     {
         return this.playerEntity.getPos();
@@ -147,7 +169,7 @@ public abstract class LevelState implements WorldCallback
     {
         this.playerEntity.updateTarget(this.playerEntity.getPos().addNew(offX, offY));
     }
-
+    
     @Override
     public void addEntity(final Entity ent)
     {
@@ -197,4 +219,6 @@ public abstract class LevelState implements WorldCallback
         
         return hasEntity(tileX, tileY, true, -1) == null;
     }
+    
+    public abstract LevelState checkLevelChange(int tileX, int tileY);
 }

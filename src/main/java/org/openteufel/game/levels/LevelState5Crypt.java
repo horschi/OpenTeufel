@@ -10,13 +10,12 @@ import org.openteufel.game.utils.Position2d;
 
 public class LevelState5Crypt extends LevelState
 {
-    public LevelState5Crypt(final GamedataLoader dataLoader) throws IOException
+    public LevelState5Crypt(final GamedataLoader dataLoader)
     {
-        super(dataLoader);
     }
 
     @Override
-    protected void init(final GamedataLoader dataLoader) throws IOException
+    protected void initInternal(final GamedataLoader dataLoader) throws IOException
     {
 
     }
@@ -76,5 +75,17 @@ public class LevelState5Crypt extends LevelState
     protected Position2d getStartPosition()
     {
         return Position2d.byTile(1, 1);
+    }
+    
+    @Override
+    public double getBaseBrightness()
+    {
+        return 1.3;
+    }
+    
+    @Override
+    public LevelState checkLevelChange(int tileX, int tileY)
+    {
+        return null;
     }
 }

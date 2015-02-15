@@ -10,13 +10,12 @@ import org.openteufel.game.utils.Position2d;
 
 public class LevelState6Nest extends LevelState
 {
-    public LevelState6Nest(final GamedataLoader dataLoader) throws IOException
+    public LevelState6Nest()
     {
-        super(dataLoader);
     }
 
     @Override
-    protected void init(final GamedataLoader dataLoader) throws IOException
+    protected void initInternal(final GamedataLoader dataLoader) throws IOException
     {
 
     }
@@ -73,5 +72,17 @@ public class LevelState6Nest extends LevelState
     protected Position2d getStartPosition()
     {
         return Position2d.byTile(1, 1);
+    }
+    
+    @Override
+    public double getBaseBrightness()
+    {
+        return 1.3;
+    }
+    
+    @Override
+    public LevelState checkLevelChange(int tileX, int tileY)
+    {
+        return null;
     }
 }
