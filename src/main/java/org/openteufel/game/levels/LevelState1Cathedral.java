@@ -6,6 +6,8 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants1Cathedral;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState1Cathedral extends LevelState
@@ -65,7 +67,9 @@ public class LevelState1Cathedral extends LevelState
         // banner1 banner2
         // lv1mazea lv1mazeb
         // rnd1 rnd2 rnd3 rnd4 rnd5 rnd6
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\lv1mazea.dun"));
+//        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\lv1mazea.dun"));
+        
+        return new LevelGenerator(16, 16, new DUNConstants1Cathedral(), new DUNFile[]{}).getResult();
     }
 
     @Override
@@ -77,7 +81,7 @@ public class LevelState1Cathedral extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(6, 6);
+        return Position2d.byTile(5, 5);
     }
     
     @Override
