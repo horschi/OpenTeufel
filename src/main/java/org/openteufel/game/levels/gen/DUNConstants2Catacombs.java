@@ -1,93 +1,93 @@
 package org.openteufel.game.levels.gen;
 
-public class DUNConstants1Cathedral implements DUNConstants
+public class DUNConstants2Catacombs implements DUNConstants
 {
-    //  xDoor = 26
-    //  yDoor = 25
+    //        xDoor = 151
+    //        yDoor = 150
 
     @Override
     public short getFloor()
     {
-        return 13;
+        return 3;
     }
 
     @Override
     public short getBlank()
     {
-        return 22;
+        return 12;
     }
 
     @Override
     public short getXWall()
     {
-        return 2;
+        return 21;
     }
 
     @Override
     public short getXBackWall()
     {
-        return 19;
+        return 11;
     }
 
     @Override
     public short getYWall()
     {
-        return 1;
+        return 20;
     }
 
     @Override
     public short getYBackWall()
     {
-        return 18;
+        return 10;
     }
 
     public short getXEnd()
     {
-        return 17;
+        return 6;
     }
-    
+
     public short getYEnd()
-    {
-        return 16;
-    }
-    
-    public short getTopCornerWall()
-    {
-        return 4;
-    }
-
-    public short getTopCornerBackWall()
-    {
-        return 21;
-    }
-
-    public short getBottomCornerWall()
-    {
-        return 3;
-    }
-
-    public short getBottomCornerBackWall()
-    {
-        return 20;
-    }
-
-    public short getLeftCornerWall()
-    {
-        return 7;
-    }
-
-    public short getLeftCornerBackWall()
-    {
-        return 24;
-    }
-
-    public short getRightCornerWall()
     {
         return 6;
     }
 
+    public short getTopCornerWall()
+    {
+        return 8;
+    }
+
+    public short getTopCornerBackWall()
+    {
+        return 13;
+    }
+
+    public short getBottomCornerWall()
+    {
+        return 6;
+    }
+
+    public short getBottomCornerBackWall()
+    {
+        return 16;
+    }
+
+    public short getLeftCornerWall()
+    {
+        return 9;
+    }
+
+    public short getLeftCornerBackWall()
+    {
+        return 15;
+    }
+
+    public short getRightCornerWall()
+    {
+        return 7;
+    }
+
     public short getRightCornerBackWall()
     {
-        return 23;
+        return 147;
     }
 }

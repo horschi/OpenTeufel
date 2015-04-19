@@ -6,6 +6,9 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants1Cathedral;
+import org.openteufel.game.levels.gen.DUNConstants2Catacombs;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState2Catacombs extends LevelState
@@ -63,7 +66,8 @@ public class LevelState2Catacombs extends LevelState
         // blood1 blood2 blood3
         // bonecha1 bonecha2
         // bonestr1 bonestr2
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l2data\\bonestr1.dun"));
+        // return new DUNFile(dataLoader.getFileByteBuffer("levels\\l2data\\bonestr1.dun"));
+        return new LevelGenerator(16, 16, new DUNConstants2Catacombs(), new DUNFile[]{}).getResult();
     }
 
     @Override
@@ -75,7 +79,7 @@ public class LevelState2Catacombs extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(4, 4);
+        return Position2d.byTile(5, 5);
     }
     
     @Override
