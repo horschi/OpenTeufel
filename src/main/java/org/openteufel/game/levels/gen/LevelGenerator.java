@@ -47,11 +47,14 @@ public class LevelGenerator
                 short v = constants.getFloor();
                 if (bottom)
                 { // room/free space
-
                     if(!top && left && right)
                         v = constants.getBottomCornerWall();// \/ !top, others true
                     else if (!right && !left && !top)// Top: /\
                         v = constants.getTopCornerWall();
+                    else if (!left && right && top)
+                        v = constants.getRightCornerWall();
+                    else if (!right && left && top)
+                        v = constants.getLeftCornerWall();
                     else if (!left)
                         v = constants.getYWall(); // getRightCornerWall
                     else if (!right)
@@ -61,11 +64,14 @@ public class LevelGenerator
                 }
                 else
                 { // wall/solid
-
                     if(top && !left && !right)
                         v = constants.getBottomCornerBackWall();// \/ top only
                     else if (right && left && top) // Bottom: /\
                         v = constants.getTopCornerBackWall(); //
+                    else if(left && !right && !top)
+                        v = constants.getRightCornerBackWall();
+                    else if(right && !left && !top)
+                        v = constants.getLeftCornerBackWall();
                     else if (left)
                         v = constants.getYBackWall(); // getRightCornerBackWall
                     else if (right)
@@ -74,10 +80,6 @@ public class LevelGenerator
                         v = constants.getBlank();
                 }
 
-//                v = constants.getRightCornerWall(); //
-//                v = constants.getLeftCornerWall(); //
-//                v = constants.getRightCornerBackWall(); //
-//                v = constants.getLeftCornerBackWall(); //
                 
                 genDUN.setSquare(x, y, (short) (v - 1));
 
