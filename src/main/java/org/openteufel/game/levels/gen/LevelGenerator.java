@@ -44,40 +44,56 @@ public class LevelGenerator
                 boolean top = bitmapGenerator.get(x - 1, y - 1);
                 boolean bottom = bitmapGenerator.get(x, y);
 
-                short v = constants.getFloor();
+                short v = -1;
                 if (bottom)
                 { // room/free space
-                    if(!top && left && right)
-                        v = constants.getBottomCornerWall();// \/ !top, others true
-                    else if (!right && !left && !top)// Top: /\
-                        v = constants.getTopCornerWall();
-                    else if (!left && right && top)
-                        v = constants.getRightCornerWall();
-                    else if (!right && left && top)
-                        v = constants.getLeftCornerWall();
-                    else if (!left)
-                        v = constants.getYWall(); // getRightCornerWall
-                    else if (!right)
-                        v = constants.getXWall(); // getLeftCornerWall
+                    if(top)
+                    {
+                        if (!left && right)
+                            v = constants.getRightCornerWall();
+                        else if (!right && left)
+                            v = constants.getLeftCornerWall();
+                        else if(left && right)
+                            v = constants.getFloor();
+                        else
+                            throw new IllegalStateException();
+                    }
                     else
-                        v = constants.getFloor();
+                    {
+                        if(left && right)
+                            v = constants.getBottomCornerWall();// \/ !top, others true
+                        else if (!right && !left)// Top: /\
+                            v = constants.getTopCornerWall();
+                        else if (!left)
+                            v = constants.getYWall(); // getRightCornerWall
+                        else // if (!right)
+                            v = constants.getXWall(); // getLeftCornerWall
+                    }
                 }
                 else
                 { // wall/solid
-                    if(top && !left && !right)
-                        v = constants.getBottomCornerBackWall();// \/ top only
-                    else if (right && left && top) // Bottom: /\
-                        v = constants.getTopCornerBackWall(); //
-                    else if(left && !right && !top)
-                        v = constants.getRightCornerBackWall();
-                    else if(right && !left && !top)
-                        v = constants.getLeftCornerBackWall();
-                    else if (left)
-                        v = constants.getYBackWall(); // getRightCornerBackWall
-                    else if (right)
-                        v = constants.getXBackWall(); // getLeftCornerBackWall
+                    if(top)
+                    {
+                        if(!left && !right)
+                            v = constants.getBottomCornerBackWall();// \/ top only
+                        else if (right && left) // Bottom: /\
+                            v = constants.getTopCornerBackWall(); //
+                        else if (left)
+                            v = constants.getYBackWall(); // getRightCornerBackWall
+                        else // if (right)
+                            v = constants.getXBackWall(); // getLeftCornerBackWall
+                    }
                     else
-                        v = constants.getBlank();
+                    {
+                        if(left && !right)
+                            v = constants.getRightCornerBackWall();
+                        else if(right && !left)
+                            v = constants.getLeftCornerBackWall();
+                        else if(!right && !left)
+                            v = constants.getBlank();
+                        else
+                            throw new IllegalStateException();
+                    }
                 }
 
                 
