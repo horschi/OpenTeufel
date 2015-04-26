@@ -6,6 +6,9 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants3Caves;
+import org.openteufel.game.levels.gen.DUNConstants6Nest;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState6Nest extends LevelState
@@ -53,13 +56,14 @@ public class LevelState6Nest extends LevelState
     @Override
     protected String getSOLPath()
     {
-        return "levels\\l6data\\l6.sol";
+        return "nlevels\\l6data\\l6.sol";
     }
 
     @Override
     protected DUNFile loadDUN(final GamedataLoader dataLoader) throws IOException
     {
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l6data\\valley01.dun"));
+//        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l6data\\valley01.dun"));
+        return new LevelGenerator(16, 16, new DUNConstants6Nest(), new DUNFile[]{}).getResult();
     }
 
     @Override
@@ -71,7 +75,7 @@ public class LevelState6Nest extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(5, 5);
     }
     
     @Override

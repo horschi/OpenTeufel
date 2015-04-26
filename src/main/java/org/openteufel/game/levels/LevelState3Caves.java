@@ -6,6 +6,9 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants2Catacombs;
+import org.openteufel.game.levels.gen.DUNConstants3Caves;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState3Caves extends LevelState
@@ -56,7 +59,8 @@ public class LevelState3Caves extends LevelState
         // anvil
         // foulwatr
         // lair
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l3data\\foulwatr.dun"));
+//        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l3data\\foulwatr.dun"));
+        return new LevelGenerator(16, 16, new DUNConstants3Caves(), new DUNFile[]{}).getResult();
     }
 
     @Override
