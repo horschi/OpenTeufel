@@ -6,11 +6,14 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants3Caves;
+import org.openteufel.game.levels.gen.DUNConstants5Crypt;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState5Crypt extends LevelState
 {
-    public LevelState5Crypt(final GamedataLoader dataLoader)
+    public LevelState5Crypt()
     {
     }
 
@@ -53,7 +56,7 @@ public class LevelState5Crypt extends LevelState
     @Override
     protected String getSOLPath()
     {
-        return "levels\\l5data\\l5.sol";
+        return "nlevels\\l5data\\l5.sol";
     }
 
     @Override
@@ -62,7 +65,8 @@ public class LevelState5Crypt extends LevelState
         // Uberoom Uberoom1 Uberoom2
         //
 
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l5data\\Uberoom1.dun"));
+//        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l5data\\Uberoom1.dun"));
+        return new LevelGenerator(16, 16, new DUNConstants5Crypt(), new DUNFile[]{}).getResult();
     }
 
     @Override
@@ -74,7 +78,7 @@ public class LevelState5Crypt extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(1, 1);
+        return Position2d.byTile(5, 5);
     }
     
     @Override

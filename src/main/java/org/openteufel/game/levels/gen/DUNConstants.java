@@ -1,6 +1,5 @@
 package org.openteufel.game.levels.gen;
 
-import org.openteufel.file.dun.DUNFile;
 
 public interface DUNConstants
 {
@@ -11,6 +10,8 @@ public interface DUNConstants
     public short getXBackWall();
     public short getYWall();
     public short getYBackWall();
+    public short getXEnd();
+    public short getYEnd();
 
     public short getTopCornerWall();
     public short getTopCornerBackWall();

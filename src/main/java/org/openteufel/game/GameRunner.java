@@ -8,6 +8,8 @@ import org.openteufel.game.levels.LevelState1Cathedral;
 import org.openteufel.game.levels.LevelState2Catacombs;
 import org.openteufel.game.levels.LevelState3Caves;
 import org.openteufel.game.levels.LevelState4Hell;
+import org.openteufel.game.levels.LevelState5Crypt;
+import org.openteufel.game.levels.LevelState6Nest;
 import org.openteufel.game.levels.LevelStateTown;
 import org.openteufel.ui.KeyboardEvent;
 import org.openteufel.ui.KeyboardHandler;
@@ -99,6 +101,16 @@ public class GameRunner implements KeyboardHandler
                 case 13:
                     this.level = new LevelState4Hell();
                     break;
+                    
+
+                case 17:
+                    this.level = new LevelState5Crypt();
+                    break;
+                    
+
+                case 21:
+                    this.level = new LevelState6Nest();
+                    break;
             }
             this.level.init(dataLoader);
             levelrenderer = new LevelRenderer(this.dataLoader, this.level, this.renderer);
@@ -112,6 +124,7 @@ public class GameRunner implements KeyboardHandler
     @Override
     public void handleKeyboardEvent(KeyboardEvent e)
     {
+        if(e.state)
         switch (e.key)
         {
             case 1:
@@ -139,6 +152,14 @@ public class GameRunner implements KeyboardHandler
                 switchLevel(13);
                 break;
 
+            case 6:
+                switchLevel(17);
+                break;
+                
+            case 7:
+                switchLevel(21);
+                break;
+                
             default:
                 break;
         }
