@@ -55,12 +55,12 @@ public class DUNConstants6Nest implements DUNConstants
 
     public short getTopCornerBackWall()
     {
-        return -1;
+        return 5;
     }
 
     public short getBottomCornerWall()
     {
-        return -1;
+        return 12;
     }
 
     public short getBottomCornerBackWall()

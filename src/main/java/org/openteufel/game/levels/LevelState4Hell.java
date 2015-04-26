@@ -6,6 +6,9 @@ import org.openteufel.file.GamedataLoader;
 import org.openteufel.file.dun.DUNFile;
 import org.openteufel.game.EntityManager;
 import org.openteufel.game.LevelState;
+import org.openteufel.game.levels.gen.DUNConstants4Hell;
+import org.openteufel.game.levels.gen.DUNConstants5Crypt;
+import org.openteufel.game.levels.gen.LevelGenerator;
 import org.openteufel.game.utils.Position2d;
 
 public class LevelState4Hell extends LevelState
@@ -65,7 +68,8 @@ public class LevelState4Hell extends LevelState
         // diab3a diab3b
         // diab4a diab4b - downwards stairs
         // vile1 vile2
-        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l4data\\diab3b.dun"));
+//        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l4data\\diab3b.dun"));
+        return new LevelGenerator(16, 16, new DUNConstants4Hell(), new DUNFile[]{}).getResult();
     }
 
     @Override
@@ -77,7 +81,7 @@ public class LevelState4Hell extends LevelState
     @Override
     protected Position2d getStartPosition()
     {
-        return Position2d.byTile(4, 4);
+        return Position2d.byTile(5, 5);
     }
     
     @Override
