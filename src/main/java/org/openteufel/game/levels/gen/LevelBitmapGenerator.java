@@ -2,9 +2,9 @@ package org.openteufel.game.levels.gen;
 
 public abstract class LevelBitmapGenerator
 {
-    private int       w;
-    private int       h;
-    private boolean[] data;
+    protected int w;
+    protected int h;
+    protected boolean[] data;
     private int[]     roomSizes;
     private int[][]   roomPositions;
 
