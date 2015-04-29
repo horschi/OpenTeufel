@@ -93,6 +93,7 @@ public class LevelGenerator
                             v = constants.getBlank();
                         else
                             throw new IllegalStateException();
+                        // what happens when left && right && !top && !bottom?
                     }
                 }
 
