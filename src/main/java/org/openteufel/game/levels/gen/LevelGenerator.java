@@ -21,7 +21,7 @@ public class LevelGenerator
             roomSizes[i] = Math.max(d.getWidth(), d.getHeight());
         }
 
-        LevelBitmapGenerator bitmapGenerator = new StaticRingMapBitmapGenerator();
+        LevelBitmapGenerator bitmapGenerator = new NaiveDungeonGenerator();
         bitmapGenerator.init(width , height , new int[] { 3, 4, 5, 6, 7, 8, 9, 10, 11 });
         
 //        LevelBitmapGenerator bitmapGenerator = new StaticMapBitmapGenerator(new boolean[][]//
