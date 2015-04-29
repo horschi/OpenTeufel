@@ -1,92 +1,90 @@
 package org.openteufel.game.levels.gen;
 
-public class DUNConstants3Caves implements DUNConstants
+public class DUNConstants4Hell implements DUNConstants
 {
-    // total num: 157
-    
     @Override
     public short getFloor()
     {
-        return 7;
+        return 6;
     }
 
     @Override
     public short getBlank()
     {
-        return 8;
+        return 20; // 30
     }
 
     @Override
     public short getXWall()
     {
-        return 10;
+        return 2;
     }
 
     @Override
     public short getXBackWall()
     {
-        return 2;
+        return 19;
     }
 
     @Override
     public short getYWall()
     {
-        return 9;
+        return 1;
     }
 
     @Override
     public short getYBackWall()
     {
-        return 4;
+        return 18;
     }
 
     public short getXEnd()
     {
-        return -1;
+        return 5;
     }
 
     public short getYEnd()
     {
-        return -1;
+        return 4;
     }
 
     public short getTopCornerWall()
     {
-        return 11;
+        return 9;
     }
 
     public short getTopCornerBackWall()
     {
-        return 5;
+        return 21; // 22
     }
 
     public short getBottomCornerWall()
     {
-        return 12;
+        return 3;
     }
 
     public short getBottomCornerBackWall()
     {
-        return 6;
+        return -1;
     }
 
     public short getLeftCornerWall()
     {
-        return 13;
+        return 8;
     }
 
     public short getLeftCornerBackWall()
     {
-        return 1;
+        return -1;
     }
 
     public short getRightCornerWall()
     {
-        return 14;
+        return 7;
     }
 
     public short getRightCornerBackWall()
     {
-        return 3;
+        return -1;
     }
 }

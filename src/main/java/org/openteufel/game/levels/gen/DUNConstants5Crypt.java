@@ -2,40 +2,41 @@ package org.openteufel.game.levels.gen;
 
 public class DUNConstants5Crypt implements DUNConstants
 {
+
     @Override
     public short getFloor()
     {
-        return 7;
+        return -1;
     }
 
     @Override
     public short getBlank()
     {
-        return 8;
+        return -1;
     }
 
     @Override
     public short getXWall()
     {
-        return 10;
+        return -1;
     }
 
     @Override
     public short getXBackWall()
     {
-        return 2;
+        return -1;
     }
 
     @Override
     public short getYWall()
     {
-        return 9;
+        return -1;
     }
 
     @Override
     public short getYBackWall()
     {
-        return 4;
+        return -1;
     }
 
     public short getXEnd()
@@ -50,7 +51,7 @@ public class DUNConstants5Crypt implements DUNConstants
 
     public short getTopCornerWall()
     {
-        return 11;
+        return -1;
     }
 
     public short getTopCornerBackWall()
@@ -65,26 +66,26 @@ public class DUNConstants5Crypt implements DUNConstants
 
     public short getBottomCornerBackWall()
     {
-        return 6;
+        return -1;
     }
 
     public short getLeftCornerWall()
     {
-        return 13;
+        return -1;
     }
 
     public short getLeftCornerBackWall()
     {
-        return 1;
+        return -1;
     }
 
     public short getRightCornerWall()
     {
-        return 14;
+        return -1;
     }
 
     public short getRightCornerBackWall()
     {
-        return 3;
+        return -1;
     }
 }
