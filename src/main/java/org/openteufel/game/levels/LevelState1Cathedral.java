@@ -68,8 +68,18 @@ public class LevelState1Cathedral extends LevelState
         // lv1mazea lv1mazeb
         // rnd1 rnd2 rnd3 rnd4 rnd5 rnd6
 //        return new DUNFile(dataLoader.getFileByteBuffer("levels\\l1data\\lv1mazea.dun"));
-        
-        return new LevelGenerator(64, 64, new DUNConstants1Cathedral(), new DUNFile[]{}).getResult();
+        DUNFile result = null;
+
+        while(result == null) {
+            try {
+                result = new LevelGenerator(64, 64, new DUNConstants1Cathedral(), new DUNFile[]{}).getResult();
+            } catch (Exception e) {
+                // do it again :)
+            }
+
+        }
+
+        return result;
     }
 
     @Override
